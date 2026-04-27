@@ -1,0 +1,25 @@
+# Mercado — Controle de Custos
+
+## Objetivo
+Jogo educacional sobre contabilidade e custos.
+
+## Tema
+Administração de um mercado.
+
+## Conceitos aplicados
+- Custos fixos
+- Custos variáveis
+- Receita
+- Lucro bruto
+- Lucro líquido
+- Estoque
+- Formação de preço
+
+## Como jogar
+O jogador deve administrar o mercado por 30 dias, definindo preços, comprando estoque e controlando os custos.
+
+## Condição de vitória
+Terminar os 30 dias com pelo menos R$ 5.000 em caixa.
+
+## Condição de derrota
+Ficar com caixa negativo.

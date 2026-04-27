@@ -1,0 +1,48 @@
+@media (max-width: 1000px) {
+  .menu-container {
+    grid-template-columns: 1fr;
+  }
+
+  .game-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-panel,
+  .actions-panel {
+    order: 2;
+  }
+
+  .market-area {
+    order: 1;
+  }
+}
+
+@media (max-width: 620px) {
+  .menu-screen,
+  .game-screen {
+    padding: 18px;
+  }
+
+  .menu-content {
+    padding: 28px;
+  }
+
+  .characters-options {
+    grid-template-columns: 1fr;
+  }
+
+  .game-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .market-scene {
+    min-height: 260px;
+  }
+
+  .sprite-game {
+    left: 40px;
+    transform: scale(1.5);
+  }
+}

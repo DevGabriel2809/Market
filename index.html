@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Mercado | Reino dos Custos</title>
+
+  <link rel="stylesheet" href="src/css/style.css" />
+  <link rel="stylesheet" href="src/css/menu.css" />
+  <link rel="stylesheet" href="src/css/game.css" />
+  <link rel="stylesheet" href="src/css/responsive.css" />
+</head>
+
+<body>
+  <main class="app">
+
+    <!-- TELA INICIAL -->
+    <section id="tela-menu" class="screen active menu-screen">
+
+      <div class="menu-overlay"></div>
+
+      <div class="menu-container">
+
+        <section class="menu-content">
+          <span class="game-badge">JOGO ETEPLAP</span>
+
+          <h1>Mercado Medieval</h1>
+          <h2>Reino dos Custos</h2>
+
+          <p>
+            Administre um mercado medieval, compre mercadorias, controle o estoque,
+            defina preços e aprenda contabilidade de custos de forma divertida.
+          </p>
+
+          <div class="menu-buttons">
+            <button id="btn-iniciar" class="btn primary">Iniciar Jogo</button>
+            <button id="btn-como-jogar" class="btn secondary">Como Jogar</button>
+            <button id="btn-creditos" class="btn ghost">Créditos</button>
+          </div>
+        </section>
+
+        <section class="character-selection-card">
+          <h3>Escolha seu gerente</h3>
+
+          <div class="characters-options">
+
+            <button class="character-option selected" data-character="male">
+              <div class="sprite-preview manager-male-idle"></div>
+              <span>Gerente</span>
+            </button>
+
+            <button class="character-option" data-character="female">
+              <div class="sprite-preview manager-female-idle"></div>
+              <span>Gerente F.</span>
+            </button>
+
+          </div>
+
+          <div class="speech-box">
+            <strong>Bem-vindo ao reino!</strong>
+            <span>Seu mercado precisa de boas decisões financeiras.</span>
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+    <!-- COMO JOGAR -->
+    <section id="tela-como-jogar" class="screen tutorial-screen">
+      <div class="modal-card">
+        <h2>Como Jogar</h2>
+
+        <p>
+          Você será responsável por administrar um mercado medieval durante
+          30 dias simulados.
+        </p>
+
+        <ul>
+          <li>Compre mercadorias para abastecer o estoque.</li>
+          <li>Defina o preço de venda de cada produto.</li>
+          <li>Controle custos como aluguel, energia e funcionários.</li>
+          <li>Analise o relatório diário para saber se teve lucro ou prejuízo.</li>
+        </ul>
+
+        <button class="btn primary btn-voltar-menu">Voltar</button>
+      </div>
+    </section>
+
+    <!-- CRÉDITOS -->
+    <section id="tela-creditos" class="screen credits-screen">
+      <div class="modal-card">
+        <h2>Créditos</h2>
+
+        <p>Projeto desenvolvido para o curso técnico de Administração.</p>
+        <p>Tema: Contabilidade e Custos.</p>
+        <p>Jogo: Mercado Tycoon — Reino dos Custos.</p>
+
+        <button class="btn primary btn-voltar-menu">Voltar</button>
+      </div>
+    </section>
+
+    <!-- TELA DO JOGO -->
+    <section id="tela-jogo" class="screen game-screen">
+
+      <header class="game-header">
+        <div>
+          <h2>Mercado Tycoon</h2>
+          <span>Dia <strong id="dia-atual">1</strong>/30</span>
+        </div>
+
+        <div class="cash-box">
+          Caixa:
+          <strong id="caixa-atual">R$ 2.000,00</strong>
+        </div>
+      </header>
+
+      <section class="game-layout">
+
+        <aside class="finance-panel">
+          <h3>Custos Fixos</h3>
+
+          <div class="finance-item">
+            <span>Aluguel da banca</span>
+            <strong>R$ 150,00</strong>
+          </div>
+
+          <div class="finance-item">
+            <span>Iluminação</span>
+            <strong>R$ 50,00</strong>
+          </div>
+
+          <div class="finance-item">
+            <span>Ajudantes</span>
+            <strong>R$ 100,00</strong>
+          </div>
+
+          <div class="finance-total">
+            <span>Total diário</span>
+            <strong>R$ 300,00</strong>
+          </div>
+        </aside>
+
+        <section class="market-area">
+
+          <div class="market-scene">
+            <div id="player-character" class="sprite-game manager-male-idle"></div>
+          </div>
+
+          <div class="products-area">
+            <h3>Mercadorias</h3>
+
+            <div id="lista-produtos" class="products-grid">
+              <!-- Produtos entram pelo JavaScript -->
+            </div>
+          </div>
+
+        </section>
+
+        <aside class="actions-panel">
+          <h3>Ações</h3>
+
+          <button id="btn-passar-dia" class="btn primary full">Passar Dia</button>
+          <button id="btn-relatorio" class="btn secondary full">Ver Relatório</button>
+          <button id="btn-salvar" class="btn ghost full">Salvar Jogo</button>
+        </aside>
+
+      </section>
+
+    </section>
+
+  </main>
+
+  <script src="src/js/gameState.js"></script>
+  <script src="src/js/products.js"></script>
+  <script src="src/js/finance.js"></script>
+  <script src="src/js/ui.js"></script>
+  <script src="src/js/events.js"></script>
+  <script src="src/js/storage.js"></script>
+  <script src="src/js/main.js"></script>
+</body>
+</html>

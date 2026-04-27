@@ -1,0 +1,186 @@
+.menu-screen {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background:
+    linear-gradient(rgba(25, 12, 5, 0.55), rgba(25, 12, 5, 0.85)),
+    url("../assets/images/backgrounds/medieval-market.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.menu-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(243, 201, 105, 0.25), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(100, 60, 25, 0.4), transparent 40%);
+  pointer-events: none;
+}
+
+.menu-container {
+  position: relative;
+  z-index: 2;
+  width: min(1180px, 100%);
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 35px;
+  align-items: center;
+}
+
+.menu-content {
+  background: rgba(41, 24, 13, 0.82);
+  border: 3px solid rgba(243, 201, 105, 0.7);
+  border-radius: 30px;
+  box-shadow: var(--shadow);
+  padding: 45px;
+  backdrop-filter: blur(8px);
+}
+
+.game-badge {
+  display: inline-block;
+  background: rgba(243, 201, 105, 0.18);
+  border: 1px solid rgba(243, 201, 105, 0.6);
+  color: var(--gold);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.menu-content h1 {
+  font-family: 'MedievalSharp', cursive;
+  font-size: clamp(3rem, 7vw, 6rem);
+  color: var(--gold);
+  text-shadow: 5px 5px 0 #3b210d;
+  line-height: 1;
+}
+
+.menu-content h2 {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  color: var(--cream);
+  margin: 10px 0 22px;
+}
+
+.menu-content p {
+  max-width: 680px;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #ffe6b2;
+  margin-bottom: 30px;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.character-selection-card {
+  background: rgba(34, 20, 12, 0.9);
+  border: 3px solid rgba(243, 201, 105, 0.7);
+  border-radius: 30px;
+  box-shadow: var(--shadow);
+  padding: 30px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.character-selection-card h3 {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 2rem;
+  color: var(--gold);
+  margin-bottom: 22px;
+}
+
+.characters-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.character-option {
+  background: linear-gradient(145deg, #3b2416, #21130c);
+  border: 3px solid transparent;
+  border-radius: 22px;
+  min-height: 220px;
+  color: var(--cream);
+  cursor: pointer;
+  transition: 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+
+.character-option:hover {
+  transform: translateY(-5px);
+  border-color: rgba(243, 201, 105, 0.6);
+}
+
+.character-option.selected {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(243, 201, 105, 0.2);
+}
+
+.character-option span {
+  font-weight: 800;
+}
+
+.speech-box {
+  margin-top: 24px;
+  background: #fff1d0;
+  color: #2b1c13;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 8px 0 #b9842d;
+  text-align: left;
+}
+
+.speech-box strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* SPRITES DO MENU */
+
+.sprite-preview {
+  width: 128px;
+  height: 128px;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  transform: scale(1.35);
+  transform-origin: center;
+}
+
+.manager-male-idle {
+  background-image: url("../assets/images/characters/manager/Idle.png");
+  animation: maleIdle 0.9s steps(6) infinite;
+}
+
+.manager-female-idle {
+  background-image: url("../assets/images/characters/manager_f/Idle.png");
+  animation: femaleIdle 0.9s steps(6) infinite;
+}
+
+@keyframes maleIdle {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: -768px 0;
+  }
+}
+
+@keyframes femaleIdle {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: -768px 0;
+  }
+}

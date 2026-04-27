@@ -1,0 +1,128 @@
+.game-screen {
+  flex-direction: column;
+  background:
+  url("../assets/images/backgrounds/medieval-market.png");
+  background-size: contain;
+  background-position: center;
+  padding: 24px;
+}
+
+.game-header {
+  background: rgba(35, 20, 11, 0.9);
+  border: 2px solid rgba(243, 201, 105, 0.6);
+  border-radius: 22px;
+  padding: 20px 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.game-header h2 {
+  font-family: 'MedievalSharp', cursive;
+  color: var(--gold);
+  font-size: 2rem;
+}
+
+.cash-box {
+  background: rgba(243, 201, 105, 0.16);
+  border: 1px solid rgba(243, 201, 105, 0.5);
+  padding: 14px 20px;
+  border-radius: 16px;
+  font-weight: 700;
+}
+
+.cash-box strong {
+  color: var(--gold);
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 240px;
+  gap: 22px;
+  flex: 1;
+}
+
+.finance-panel,
+.actions-panel,
+.products-area {
+  background: rgba(35, 20, 11, 0.9);
+  border: 2px solid rgba(243, 201, 105, 0.55);
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.finance-panel h3,
+.actions-panel h3,
+.products-area h3 {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 1.6rem;
+  color: var(--gold);
+  margin-bottom: 18px;
+}
+
+.finance-item,
+.finance-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 241, 208, 0.15);
+}
+
+.finance-total {
+  margin-top: 12px;
+  border-bottom: none;
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.market-area {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.market-scene {
+  position: relative;
+  min-height: 320px;
+  border-radius: 24px;
+  border: 3px solid rgba(243, 201, 105, 0.65);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.25)),
+    url("../assets/images/backgrounds/medieval-shop.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.sprite-game {
+  position: absolute;
+  bottom: 30px;
+  left: 70px;
+  width: 128px;
+  height: 128px;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  transform: scale(1.9);
+  transform-origin: bottom center;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.actions-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.actions-panel h3 {
+  margin-bottom: 4px;
+}
