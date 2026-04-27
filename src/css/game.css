@@ -2,7 +2,8 @@
   flex-direction: column;
   background:
   url("../assets/images/backgrounds/medieval-market.png");
-  background-size: contain;
+  background-size: cover;
+  background-repeat: no-repeat;
   background-position: center;
   padding: 24px;
 }

@@ -91,7 +91,7 @@ button {
 .modal-card {
   width: min(720px, 92%);
   margin: auto;
-  background: linear-gradient(145deg, #3b2518, #24150e);
+  background: linear-gradient(145deg, #3b2518e4, #24150e);
   border: 3px solid var(--gold-dark);
   border-radius: var(--radius);
   box-shadow: var(--shadow);

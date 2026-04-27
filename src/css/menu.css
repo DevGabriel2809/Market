@@ -1,3 +1,5 @@
+/* BackGrounds */
+
 .menu-screen {
   position: relative;
   align-items: center;
@@ -9,6 +11,19 @@
   background-size: cover;
   background-position: center;
 }
+
+#tela-creditos{
+  background-image: url(../assets/images/backgrounds/ETEPLAP.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#tela-como-jogar{
+  background-image: url(../assets/images/backgrounds/howtoplay.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 
 .menu-overlay {
   position: absolute;
@@ -162,7 +177,7 @@
 
 .manager-female-idle {
   background-image: url("../assets/images/characters/manager_f/Idle.png");
-  animation: femaleIdle 0.9s steps(6) infinite;
+  animation: femaleIdle 0.9s steps(5) infinite;
 }
 
 @keyframes maleIdle {
@@ -181,6 +196,6 @@
   }
 
   to {
-    background-position: -768px 0;
+    background-position: -640px 0;
   }
 }
