@@ -18,11 +18,7 @@ const tituloJogo = document.getElementById("titulo-jogo");
 
 function mostrarTela(tela) {
   const telas = document.querySelectorAll(".screen");
-
-  telas.forEach((item) => {
-    item.classList.remove("active");
-  });
-
+  telas.forEach((item) => item.classList.remove("active"));
   tela.classList.add("active");
 }
 
@@ -40,8 +36,9 @@ btnIniciar.addEventListener("click", () => {
   }
 
   erroNome.style.display = "none";
-
   gameState.nomeJogador = nome;
+
+  tituloJogo.textContent = `Mercado de ${nome}`;
 
   mostrarTela(telaJogo);
 });
@@ -71,7 +68,25 @@ inputNome.addEventListener("input", () => {
 });
 
 // ===============================
-// SELECIONAR GERENTE
+// MENUS RECOLHÍVEIS
+// ===============================
+
+const btnFinanceToggle = document.getElementById("btn-finance-toggle");
+const btnActionsToggle = document.getElementById("btn-actions-toggle");
+
+const financePanel = document.querySelector(".finance-panel");
+const actionsPanel = document.querySelector(".actions-panel");
+
+btnFinanceToggle.addEventListener("click", () => {
+  financePanel.classList.toggle("open");
+});
+
+btnActionsToggle.addEventListener("click", () => {
+  actionsPanel.classList.toggle("open");
+});
+
+// ===============================
+// SELEÇÃO DE PERSONAGEM
 // ===============================
 
 const botoesPersonagem = document.querySelectorAll(".character-option");
@@ -97,19 +112,15 @@ botoesPersonagem.forEach((botao) => {
 });
 
 // ===============================
-// MOVIMENTAÇÃO DO GERENTE
+// MOVIMENTAÇÃO + CÂMERA
 // ===============================
 
-// ===============================
-// MOVIMENTAÇÃO DO GERENTE
-// ===============================
-
-const marketScene = document.getElementById("market-scene");
+const world = document.getElementById("world");
 const player = document.getElementById("player-character");
 
-let playerX = 120;
-let playerY = 260;
-let playerSpeed = 4;
+let playerX = 600;
+let playerY = 400;
+let speed = 4;
 
 const keysPressed = {
   ArrowUp: false,
@@ -122,31 +133,7 @@ const keysPressed = {
   d: false
 };
 
-function aplicarAnimacaoParado() {
-  player.classList.remove(
-    "manager-male-walk",
-    "manager-female-walk"
-  );
-
-  if (personagemSelecionado === "male") {
-    player.classList.add("manager-male-idle");
-  } else {
-    player.classList.add("manager-female-idle");
-  }
-}
-
-function aplicarAnimacaoAndando() {
-  player.classList.remove(
-    "manager-male-idle",
-    "manager-female-idle"
-  );
-
-  if (personagemSelecionado === "male") {
-    player.classList.add("manager-male-walk");
-  } else {
-    player.classList.add("manager-female-walk");
-  }
-}
+// INPUT TECLADO
 
 document.addEventListener("keydown", (event) => {
   if (event.key in keysPressed) {
@@ -160,51 +147,74 @@ document.addEventListener("keyup", (event) => {
   }
 });
 
+// ANIMAÇÕES
+
+function aplicarAnimacaoParado() {
+  player.classList.remove("manager-male-walk", "manager-female-walk");
+
+  if (personagemSelecionado === "male") {
+    player.classList.add("manager-male-idle");
+  } else {
+    player.classList.add("manager-female-idle");
+  }
+}
+
+function aplicarAnimacaoAndando() {
+  player.classList.remove("manager-male-idle", "manager-female-idle");
+
+  if (personagemSelecionado === "male") {
+    player.classList.add("manager-male-walk");
+  } else {
+    player.classList.add("manager-female-walk");
+  }
+}
+
+// LOOP PRINCIPAL
+
 function moverPersonagem() {
-  const sceneWidth = marketScene.clientWidth;
-  const sceneHeight = marketScene.clientHeight;
-
-  const playerWidth = 128;
-  const playerHeight = 128;
-
   let moving = false;
 
   if (keysPressed.ArrowUp || keysPressed.w) {
-    playerY -= playerSpeed;
+    playerY -= speed;
     moving = true;
   }
 
   if (keysPressed.ArrowDown || keysPressed.s) {
-    playerY += playerSpeed;
+    playerY += speed;
     moving = true;
   }
 
   if (keysPressed.ArrowLeft || keysPressed.a) {
-    playerX -= playerSpeed;
-    player.style.transform = "scale(1.15) scaleX(-1)";
+    playerX -= speed;
+    player.style.transform = "translate(-50%, -50%) scale(1.05) scaleX(-1)";
     moving = true;
   }
 
   if (keysPressed.ArrowRight || keysPressed.d) {
-    playerX += playerSpeed;
-    player.style.transform = "scale(1.15) scaleX(1)";
+    playerX += speed;
+    player.style.transform = "translate(-50%, -50%) scale(1.05) scaleX(1)";
     moving = true;
   }
 
+  // limites do mapa
+  const mapWidth = 1400;
+  const mapHeight = 800;
+
   if (playerX < 0) playerX = 0;
   if (playerY < 0) playerY = 0;
+  if (playerX > mapWidth) playerX = mapWidth;
+  if (playerY > mapHeight) playerY = mapHeight;
 
-  if (playerX > sceneWidth - playerWidth) {
-    playerX = sceneWidth - playerWidth;
-  }
+  // câmera
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
 
-  if (playerY > sceneHeight - playerHeight) {
-    playerY = sceneHeight - playerHeight;
-  }
+  const offsetX = screenWidth / 2 - playerX;
+  const offsetY = screenHeight / 2 - playerY;
 
-  player.style.left = `${playerX}px`;
-  player.style.top = `${playerY}px`;
+  world.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
 
+  // animação
   if (moving) {
     aplicarAnimacaoAndando();
   } else {
@@ -214,4 +224,5 @@ function moverPersonagem() {
   requestAnimationFrame(moverPersonagem);
 }
 
+// START
 moverPersonagem();

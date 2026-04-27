@@ -125,12 +125,19 @@
           <h2>Mercado Tycoon</h2>
           <span>Dia <strong id="dia-atual">1</strong>/30</span>
         </div>
-
         <div class="cash-box">
           Caixa:
           <strong id="caixa-atual">R$ 2.000,00</strong>
         </div>
       </header>
+
+      <button id="btn-finance-toggle" class="hud-toggle finance-toggle">
+        ☰ Custos
+      </button>
+
+      <button id="btn-actions-toggle" class="hud-toggle actions-toggle">
+        ☰ Ações
+      </button>
 
       <section class="game-layout">
 
@@ -161,8 +168,17 @@
         <section class="market-area">
 
           <div class="market-scene" id="market-scene">
-            <div id="player-character" class="sprite-game manager-male-idle"></div>
+  
+          <div id="world">
+            <img 
+              src="src/assets/images/backgrounds/medieval-shop.png" 
+              id="map"
+            />
           </div>
+
+          <div id="player-character" class="sprite-game manager-male-idle"></div>
+
+            </div>
 
           <div class="products-area">
             <h3>Mercadorias</h3>
