@@ -1,49 +1,65 @@
 .game-screen {
-  flex-direction: column;
+  min-height: 100vh;
   background:
-  url("../assets/images/backgrounds/medieval-market.png");
+    linear-gradient(rgba(12, 7, 4, 0.72), rgba(12, 7, 4, 0.88)),
+    url("../assets/images/backgrounds/medieval-market.png");
   background-size: cover;
-  background-repeat: no-repeat;
   background-position: center;
-  padding: 24px;
+  padding: 18px;
+  overflow: hidden;
+  flex-direction: column;
 }
 
+/* HEADER SUPERIOR */
+
 .game-header {
-  background: rgba(35, 20, 11, 0.9);
-  border: 2px solid rgba(243, 201, 105, 0.6);
+  height: 96px;
+  background: rgba(35, 20, 11, 0.92);
+  border: 2px solid rgba(243, 201, 105, 0.65);
   border-radius: 22px;
-  padding: 20px 26px;
+  padding: 18px 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: var(--shadow);
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .game-header h2 {
   font-family: 'MedievalSharp', cursive;
   color: var(--gold);
-  font-size: 2rem;
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.game-header span {
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .cash-box {
   background: rgba(243, 201, 105, 0.16);
-  border: 1px solid rgba(243, 201, 105, 0.5);
-  padding: 14px 20px;
-  border-radius: 16px;
-  font-weight: 700;
+  border: 1px solid rgba(243, 201, 105, 0.55);
+  padding: 16px 24px;
+  border-radius: 18px;
+  font-size: 1.05rem;
+  font-weight: 800;
 }
 
 .cash-box strong {
   color: var(--gold);
 }
 
+/* LAYOUT PRINCIPAL */
+
 .game-layout {
   display: grid;
-  grid-template-columns: 280px 1fr 240px;
-  gap: 22px;
-  flex: 1;
+  grid-template-columns: 260px minmax(600px, 1fr) 240px;
+  gap: 16px;
+  height: calc(100vh - 130px);
 }
+
+/* PAINÉIS */
 
 .finance-panel,
 .actions-panel,
@@ -53,70 +69,112 @@
   border-radius: 22px;
   padding: 22px;
   box-shadow: var(--shadow);
+  backdrop-filter: blur(4px);
+}
+
+.finance-panel,
+.actions-panel {
+  height: 100%;
 }
 
 .finance-panel h3,
 .actions-panel h3,
 .products-area h3 {
   font-family: 'MedievalSharp', cursive;
-  font-size: 1.6rem;
+  font-size: 1.9rem;
   color: var(--gold);
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 
 .finance-item,
 .finance-total {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  padding: 14px 0;
+  padding: 16px 0;
   border-bottom: 1px solid rgba(255, 241, 208, 0.15);
+  font-size: 0.98rem;
+}
+
+.finance-item strong,
+.finance-total strong {
+  color: var(--cream);
+  white-space: nowrap;
 }
 
 .finance-total {
-  margin-top: 12px;
+  margin-top: 14px;
   border-bottom: none;
   color: var(--gold);
-  font-weight: 800;
+  font-weight: 900;
 }
 
+.finance-total strong {
+  color: var(--gold);
+}
+
+/* ÁREA CENTRAL DO MERCADO */
+
 .market-area {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr 210px;
+  gap: 16px;
+  min-width: 0;
 }
 
 .market-scene {
   position: relative;
-  min-height: 320px;
+  width: 100%;
+  height: 100%;
+  min-height: 430px;
   border-radius: 24px;
-  border: 3px solid rgba(243, 201, 105, 0.65);
+  border: 3px solid rgba(243, 201, 105, 0.75);
   overflow: hidden;
   box-shadow: var(--shadow);
+
   background:
-    linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.25)),
+    linear-gradient(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.18)),
     url("../assets/images/backgrounds/medieval-shop.png");
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 }
+
+/* PERSONAGEM */
 
 .sprite-game {
   position: absolute;
-  bottom: 30px;
-  left: 70px;
   width: 128px;
   height: 128px;
+  left: 100px;
+  top: 260px;
   background-repeat: no-repeat;
   image-rendering: pixelated;
-  transform: scale(1.9);
-  transform-origin: bottom center;
+  transform: scale(1.05);
+  transform-origin: center bottom;
+  z-index: 10;
+}
+
+/* MERCADORIAS */
+
+.products-area {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.products-area h3 {
+  margin-bottom: 14px;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
 }
+
+/* AÇÕES */
 
 .actions-panel {
   display: flex;
@@ -125,5 +183,40 @@
 }
 
 .actions-panel h3 {
-  margin-bottom: 4px;
+  margin-bottom: 12px;
+}
+
+.actions-panel .btn {
+  min-height: 66px;
+  font-size: 1.05rem;
+}
+
+.manager-male-walk {
+  background-image: url("../assets/images/characters/manager/Walk.png");
+  animation: maleWalk 0.7s steps(6) infinite;
+}
+
+.manager-female-walk {
+  background-image: url("../assets/images/characters/manager_f/Walk.png");
+  animation: femaleWalk 0.7s steps(6) infinite;
+}
+
+@keyframes maleWalk {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: -768px 0;
+  }
+}
+
+@keyframes femaleWalk {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: -768px 0;
+  }
 }

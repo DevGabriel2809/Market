@@ -66,14 +66,14 @@
 
 .menu-content h1 {
   font-family: 'MedievalSharp', cursive;
-  font-size: clamp(3rem, 7vw, 6rem);
+  font-size: clamp(2.5rem, 7vw, 4rem);
   color: var(--gold);
   text-shadow: 5px 5px 0 #3b210d;
   line-height: 1;
 }
 
 .menu-content h2 {
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-size: clamp(1.4rem, 3vw, 2rem);
   color: var(--cream);
   margin: 10px 0 22px;
 }
@@ -90,6 +90,40 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+}
+
+.player-input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.player-input-area label {
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.player-input-area input {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 2px solid rgba(243, 201, 105, 0.4);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--cream);
+  font-size: 1rem;
+  outline: none;
+  transition: 0.2s;
+}
+
+.player-input-area input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(243, 201, 105, 0.2);
+}
+
+.input-error {
+  font-size: 0.85rem;
+  color: var(--red);
+  display: none;
 }
 
 .character-selection-card {
