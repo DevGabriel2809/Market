@@ -1,0 +1,70 @@
+{
+    "activeFile": "src/assets/maps/MAPA.tsj",
+    "expandedProjectPaths": [
+        "src",
+        "."
+    ],
+    "fileStates": {
+        "Gemini_Generated_Image_.tsx": {
+            "scaleInDock": 1
+        },
+        "src/MAPA.tmx": {
+            "scale": 0.3495028409090909,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 703.8569396464134,
+                "y": 383.40174761227394
+            }
+        },
+        "src/MAPA.tsj": {
+            "scaleInDock": 0.125,
+            "scaleInEditor": 0.75
+        },
+        "src/assets/maps/MAPA.tsj": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "src/assets/maps/mapa.tmx": {
+            "scale": 0.25,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1136,
+                "y": 776
+            }
+        },
+        "src/mapa.json": {
+            "scale": 0.75,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 1577.3333333333335,
+                "y": 429.3333333333333
+            }
+        },
+        "src/mapa.tmx": {
+            "scale": 0.25,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1668,
+                "y": 1084
+            }
+        }
+    },
+    "last.imagePath": "C:/Users/MADV/Documents/Projetos/Market/src/assets/maps",
+    "map.height": 55,
+    "map.lastUsedFormat": "json",
+    "map.width": 70,
+    "openFiles": [
+        "src/assets/maps/mapa.tmx",
+        "src/assets/maps/MAPA.tsj"
+    ],
+    "project": "sem título.tiled-project",
+    "recentFiles": [
+        "src/assets/maps/mapa.tmx",
+        "src/assets/maps/MAPA.tsj",
+        "src/mapa.json",
+        "src/mapa.tmx",
+        "src/MAPA.tsj",
+        "src/MAPA.tmx"
+    ],
+    "tileset.lastUsedFormat": "json"
+}

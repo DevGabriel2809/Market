@@ -1,0 +1,14 @@
+{ "columns":70,
+ "image":"assets\/maps\/MAPA.png",
+ "imageheight":1760,
+ "imagewidth":2240,
+ "margin":0,
+ "name":"MAPA",
+ "spacing":0,
+ "tilecount":3850,
+ "tiledversion":"1.12.1",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}

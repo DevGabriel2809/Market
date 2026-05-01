@@ -32,26 +32,13 @@
 }
 
 #map {
-  width: 1400px; /* pode ajustar */
-  height: auto;
+  display: block;
   image-rendering: pixelated;
 }
 
 /* PERSONAGEM FIXO NO CENTRO */
 
-.sprite-game {
-  position: absolute;
-  width: 128px;
-  height: 128px;
 
-  left: 50%;
-  top: 50%;
-
-  transform: translate(-50%, -50%) scale(1.05);
-  transform-origin: center bottom;
-
-  z-index: 10;
-}
 
 /* PERSONAGEM */
 
@@ -63,32 +50,44 @@
   top: 50%;
   background-repeat: no-repeat;
   image-rendering: pixelated;
-  transform: scale(1.9);
+  transform: translate(-50%, -100%) scale(1.05);
   transform-origin: center bottom;
   z-index: 5;
 }
 
+#player-shadow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46px;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 50%;
+  transform: translate(-50%, -10%);
+  filter: blur(2px);
+  z-index: 4;
+  pointer-events: none;
+}
+
+
 /*  PAINÉIS SOBRE O MAPA */
 
 .game-header {
-  position: fixed;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  z-index: 20;
-
-  height: 75px;
-  background: rgba(35, 20, 11, 0.82);
-  border: 2px solid rgba(243, 201, 105, 0.65);
-  border-radius: 22px;
-  padding: 18px 28px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(5px);
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    z-index: 20;
+    height: 75px;
+    /* background: rgba(35, 20, 11, 0.82); */
+    /* border: 2px solid rgba(243, 201, 105, 0.65); */
+    border-radius: 22px;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* box-shadow: var(--shadow); */
+    /* backdrop-filter: blur(5px); */
 }
 
 .game-header h2 {
