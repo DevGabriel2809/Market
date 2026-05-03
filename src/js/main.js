@@ -1,3 +1,7 @@
+// ======================================================
+// 1. ELEMENTOS DAS TELAS
+// ======================================================
+
 const telaMenu = document.getElementById("tela-menu");
 const telaComoJogar = document.getElementById("tela-como-jogar");
 const telaCreditos = document.getElementById("tela-creditos");
@@ -12,18 +16,40 @@ const inputNome = document.getElementById("player-name");
 const erroNome = document.getElementById("name-error");
 const tituloJogo = document.getElementById("titulo-jogo");
 
+
+// ======================================================
+// 2. ELEMENTOS DO MAPA E DO PLAYER
+// ======================================================
+
 const world = document.getElementById("world");
 const playerElement = document.getElementById("player-character");
 const mapElement = document.getElementById("map");
+
+// Overlay opcional de decoração acima do player
+const foregroundWorld = document.getElementById("foreground-world");
+const mapOverlayElement = document.getElementById("map-overlay");
+
+
+// ======================================================
+// 3. CONFIGURAÇÕES INICIAIS DO PLAYER
+// ======================================================
 
 let playerX = 600;
 let playerY = 400;
 let speed = 4.5;
 
-let mapWidth = 2240;
-let mapHeight = 1760;
+let ultimaDirecao = "down";
+let personagemSelecionado = "male";
 
+let animacaoAtual = "";
+let transformAtual = "";
 
+// Escala visual do personagem.
+// Como o sprite tem 128px de altura, 128 * 0.56 ≈ 72px.
+const PLAYER_SCALE = 0.86;
+
+// Hitbox real do player.
+// O ponto principal do personagem continua sendo o "pé".
 window.player = {
   get x() { return playerX - 18; },
   get y() { return playerY - 12; },
@@ -33,10 +59,23 @@ window.player = {
   height: 24
 };
 
+
+// ======================================================
+// 4. CONFIGURAÇÕES DO MAPA
+// ======================================================
+
+let mapWidth = 2240;
+let mapHeight = 1760;
+
 window.mapaObjetos = [];
 window.objetosInteracao = [];
 window.objetosChao = [];
 window.objetosColisao = [];
+
+
+// ======================================================
+// 5. CONTROLE DE TELAS
+// ======================================================
 
 function mostrarTela(tela) {
   document.querySelectorAll(".screen").forEach((item) => {
@@ -57,6 +96,10 @@ btnIniciar.addEventListener("click", () => {
 
   erroNome.style.display = "none";
   gameState.nomeJogador = nome;
+
+  if (tituloJogo) {
+    tituloJogo.textContent = `Mercado de ${nome}`;
+  }
 
   mostrarTela(telaJogo);
 });
@@ -81,23 +124,35 @@ inputNome.addEventListener("input", () => {
   }
 });
 
+
+// ======================================================
+// 6. PAINÉIS LATERAIS / HUD
+// ======================================================
+
 const btnFinanceToggle = document.getElementById("btn-finance-toggle");
 const btnActionsToggle = document.getElementById("btn-actions-toggle");
 
 const financePanel = document.querySelector(".finance-panel");
 const actionsPanel = document.querySelector(".actions-panel");
 
-btnFinanceToggle.addEventListener("click", () => {
-  financePanel.classList.toggle("open");
-});
+if (btnFinanceToggle && financePanel) {
+  btnFinanceToggle.addEventListener("click", () => {
+    financePanel.classList.toggle("open");
+  });
+}
 
-btnActionsToggle.addEventListener("click", () => {
-  actionsPanel.classList.toggle("open");
-});
+if (btnActionsToggle && actionsPanel) {
+  btnActionsToggle.addEventListener("click", () => {
+    actionsPanel.classList.toggle("open");
+  });
+}
+
+
+// ======================================================
+// 7. SELEÇÃO DE PERSONAGEM
+// ======================================================
 
 const botoesPersonagem = document.querySelectorAll(".character-option");
-
-let personagemSelecionado = "male";
 
 botoesPersonagem.forEach((botao) => {
   botao.addEventListener("click", () => {
@@ -106,15 +161,20 @@ botoesPersonagem.forEach((botao) => {
     botao.classList.add("selected");
     personagemSelecionado = botao.dataset.character;
 
-    playerElement.classList.remove("manager-male-idle", "manager-female-idle");
+    ultimaDirecao = "down";
 
-    if (personagemSelecionado === "male") {
-      playerElement.classList.add("manager-male-idle");
-    } else {
-      playerElement.classList.add("manager-female-idle");
-    }
+    // Força atualizar sprite ao trocar personagem
+    animacaoAtual = "";
+    transformAtual = "";
+
+    aplicarAnimacaoParado();
   });
 });
+
+
+// ======================================================
+// 8. TECLAS PRESSIONADAS
+// ======================================================
 
 const keysPressed = {
   ArrowUp: false,
@@ -139,25 +199,147 @@ document.addEventListener("keyup", (event) => {
   }
 });
 
+
+// ======================================================
+// 9. TRANSFORMAÇÃO VISUAL DO PERSONAGEM
+// ======================================================
+
+function definirTransform(transform) {
+  if (transformAtual === transform) return;
+
+  playerElement.style.transform = transform;
+  transformAtual = transform;
+}
+
+function aplicarTransformPadrao() {
+  definirTransform(`translate(-50%, -100%) scale(${PLAYER_SCALE})`);
+}
+
+function aplicarTransformLado(direcao) {
+  if (direcao === "left") {
+    definirTransform(`translate(-50%, -100%) scale(${PLAYER_SCALE}) scaleX(-1)`);
+    return;
+  }
+
+  definirTransform(`translate(-50%, -100%) scale(${PLAYER_SCALE}) scaleX(1)`);
+}
+
+
+// ======================================================
+// 10. ANIMAÇÕES DO PERSONAGEM
+// ======================================================
+
+function definirAnimacao(classe) {
+  if (animacaoAtual === classe) return;
+
+  playerElement.className = "sprite-game";
+  playerElement.classList.add(classe);
+
+  animacaoAtual = classe;
+}
+
 function aplicarAnimacaoParado() {
-  playerElement.classList.remove("manager-male-walk", "manager-female-walk");
-
   if (personagemSelecionado === "male") {
-    playerElement.classList.add("manager-male-idle");
-  } else {
-    playerElement.classList.add("manager-female-idle");
+    if (ultimaDirecao === "up") {
+      definirAnimacao("manager-male-idle-back");
+      aplicarTransformPadrao();
+      return;
+    }
+
+    if (ultimaDirecao === "down") {
+      definirAnimacao("manager-male-idle-front");
+      aplicarTransformPadrao();
+      return;
+    }
+
+    if (ultimaDirecao === "left") {
+      definirAnimacao("manager-male-idle-side");
+      aplicarTransformLado("left");
+      return;
+    }
+
+    definirAnimacao("manager-male-idle-side");
+    aplicarTransformLado("right");
+    return;
+  }
+
+  if (personagemSelecionado === "female") {
+    if (ultimaDirecao === "up") {
+      definirAnimacao("manager-female-idle-back");
+      aplicarTransformPadrao();
+      return;
+    }
+
+    if (ultimaDirecao === "down") {
+      definirAnimacao("manager-female-idle-front");
+      aplicarTransformPadrao();
+      return;
+    }
+
+    if (ultimaDirecao === "left") {
+      definirAnimacao("manager-female-idle-side");
+      aplicarTransformLado("left");
+      return;
+    }
+
+    definirAnimacao("manager-female-idle-side");
+    aplicarTransformLado("right");
   }
 }
 
-function aplicarAnimacaoAndando() {
-  playerElement.classList.remove("manager-male-idle", "manager-female-idle");
-
+function aplicarAnimacaoAndando(direcao) {
   if (personagemSelecionado === "male") {
-    playerElement.classList.add("manager-male-walk");
-  } else {
-    playerElement.classList.add("manager-female-walk");
+    if (direcao === "up") {
+      definirAnimacao("manager-male-walk-back");
+      aplicarTransformPadrao();
+      return;
+    }
+
+    if (direcao === "down") {
+      definirAnimacao("manager-male-walk-front");
+      aplicarTransformPadrao();
+      return;
+    }
+
+    if (direcao === "left") {
+      definirAnimacao("manager-male-walk-side");
+      aplicarTransformLado("left");
+      return;
+    }
+
+    definirAnimacao("manager-male-walk-side");
+    aplicarTransformLado("right");
+    return;
+  }
+
+  if (personagemSelecionado === "female") {
+    if (direcao === "up") {
+      definirAnimacao("manager-female-walk-back");
+      aplicarTransformPadrao();
+      return;
+    }
+
+    if (direcao === "down") {
+      definirAnimacao("manager-female-walk-front");
+      aplicarTransformPadrao();
+      return;
+    }
+
+    if (direcao === "left") {
+      definirAnimacao("manager-female-walk-side");
+      aplicarTransformLado("left");
+      return;
+    }
+
+    definirAnimacao("manager-female-walk-side");
+    aplicarTransformLado("right");
   }
 }
+
+
+// ======================================================
+// 11. COLISÃO
+// ======================================================
 
 function retangulosColidem(a, b) {
   return (
@@ -181,34 +363,67 @@ function temColisao(x, y) {
   });
 }
 
+
+// ======================================================
+// 12. MOVIMENTO DO PERSONAGEM
+// ======================================================
+
 function moverPersonagem(deltaTime = 16) {
   let moving = false;
+  let direcaoMovimento = null;
 
   let novoX = playerX;
   let novoY = playerY;
 
-  if (keysPressed.ArrowUp || keysPressed.w) {
+  const cima = keysPressed.ArrowUp || keysPressed.w;
+  const baixo = keysPressed.ArrowDown || keysPressed.s;
+  const esquerda = keysPressed.ArrowLeft || keysPressed.a;
+  const direita = keysPressed.ArrowRight || keysPressed.d;
+
+  // CIMA
+  if (cima) {
     novoY -= speed;
     moving = true;
+    direcaoMovimento = "up";
+    ultimaDirecao = "up";
   }
 
-  if (keysPressed.ArrowDown || keysPressed.s) {
+  // BAIXO
+  if (baixo) {
     novoY += speed;
     moving = true;
+    direcaoMovimento = "down";
+    ultimaDirecao = "down";
   }
 
-  if (keysPressed.ArrowLeft || keysPressed.a) {
+  // ESQUERDA
+  if (esquerda) {
     novoX -= speed;
-    playerElement.style.transform = "translate(-50%, -100%) scale(1.05) scaleX(-1)";
     moving = true;
+    direcaoMovimento = "left";
+    ultimaDirecao = "left";
   }
 
-  if (keysPressed.ArrowRight || keysPressed.d) {
+  // DIREITA
+  if (direita) {
     novoX += speed;
-    playerElement.style.transform = "translate(-50%, -100%) scale(1.05) scaleX(1)";
     moving = true;
+    direcaoMovimento = "right";
+    ultimaDirecao = "right";
   }
 
+  // Se andar na diagonal, prioriza visual lateral
+  if (moving && esquerda) {
+    direcaoMovimento = "left";
+    ultimaDirecao = "left";
+  }
+
+  if (moving && direita) {
+    direcaoMovimento = "right";
+    ultimaDirecao = "right";
+  }
+
+  // Aplica colisão separada por eixo
   if (!temColisao(novoX, playerY)) {
     playerX = novoX;
   }
@@ -217,18 +432,22 @@ function moverPersonagem(deltaTime = 16) {
     playerY = novoY;
   }
 
+  // Limites do mapa
   if (playerX < 0) playerX = 0;
   if (playerY < 0) playerY = 0;
-  if (playerX > mapWidth - window.player.width) playerX = mapWidth - window.player.width;
-  if (playerY > mapHeight - window.player.height) playerY = mapHeight - window.player.height;
 
-  const offsetX = window.innerWidth / 2 - playerX;
-  const offsetY = window.innerHeight / 2 - playerY;
+  if (playerX > mapWidth - window.player.width) {
+    playerX = mapWidth - window.player.width;
+  }
 
-  world.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+  if (playerY > mapHeight - window.player.height) {
+    playerY = mapHeight - window.player.height;
+  }
+
+  atualizarCamera();
 
   if (moving) {
-    aplicarAnimacaoAndando();
+    aplicarAnimacaoAndando(direcaoMovimento);
 
     if (typeof atualizarSomPasso === "function") {
       atualizarSomPasso(deltaTime);
@@ -237,6 +456,29 @@ function moverPersonagem(deltaTime = 16) {
     aplicarAnimacaoParado();
   }
 }
+
+
+// ======================================================
+// 13. CÂMERA
+// ======================================================
+
+function atualizarCamera() {
+  const offsetX = window.innerWidth / 2 - playerX;
+  const offsetY = window.innerHeight / 2 - playerY;
+
+  const cameraTransform = `translate(${offsetX}px, ${offsetY}px)`;
+
+  world.style.transform = cameraTransform;
+
+  if (foregroundWorld) {
+    foregroundWorld.style.transform = cameraTransform;
+  }
+}
+
+
+// ======================================================
+// 14. CARREGAR MAPA JSON DO TILED
+// ======================================================
 
 function carregarMapa() {
   fetch("src/assets/maps/mapa.json")
@@ -248,6 +490,11 @@ function carregarMapa() {
       if (mapElement) {
         mapElement.style.width = `${mapWidth}px`;
         mapElement.style.height = `${mapHeight}px`;
+      }
+
+      if (mapOverlayElement) {
+        mapOverlayElement.style.width = `${mapWidth}px`;
+        mapOverlayElement.style.height = `${mapHeight}px`;
       }
 
       data.layers.forEach((layer) => {
@@ -268,8 +515,8 @@ function carregarMapa() {
         }
       });
 
-      // objetos de interação também bloqueiam passagem,
-      // exceto portas, porque o player precisa encostar/interagir nelas
+      // Objetos de interação também bloqueiam passagem,
+      // exceto portas, porque o player precisa encostar nelas.
       const interacoesQueBloqueiam = window.objetosInteracao.filter((obj) => {
         return obj.name !== "porta_balcao" && obj.name !== "porta_saida";
       });
@@ -285,14 +532,16 @@ function carregarMapa() {
         colisao: window.objetosColisao,
         todos: window.mapaObjetos
       });
-
-
     })
     .catch((erro) => {
       console.error("Erro ao carregar mapa:", erro);
     });
-
 }
+
+
+// ======================================================
+// 15. LOOP PRINCIPAL DO JOGO
+// ======================================================
 
 let ultimoTempo = performance.now();
 
@@ -305,5 +554,11 @@ function gameLoop(tempoAtual) {
   requestAnimationFrame(gameLoop);
 }
 
+
+// ======================================================
+// 16. INICIAR JOGO
+// ======================================================
+
 carregarMapa();
+aplicarAnimacaoParado();
 requestAnimationFrame(gameLoop);

@@ -161,7 +161,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 22px;
+  gap: 55px;
 }
 
 .character-option:hover {
@@ -200,17 +200,17 @@
   height: 128px;
   background-repeat: no-repeat;
   image-rendering: pixelated;
-  transform: scale(1.35);
+  transform: scale(1.85);
   transform-origin: center;
 }
 
 .manager-male-idle {
-  background-image: url("../assets/images/characters/manager/Idle.png");
+  background-image: url("../assets/images/characters/manager/male-idle.png");
   animation: maleIdle 0.9s steps(6) infinite;
 }
 
 .manager-female-idle {
-  background-image: url("../assets/images/characters/manager_f/Idle.png");
+  background-image: url("../assets/images/characters/manager_f/female-idle.png");
   animation: femaleIdle 0.9s steps(5) infinite;
 }
 

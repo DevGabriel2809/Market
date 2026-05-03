@@ -1,3 +1,7 @@
+/* ======================================================
+   1. TELA PRINCIPAL DO JOGO
+====================================================== */
+
 .game-screen {
   position: relative;
   min-height: 100vh;
@@ -8,7 +12,10 @@
   flex-direction: column;
 }
 
-/* MAPA OCUPANDO A TELA */
+
+/* ======================================================
+   2. ÁREA DO MAPA
+====================================================== */
 
 .market-area {
   position: fixed;
@@ -23,12 +30,16 @@
   background: black;
 }
 
-/* MUNDO (MAPA) */
+
+/* ======================================================
+   3. MUNDO / MAPA BASE
+====================================================== */
 
 #world {
   position: absolute;
   left: 0;
   top: 0;
+  z-index: 1;
 }
 
 #map {
@@ -36,58 +47,62 @@
   image-rendering: pixelated;
 }
 
-/* PERSONAGEM FIXO NO CENTRO */
 
+/* ======================================================
+   4. OVERLAY / DECORAÇÃO ACIMA DO PLAYER
+====================================================== */
 
-
-/* PERSONAGEM */
-
-.sprite-game {
+#foreground-world {
   position: absolute;
-  width: 128px;
-  height: 128px;
-  left: 50%;
-  top: 50%;
-  background-repeat: no-repeat;
-  image-rendering: pixelated;
-  transform: translate(-50%, -100%) scale(1.05);
-  transform-origin: center bottom;
-  z-index: 5;
+  left: 0;
+  top: 0;
+  z-index: 8;
+  pointer-events: none;
 }
+
+#map-overlay {
+  display: block;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+
+/* ======================================================
+   5. SOMBRA DO PERSONAGEM
+====================================================== */
 
 #player-shadow {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 46px;
+  width: 68px;
   height: 18px;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.52);
   border-radius: 50%;
-  transform: translate(-50%, -10%);
+  transform: translate(-50%, -18%);
   filter: blur(2px);
   z-index: 4;
   pointer-events: none;
 }
 
 
-/*  PAINÉIS SOBRE O MAPA */
+/* ======================================================
+   6. CABEÇALHO DO JOGO
+====================================================== */
 
 .game-header {
-    position: fixed;
-    top: 5px;
-    left: 5px;
-    right: 5px;
-    z-index: 20;
-    height: 75px;
-    /* background: rgba(35, 20, 11, 0.82); */
-    /* border: 2px solid rgba(243, 201, 105, 0.65); */
-    border-radius: 22px;
-    padding: 18px 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    /* box-shadow: var(--shadow); */
-    /* backdrop-filter: blur(5px); */
+  position: fixed;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  z-index: 20;
+  height: 75px;
+  border-radius: 22px;
+  padding: 18px 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .game-header h2 {
@@ -115,7 +130,10 @@
   color: var(--gold);
 }
 
-/* O GRID NÃO CONTROLA MAIS O MAPA */
+
+/* ======================================================
+   7. LAYOUT GERAL DO HUD
+====================================================== */
 
 .game-layout {
   position: fixed;
@@ -124,11 +142,44 @@
   pointer-events: none;
 }
 
-/* PAINEL DE CUSTOS */
+
+/* ======================================================
+   8. BOTÕES DE ABRIR PAINÉIS
+====================================================== */
+
+.hud-toggle {
+  position: fixed;
+  top: 85px;
+  z-index: 35;
+
+  border: 2px solid rgba(243, 201, 105, 0.7);
+  background: rgba(35, 20, 11, 0.9);
+  color: var(--gold);
+  border-radius: 16px;
+  padding: 14px 18px;
+
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(5px);
+}
+
+.finance-toggle {
+  left: 5px;
+}
+
+.actions-toggle {
+  right: 5px;
+}
+
+
+/* ======================================================
+   9. PAINEL DE CUSTOS
+====================================================== */
 
 .finance-panel {
   position: fixed;
-  left: 0px;
+  left: 0;
   top: 140px;
   width: 300px;
   height: calc(100vh - 210px);
@@ -151,36 +202,15 @@
   transform: translateX(0);
   opacity: 1;
 }
-/* HUD TOGGLES */
 
-.hud-toggle {
-  position: fixed;
-  top: 85px;
-  z-index: 35;
-  border: 2px solid rgba(243, 201, 105, 0.7);
-  background: rgba(35, 20, 11, 0.9);
-  color: var(--gold);
-  border-radius: 16px;
-  padding: 14px 18px;
-  font-weight: 900;
-  cursor: pointer;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(5px);
-}
 
-.finance-toggle {
-  left: 5px;
-}
-
-.actions-toggle {
-  right: 5px;
-}
-
-/* PAINEL DE AÇÕES */
+/* ======================================================
+   10. PAINEL DE AÇÕES
+====================================================== */
 
 .actions-panel {
   position: fixed;
-  right: 0px;
+  right: 0;
   top: 140px;
   width: 270px;
   height: calc(100vh - 210px);
@@ -208,7 +238,10 @@
   opacity: 1;
 }
 
-/* MERCADORIAS COMO HUD INFERIOR */
+
+/* ======================================================
+   11. ÁREA DE MERCADORIAS
+====================================================== */
 
 .products-area {
   position: fixed;
@@ -230,7 +263,16 @@
   pointer-events: auto;
 }
 
-/* TÍTULOS */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+
+/* ======================================================
+   12. TÍTULOS DOS PAINÉIS
+====================================================== */
 
 .finance-panel h3,
 .actions-panel h3,
@@ -245,7 +287,10 @@
   margin-bottom: 10px;
 }
 
-/* FINANCEIRO */
+
+/* ======================================================
+   13. INFORMAÇÕES FINANCEIRAS
+====================================================== */
 
 .finance-item,
 .finance-total {
@@ -275,49 +320,155 @@
   color: var(--gold);
 }
 
-/* BOTÕES */
+
+/* ======================================================
+   14. BOTÕES DO PAINEL DE AÇÕES
+====================================================== */
 
 .actions-panel .btn {
   min-height: 66px;
   font-size: 1.05rem;
 }
 
-/* PRODUTOS */
 
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 14px;
+/* ======================================================
+   15. CONFIGURAÇÃO BASE DO SPRITE
+   Imagens esperadas: 768px x 128px
+   6 frames de 128px cada
+====================================================== */
+
+.sprite-game {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 128px;
+  height: 128px;
+
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 768px 128px;
+
+  image-rendering: pixelated;
+  overflow: hidden;
+
+  transform: translate(-50%, -100%) scale(0.56);
+  transform-origin: center bottom;
+
+  z-index: 5;
 }
 
-/* ANIMAÇÕES DO GERENTE */
 
-.manager-male-walk {
-  background-image: url("../assets/images/characters/manager/Walk.png");
-  animation: maleWalk 0.7s steps(5) infinite;
+/* ======================================================
+   16. SPRITES DO GERENTE MASCULINO
+====================================================== */
+
+.manager-male-idle-side {
+  background-image: url("../assets/images/characters/manager/male_walk.png");
+  background-position: 0 0 !important;
+  animation: none !important;
 }
 
-.manager-female-walk {
-  background-image: url("../assets/images/characters/manager_f/Walk.png");
-  animation: femaleWalk 0.7s steps(5) infinite;
+.manager-male-walk-side {
+  background-image: url("../assets/images/characters/manager/male_walk.png");
+  animation: maleWalkSide 1.05s steps(6) infinite ;
 }
 
-@keyframes maleWalk {
-  from {
-    background-position: 0 0;
-  }
-
-  to {
-    background-position: -640px 0;
-  }
+.manager-male-idle-front {
+  background-image: url("../assets/images/characters/manager/male_front.png");
+  background-position: 0 0 !important;
+  animation: none !important;
 }
 
-@keyframes femaleWalk {
-  from {
-    background-position: 0 0;
-  }
+.manager-male-walk-front {
+  background-image: url("../assets/images/characters/manager/male_front.png");
+  animation: maleWalkFront 0.7s steps(6) infinite alternate;
+}
 
-  to {
-    background-position: -640px 0;
-  }
+.manager-male-idle-back {
+  background-image: url("../assets/images/characters/manager/male_back.png");
+  background-position: 0 0 !important;
+  animation: none !important;
+}
+
+.manager-male-walk-back {
+  background-image: url("../assets/images/characters/manager/male_back.png");
+  animation: maleWalkBack 0.7s steps(6) infinite;
+}
+
+
+/* ======================================================
+   17. SPRITES DO GERENTE FEMININO
+====================================================== */
+
+.manager-female-idle-side {
+  background-image: url("../assets/images/characters/manager_f/female_idle.png");
+  background-position: 0 0 !important;
+  animation: none !important;
+}
+
+.manager-female-walk-side {
+  background-image: url("../assets/images/characters/manager_f/female_walk.png");
+  animation: femaleWalkSide 0.7s steps(6) infinite;
+}
+
+.manager-female-idle-front {
+  background-image: url("../assets/images/characters/manager_f/female_front.png");
+  background-position: 0 0 !important;
+  animation: none !important;
+}
+
+.manager-female-walk-front {
+  background-image: url("../assets/images/characters/manager_f/female_front.png");
+  animation: femaleWalkFront 0.7s steps(6) infinite;
+}
+
+.manager-female-idle-back {
+  background-image: url("../assets/images/characters/manager_f/female_back.png");
+  background-position: 0 0 !important;
+  animation: none !important;
+}
+
+.manager-female-walk-back {
+  background-image: url("../assets/images/characters/manager_f/female_back.png");
+  animation: femaleWalkBack 0.7s steps(6) infinite;
+}
+
+/* ======================================================
+   18. KEYFRAMES DO GERENTE MASCULINO
+====================================================== */
+
+@keyframes maleWalkSide {
+  from { background-position: 0 0; }
+  to { background-position: -768px 0; }
+}
+
+@keyframes maleWalkFront {
+  from { background-position: 0 0; }
+  to { background-position: -768px 0; }
+}
+
+@keyframes maleWalkBack {
+  from { background-position: 0 0; }
+  to { background-position: -768px 0; }
+}
+
+
+/* ======================================================
+   19. KEYFRAMES DO GERENTE FEMININO
+====================================================== */
+
+@keyframes femaleWalkSide {
+  from { background-position: 0 0; }
+  to { background-position: -768px 0; }
+}
+
+@keyframes femaleWalkFront {
+  from { background-position: 0 0; }
+  to { background-position: -768px 0; }
+}
+
+@keyframes femaleWalkBack {
+  from { background-position: 0 0; }
+  to { background-position: -768px 0; }
 }

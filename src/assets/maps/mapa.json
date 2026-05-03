@@ -1226,6 +1226,78 @@
                  "width":28,
                  "x":1904,
                  "y":278.666666666667
+                }, 
+                {
+                 "height":30,
+                 "id":250,
+                 "name":"parede",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":29.75,
+                 "x":994.5,
+                 "y":1419.5
+                }, 
+                {
+                 "height":30.25,
+                 "id":252,
+                 "name":"parede",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":55.25,
+                 "x":904.75,
+                 "y":1413.75
+                }, 
+                {
+                 "height":30,
+                 "id":253,
+                 "name":"parede",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":55.25,
+                 "x":831.25,
+                 "y":1414.5
+                }, 
+                {
+                 "height":30.75,
+                 "id":254,
+                 "name":"parede",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":57.25,
+                 "x":756,
+                 "y":1412.5
+                }, 
+                {
+                 "height":33.25,
+                 "id":255,
+                 "name":"parede",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":92.5,
+                 "x":644.5,
+                 "y":1413
+                }, 
+                {
+                 "height":32.5,
+                 "id":256,
+                 "name":"parede",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":58.25,
+                 "x":569.75,
+                 "y":1413
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -1234,7 +1306,7 @@
          "y":0
         }, 
         {
-         "color":"#e8e10f",
+         "color":"#52e81b",
          "draworder":"topdown",
          "id":3,
          "name":"decoracao",
@@ -1997,7 +2069,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -2753,7 +2825,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -2962,7 +3034,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":250,
+ "nextobjectid":257,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

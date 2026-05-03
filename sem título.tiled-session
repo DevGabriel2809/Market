@@ -1,9 +1,10 @@
 {
-    "activeFile": "src/assets/maps/MAPA.tsj",
+    "activeFile": "src/assets/maps/mapa.json",
     "expandedProjectPaths": [
-        "src",
-        "."
+        ".",
+        "src"
     ],
+    "file.lastUsedOpenFilter": "Todos os Ficheiros (*)",
     "fileStates": {
         "Gemini_Generated_Image_.tsx": {
             "scaleInDock": 1
@@ -21,15 +22,23 @@
             "scaleInEditor": 0.75
         },
         "src/assets/maps/MAPA.tsj": {
-            "scaleInDock": 1,
+            "scaleInDock": 0.0625,
             "scaleInEditor": 1
         },
+        "src/assets/maps/mapa.json": {
+            "scale": 2,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 990,
+                "y": 1175
+            }
+        },
         "src/assets/maps/mapa.tmx": {
-            "scale": 0.25,
+            "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 1136,
-                "y": 776
+                "x": 819.3333333333333,
+                "y": 1636.6666666666665
             }
         },
         "src/mapa.json": {
@@ -54,13 +63,13 @@
     "map.lastUsedFormat": "json",
     "map.width": 70,
     "openFiles": [
-        "src/assets/maps/mapa.tmx",
-        "src/assets/maps/MAPA.tsj"
+        "src/assets/maps/mapa.json"
     ],
     "project": "sem título.tiled-project",
     "recentFiles": [
-        "src/assets/maps/mapa.tmx",
+        "src/assets/maps/mapa.json",
         "src/assets/maps/MAPA.tsj",
+        "src/assets/maps/mapa.tmx",
         "src/mapa.json",
         "src/mapa.tmx",
         "src/MAPA.tsj",
