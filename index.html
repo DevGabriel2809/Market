@@ -6,10 +6,10 @@
 
   <title>Mercado | Reino dos Custos</title>
 
-  <link rel="stylesheet" href="src/css/style.css?v=7" />
-  <link rel="stylesheet" href="src/css/menu.css?v=7" />
-  <link rel="stylesheet" href="src/css/game.css?v=7" />
-  <link rel="stylesheet" href="src/css/responsive.css?v=7" />
+  <link rel="stylesheet" href="src/css/style.css?v=11" />
+  <link rel="stylesheet" href="src/css/menu.css?v=11" />
+  <link rel="stylesheet" href="src/css/game.css?v=11" />
+  <link rel="stylesheet" href="src/css/responsive.css?v=11" />
 </head>
 
 <body>
@@ -94,7 +94,7 @@
         <ul>
           <li>Compre mercadorias para abastecer o estoque.</li>
           <li>Defina o preço de venda de cada produto.</li>
-          <li>Controle custos como aluguel, energia e funcionários.</li>
+          <li>Controle custos como aluguel, energia e equipe contratada.</li>
           <li>Analise o relatório diário para saber se teve lucro ou prejuízo.</li>
         </ul>
 
@@ -122,11 +122,22 @@
       <header class="game-header">
         <div>
           <h2 id="titulo-jogo">Mercado Tycoon</h2>
-          <span>Dia <strong id="dia-atual">1</strong>/30</span>
+          <div class="day-meta">
+            <span>Dia <strong id="dia-atual">1</strong>/30</span>
+            <span>Hora <strong id="hora-atual">00:00</strong></span>
+          </div>
         </div>
-        <div class="cash-box">
-          Caixa:
-          <strong id="caixa-atual">R$ 2.000,00</strong>
+        <div class="header-status">
+          <div class="cash-box">
+            Caixa:
+            <strong id="caixa-atual">R$ 2.000,00</strong>
+          </div>
+          <div class="day-progress-card">
+            <span id="day-status-text">Expediente aberto</span>
+            <div class="day-progress-track">
+              <span id="day-progress-bar"></span>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -142,26 +153,7 @@
 
         <aside class="finance-panel">
           <h3>Custos Fixos</h3>
-
-          <div class="finance-item">
-            <span>Aluguel da banca</span>
-            <strong>R$ 150,00</strong>
-          </div>
-
-          <div class="finance-item">
-            <span>Iluminação</span>
-            <strong>R$ 50,00</strong>
-          </div>
-
-          <div class="finance-item">
-            <span>Ajudantes</span>
-            <strong>R$ 100,00</strong>
-          </div>
-
-          <div class="finance-total">
-            <span>Total diário</span>
-            <strong>R$ 300,00</strong>
-          </div>
+          <div id="finance-cost-list"></div>
         </aside>
 
         <section class="market-area">
@@ -193,7 +185,7 @@
         <aside class="actions-panel">
           <h3>Ações</h3>
 
-          <button id="btn-passar-dia" class="btn primary full">Passar Dia</button>
+          <button id="btn-passar-dia" class="btn primary full">Encerrar Dia</button>
           <button id="btn-status" class="btn secondary full">Status</button>
           <button id="btn-estoque" class="btn secondary full">Estoque</button>
           <button id="btn-quests" class="btn quest full">Missões</button>
@@ -289,18 +281,21 @@
         <div class="quest-road"></div>
       </div>
       <h2 id="quest-loading-title">Missão em andamento</h2>
+      <div class="quest-loading-progress">
+        <span></span>
+      </div>
       <p id="quest-loading-tip"></p>
     </section>
 
   </div>
 
-  <script src="src/js/gameState.js?v=7"></script>
-  <script src="src/js/products.js?v=7"></script>
-  <script src="src/js/finance.js?v=7"></script>
-  <script src="src/js/quests.js?v=7"></script>
-  <script src="src/js/ui.js?v=7"></script>
-  <script src="src/js/events.js?v=7"></script>
-  <script src="src/js/storage.js?v=7"></script>
-  <script src="src/js/main.js?v=7"></script>
+  <script src="src/js/gameState.js?v=11"></script>
+  <script src="src/js/products.js?v=11"></script>
+  <script src="src/js/finance.js?v=11"></script>
+  <script src="src/js/quests.js?v=11"></script>
+  <script src="src/js/ui.js?v=11"></script>
+  <script src="src/js/events.js?v=11"></script>
+  <script src="src/js/storage.js?v=11"></script>
+  <script src="src/js/main.js?v=11"></script>
 </body>
 </html>

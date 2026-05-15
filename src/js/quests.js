@@ -315,6 +315,8 @@ function executarQuest(questId) {
 
   if (!sucesso) {
     gameState.quests.falhas[quest.id] = (gameState.quests.falhas[quest.id] || 0) + 1;
+    gameState.experiencia += 1;
+    detalhes.push("Experiência +1");
   }
 
   if (sucesso && !quest.repetivel && !questFoiConcluida(quest.id)) {

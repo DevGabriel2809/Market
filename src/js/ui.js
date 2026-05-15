@@ -1,6 +1,7 @@
 let interfaceInicializada = false;
 let ultimoResultadoQuest = null;
 let questEmAndamento = false;
+const QUEST_LOADING_MS = 7800;
 
 const ui = {};
 
@@ -8,9 +9,14 @@ function inicializarInterface() {
   if (interfaceInicializada) return;
 
   ui.diaAtual = document.getElementById("dia-atual");
+  ui.horaAtual = document.getElementById("hora-atual");
   ui.caixaAtual = document.getElementById("caixa-atual");
   ui.tituloJogo = document.getElementById("titulo-jogo");
   ui.listaProdutos = document.getElementById("lista-produtos");
+  ui.financeCostList = document.getElementById("finance-cost-list");
+  ui.dayStatusText = document.getElementById("day-status-text");
+  ui.dayProgressBar = document.getElementById("day-progress-bar");
+  ui.btnPassarDia = document.getElementById("btn-passar-dia");
   ui.modalBackdrop = document.getElementById("modal-backdrop");
   ui.statusModal = document.getElementById("status-modal");
   ui.stockModal = document.getElementById("stock-modal");
@@ -19,7 +25,7 @@ function inicializarInterface() {
   ui.questLoadingModal = document.getElementById("quest-loading-modal");
   ui.toast = document.getElementById("game-toast");
 
-  const btnPassarDia = document.getElementById("btn-passar-dia");
+  const btnPassarDia = ui.btnPassarDia;
   const btnStatus = document.getElementById("btn-status");
   const btnEstoque = document.getElementById("btn-estoque");
   const btnQuests = document.getElementById("btn-quests");
@@ -34,8 +40,11 @@ function inicializarInterface() {
     btnPassarDia.addEventListener("click", () => {
       const relatorio = passarDia();
       atualizarInterfaceJogo();
-      abrirRelatorio(relatorio);
-      mostrarToast(gameState.fimDeJogo ? gameState.fimDeJogo.titulo : "Dia encerrado.");
+
+      if (relatorio) {
+        abrirRelatorio(relatorio);
+        mostrarToast(gameState.fimDeJogo ? gameState.fimDeJogo.titulo : "Dia encerrado.");
+      }
     });
   }
 
@@ -106,16 +115,17 @@ function inicializarInterface() {
   atualizarInterfaceJogo();
 }
 
-function atualizarInterfaceJogo() {
+function atualizarInterfaceJogo(opcoes = {}) {
   inicializarEstoque();
   renderizarHud();
+  renderizarCustosFixos();
   renderizarProdutosResumo();
 
   if (ui.statusModal && !ui.statusModal.classList.contains("hidden")) {
     renderizarStatus();
   }
 
-  if (ui.stockModal && !ui.stockModal.classList.contains("hidden")) {
+  if (ui.stockModal && !ui.stockModal.classList.contains("hidden") && opcoes.origem !== "venda") {
     renderizarEstoque();
   }
 
@@ -133,6 +143,57 @@ function renderizarHud() {
       ? `Mercado de ${gameState.nomeJogador}`
       : "Mercado Tycoon";
   }
+
+  atualizarHudTempo();
+}
+
+function atualizarHudTempo() {
+  if (ui.horaAtual) ui.horaAtual.textContent = formatarHoraDoJogo();
+
+  if (ui.dayProgressBar) {
+    ui.dayProgressBar.style.width = `${Math.round(obterProgressoDia() * 100)}%`;
+  }
+
+  if (ui.dayStatusText) {
+    if (gameState.fimDeJogo) {
+      ui.dayStatusText.textContent = "Campanha encerrada";
+    } else if (gameState.diaProntoParaEncerrar) {
+      ui.dayStatusText.textContent = "Expediente concluído";
+    } else {
+      ui.dayStatusText.textContent = `Fecha em ${formatarTempoCurto(obterTempoRestanteDia())}`;
+    }
+  }
+
+  if (ui.btnPassarDia) {
+    ui.btnPassarDia.disabled = !gameState.diaProntoParaEncerrar || Boolean(gameState.fimDeJogo);
+    ui.btnPassarDia.textContent = gameState.diaProntoParaEncerrar
+      ? "Encerrar Dia"
+      : `Aguarde ${formatarTempoCurto(obterTempoRestanteDia())}`;
+  }
+}
+
+function renderizarCustosFixos() {
+  if (!ui.financeCostList) return;
+
+  const custos = obterCustosFixosDetalhados();
+  const total = custos.reduce((soma, custo) => soma + custo.valor, 0);
+  const equipe = gameState.ajudanteContratado
+    ? "Ajudante ativo no balcão."
+    : "Sem ajudante contratado.";
+
+  ui.financeCostList.innerHTML = `
+    ${custos.map((custo) => `
+      <div class="finance-item">
+        <span>${custo.nome}</span>
+        <strong>${formatarMoeda(custo.valor)}</strong>
+      </div>
+    `).join("")}
+    <div class="finance-note">${equipe}</div>
+    <div class="finance-total">
+      <span>Total diário</span>
+      <strong>${formatarMoeda(total)}</strong>
+    </div>
+  `;
 }
 
 function renderizarProdutosResumo() {
@@ -157,6 +218,9 @@ function renderizarProdutosResumo() {
 
 function abrirModal(modalId) {
   if (!ui.modalBackdrop) return;
+
+  document.querySelector(".actions-panel")?.classList.remove("open");
+  document.querySelector(".finance-panel")?.classList.remove("open");
 
   [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.questLoadingModal].forEach((modal) => {
     if (modal) modal.classList.add("hidden");
@@ -226,6 +290,7 @@ function renderizarStatus() {
   if (financas) {
     financas.innerHTML = `
       ${linhaStatus("Caixa", formatarMoeda(gameState.caixa))}
+      ${linhaStatus("Receita hoje", formatarMoeda(resumo.receitaHoje))}
       ${linhaStatus("Receita acumulada", formatarMoeda(resumo.receitaTotal))}
       ${linhaStatus("Custos fixos acumulados", formatarMoeda(resumo.custosFixos))}
       ${linhaStatus("Lucro líquido acumulado", formatarMoeda(resumo.lucroLiquido))}
@@ -238,6 +303,7 @@ function renderizarStatus() {
       ${linhaStatus("Dia", `${gameState.dia}/${gameState.diaMaximo}`)}
       ${linhaStatus("Reputação", gameState.reputacao)}
       ${linhaStatus("Experiência", gameState.experiencia)}
+      ${linhaStatus("Vendas hoje", resumo.unidadesHoje)}
       ${linhaStatus("Itens em estoque", resumo.quantidadeEstoque)}
       ${linhaStatus("Custo fixo diário", formatarMoeda(calcularCustosFixos()))}
       ${linhaStatus("Desconto fornecedor", `${Math.round((gameState.descontoFornecedor || 0) * 100)}%`)}
@@ -298,6 +364,7 @@ function renderizarEstoque() {
     <div><span>Caixa</span><strong>${formatarMoeda(gameState.caixa)}</strong></div>
     <div><span>Itens</span><strong>${calcularQuantidadeEstoque()}</strong></div>
     <div><span>Valor em estoque</span><strong>${formatarMoeda(calcularValorEstoque())}</strong></div>
+    <div><span>Receita hoje</span><strong>${formatarMoeda(calcularResumoFinanceiro().receitaHoje)}</strong></div>
   `;
 
   lista.innerHTML = productCatalog
@@ -330,9 +397,9 @@ function renderizarEstoque() {
           </label>
 
           <div class="stock-actions">
-            <button class="btn ghost small" data-buy-product="${produto.id}" data-buy-amount="1" ${liberado ? "" : "disabled"}>+1</button>
-            <button class="btn secondary small" data-buy-product="${produto.id}" data-buy-amount="5" ${liberado ? "" : "disabled"}>+5</button>
-            <button class="btn primary small" data-buy-product="${produto.id}" data-buy-amount="10" ${liberado ? "" : "disabled"}>+10</button>
+            <button class="btn ghost small" title="Comprar 1 unidade" data-buy-product="${produto.id}" data-buy-amount="1" ${liberado ? "" : "disabled"}>1 un.</button>
+            <button class="btn secondary small" title="Comprar 5 unidades" data-buy-product="${produto.id}" data-buy-amount="5" ${liberado ? "" : "disabled"}>5 un.</button>
+            <button class="btn primary small" title="Comprar 10 unidades" data-buy-product="${produto.id}" data-buy-amount="10" ${liberado ? "" : "disabled"}>10 un.</button>
           </div>
         </article>
       `;
@@ -470,6 +537,7 @@ function executarQuestComLoading(questId) {
   const titulo = document.getElementById("quest-loading-title");
   const dica = document.getElementById("quest-loading-tip");
   const runner = document.getElementById("quest-runner");
+  const progress = document.querySelector(".quest-loading-progress span");
 
   if (titulo) titulo.textContent = quest.titulo;
   if (dica) dica.textContent = questTips[Math.floor(Math.random() * questTips.length)];
@@ -477,6 +545,12 @@ function executarQuestComLoading(questId) {
   if (runner) {
     runner.className = "quest-runner";
     runner.classList.add(gameState.personagem === "female" ? "manager-female-walk-side" : "manager-male-walk-side");
+  }
+
+  if (progress) {
+    progress.style.animation = "none";
+    progress.offsetHeight;
+    progress.style.animation = "";
   }
 
   abrirModal("quest-loading-modal");
@@ -488,7 +562,7 @@ function executarQuestComLoading(questId) {
     atualizarInterfaceJogo();
     abrirQuests();
     mostrarToast(resultado.mensagem);
-  }, 2600);
+  }, QUEST_LOADING_MS);
 }
 
 function renderizarRelatorio(relatorio) {
@@ -499,12 +573,13 @@ function renderizarRelatorio(relatorio) {
     conteudo.innerHTML = `
       <div class="empty-state">
         <h3>Nenhum dia encerrado ainda</h3>
-        <p>O primeiro relatório aparece depois que você passar o dia.</p>
+        <p>O primeiro relatório aparece depois que o expediente terminar e você encerrar o dia.</p>
       </div>
     `;
     return;
   }
 
+  const valorPerdas = relatorio.perdas.reduce((total, item) => total + item.valor, 0);
   const vendas = relatorio.vendas
     .filter((item) => item.vendidos > 0)
     .map((item) => `
@@ -537,6 +612,7 @@ function renderizarRelatorio(relatorio) {
         ${linhaStatus("Receita", formatarMoeda(relatorio.receita))}
         ${linhaStatus("Custo das mercadorias", formatarMoeda(relatorio.custoMercadorias))}
         ${linhaStatus("Custos fixos", formatarMoeda(relatorio.custosFixos))}
+        ${valorPerdas > 0 ? linhaStatus("Perdas de estoque", formatarMoeda(valorPerdas)) : ""}
         ${linhaStatus("Lucro líquido", formatarMoeda(relatorio.lucroLiquido))}
         ${linhaStatus("Caixa final", formatarMoeda(relatorio.caixaDepois))}
       </section>

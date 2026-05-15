@@ -21,6 +21,14 @@ function carregarJogo() {
     const dados = JSON.parse(salvo);
     Object.assign(gameState, dados);
 
+    gameState.custoAjudante = gameState.custoAjudante || 120;
+    gameState.duracaoDiaMs = gameState.duracaoDiaMs || 300000;
+    gameState.tempoDiaDecorridoMs = gameState.tempoDiaDecorridoMs || 0;
+    gameState.proximaVendaMs = gameState.proximaVendaMs || 7000;
+    gameState.diaProntoParaEncerrar = Boolean(gameState.diaProntoParaEncerrar);
+    gameState.diaEmAndamento = Boolean(gameState.diaEmAndamento);
+    gameState.diaEncerradoNotificado = Boolean(gameState.diaEncerradoNotificado);
+
     gameState.quests = {
       concluidas: [],
       tentativas: {},
@@ -30,6 +38,10 @@ function carregarJogo() {
     };
 
     inicializarEstoque();
+
+    if (!gameState.fimDeJogo && !gameState.relatorioEmAndamento && !gameState.diaProntoParaEncerrar) {
+      iniciarNovoDia();
+    }
 
     if (typeof aplicarPersonagemSalvo === "function") {
       aplicarPersonagemSalvo();

@@ -36,13 +36,28 @@
     gap: 4px;
     align-items: center;
     height: auto;
-    min-height: 96px;
-    padding: 10px 86px 8px;
+    min-height: 122px;
+    padding: 8px 78px 8px;
     text-align: center;
   }
 
   .game-header h2 {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+
+  .day-meta,
+  .header-status {
+    justify-content: center;
+  }
+
+  .header-status {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .day-progress-card {
+    min-width: 210px;
+    padding: 8px 10px;
   }
 
   .game-header span,
@@ -56,7 +71,7 @@
   }
 
   .hud-toggle {
-    top: 88px;
+    top: 96px;
     padding: 11px 12px;
     border-radius: 14px;
     font-size: 0.84rem;
@@ -64,9 +79,9 @@
 
   .finance-panel,
   .actions-panel {
-    top: 140px;
+    top: 150px;
     width: min(300px, 86vw);
-    height: calc(100vh - 165px);
+    height: calc(100vh - 175px);
   }
 
   .market-scene {

@@ -105,6 +105,12 @@
   justify-content: space-between;
 }
 
+.day-meta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 .game-header h2 {
   font-family: 'MedievalSharp', cursive;
   color: var(--gold);
@@ -128,6 +134,46 @@
 
 .cash-box strong {
   color: var(--gold);
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.day-progress-card {
+  min-width: 190px;
+  padding: 11px 14px;
+  border: 1px solid rgba(128, 197, 139, 0.45);
+  border-radius: 16px;
+  background: rgba(18, 38, 24, 0.68);
+  box-shadow: inset 0 0 24px rgba(95, 185, 107, 0.08);
+}
+
+.day-progress-card span {
+  display: block;
+  margin-bottom: 7px;
+  color: #a7e0aa;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.day-progress-track {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.day-progress-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  margin: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #63bd71, var(--gold));
+  transition: width 0.25s ease;
 }
 
 
@@ -193,6 +239,7 @@
   backdrop-filter: blur(5px);
 
   pointer-events: auto;
+  overflow-y: auto;
   transform: translateX(-115%);
   opacity: 0;
   transition: 0.3s ease;
@@ -228,6 +275,7 @@
   gap: 16px;
 
   pointer-events: auto;
+  overflow-y: auto;
   transform: translateX(115%);
   opacity: 0;
   transition: 0.3s ease;
@@ -320,14 +368,26 @@
   color: var(--gold);
 }
 
+.finance-note {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid rgba(128, 197, 139, 0.28);
+  border-radius: 14px;
+  background: rgba(26, 52, 31, 0.35);
+  color: #a7e0aa;
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
 
 /* ======================================================
    14. BOTÕES DO PAINEL DE AÇÕES
 ====================================================== */
 
 .actions-panel .btn {
-  min-height: 66px;
-  font-size: 1.05rem;
+  min-height: 54px;
+  font-size: 0.98rem;
 }
 
 
@@ -478,6 +538,34 @@
    20. COMPONENTES DE JOGO / MODAIS
 ====================================================== */
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(243, 201, 105, 0.78) rgba(28, 14, 8, 0.5);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(16, 8, 4, 0.52);
+  box-shadow: inset 0 0 0 1px rgba(243, 201, 105, 0.12);
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(16, 8, 4, 0.65);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 224, 143, 0.98), rgba(174, 116, 42, 0.98));
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(180deg, rgba(255, 238, 178, 1), rgba(209, 147, 55, 1));
+}
+
 .btn.quest {
   background: linear-gradient(135deg, #5b7fcf, #2f4f9f);
   color: white;
@@ -486,9 +574,9 @@
 
 .btn.small {
   min-height: 0;
-  padding: 10px 14px;
+  padding: 10px 12px;
   border-radius: 12px;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
 }
 
 .btn:disabled {
@@ -545,9 +633,12 @@
   border: 2px solid rgba(243, 201, 105, 0.72);
   border-radius: 22px;
   background:
-    linear-gradient(145deg, rgba(55, 31, 17, 0.98), rgba(25, 12, 7, 0.98));
+    radial-gradient(circle at top left, rgba(243, 201, 105, 0.14), transparent 34%),
+    linear-gradient(145deg, rgba(58, 31, 16, 0.99), rgba(22, 10, 6, 0.99));
   color: var(--cream);
-  box-shadow: var(--shadow);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.62),
+    inset 0 0 0 1px rgba(255, 241, 208, 0.08);
   padding: 26px;
 }
 
@@ -585,6 +676,12 @@
   cursor: pointer;
   font-size: 1.6rem;
   font-weight: 900;
+  transition: 0.2s ease;
+}
+
+.modal-close:hover {
+  background: rgba(243, 201, 105, 0.18);
+  transform: translateY(-2px);
 }
 
 .product-pill {
@@ -595,7 +692,9 @@
   padding: 12px;
   border: 1px solid rgba(243, 201, 105, 0.35);
   border-radius: 14px;
-  background: rgba(255, 241, 208, 0.08);
+  background:
+    linear-gradient(135deg, rgba(255, 241, 208, 0.12), rgba(255, 241, 208, 0.04));
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.18);
 }
 
 .product-pill strong,
@@ -636,7 +735,9 @@
 .empty-state {
   border: 1px solid rgba(243, 201, 105, 0.35);
   border-radius: 18px;
-  background: rgba(15, 8, 5, 0.38);
+  background:
+    linear-gradient(145deg, rgba(35, 17, 9, 0.72), rgba(12, 6, 4, 0.52));
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.18);
 }
 
 .status-manager {
@@ -733,7 +834,7 @@
 .stock-summary,
 .quest-summary {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 14px;
   margin-bottom: 18px;
 }
@@ -743,7 +844,8 @@
   padding: 16px;
   border: 1px solid rgba(243, 201, 105, 0.28);
   border-radius: 16px;
-  background: rgba(255, 241, 208, 0.07);
+  background:
+    linear-gradient(145deg, rgba(255, 241, 208, 0.09), rgba(255, 241, 208, 0.03));
 }
 
 .stock-summary strong,
@@ -817,8 +919,14 @@
 
 .stock-actions {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.stock-actions .btn {
+  width: 100%;
+  white-space: normal;
+  line-height: 1.15;
 }
 
 .quest-list {
@@ -983,7 +1091,31 @@
   font-weight: 700;
 }
 
+.quest-loading-progress {
+  width: min(420px, 90%);
+  height: 12px;
+  margin: 18px auto 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.quest-loading-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #5fb96b, var(--gold));
+  transform-origin: left;
+  animation: questProgress 7.8s linear forwards;
+}
+
 @keyframes roadMove {
   from { transform: translateX(0); }
   to { transform: translateX(46px); }
+}
+
+@keyframes questProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }

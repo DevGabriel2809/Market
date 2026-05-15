@@ -566,6 +566,10 @@ function gameLoop(tempoAtual) {
 
   moverPersonagem(deltaTime);
 
+  if (telaJogo.classList.contains("active") && typeof processarTempoDoDia === "function") {
+    processarTempoDoDia(deltaTime);
+  }
+
   if (telaJogo.classList.contains("active") && typeof processarInteracaoAutomatica === "function") {
     processarInteracaoAutomatica();
   }
