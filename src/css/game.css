@@ -309,6 +309,7 @@
 
   overflow-y: auto;
   pointer-events: auto;
+  display: none;
 }
 
 .products-grid {
