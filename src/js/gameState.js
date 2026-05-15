@@ -15,9 +15,9 @@ const gameState = {
   ajudanteContratado: false,
   ajudanteDesbloqueado: false,
   descontoFornecedor: 0,
-  duracaoDiaMs: 300000,
+  faseDia: "preparacao",
+  duracaoExpedienteMs: 300000,
   tempoDiaDecorridoMs: 0,
-  proximaVendaMs: 7000,
   diaEmAndamento: false,
   diaProntoParaEncerrar: false,
   diaEncerradoNotificado: false,
@@ -48,9 +48,9 @@ function resetarPartida(nome, personagem) {
   gameState.ajudanteContratado = false;
   gameState.ajudanteDesbloqueado = false;
   gameState.descontoFornecedor = 0;
-  gameState.duracaoDiaMs = 300000;
+  gameState.faseDia = "preparacao";
+  gameState.duracaoExpedienteMs = 300000;
   gameState.tempoDiaDecorridoMs = 0;
-  gameState.proximaVendaMs = 7000;
   gameState.diaEmAndamento = false;
   gameState.diaProntoParaEncerrar = false;
   gameState.diaEncerradoNotificado = false;

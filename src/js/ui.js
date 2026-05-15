@@ -1,7 +1,7 @@
 let interfaceInicializada = false;
 let ultimoResultadoQuest = null;
 let questEmAndamento = false;
-const QUEST_LOADING_MS = 7800;
+const QUEST_LOADING_MS = 10000;
 
 const ui = {};
 
@@ -38,6 +38,13 @@ function inicializarInterface() {
 
   if (btnPassarDia) {
     btnPassarDia.addEventListener("click", () => {
+      if (gameState.faseDia === "preparacao") {
+        const resultado = iniciarExpediente();
+        atualizarInterfaceJogo();
+        mostrarToast(resultado.mensagem);
+        return;
+      }
+
       const relatorio = passarDia();
       atualizarInterfaceJogo();
 
@@ -157,18 +164,25 @@ function atualizarHudTempo() {
   if (ui.dayStatusText) {
     if (gameState.fimDeJogo) {
       ui.dayStatusText.textContent = "Campanha encerrada";
+    } else if (gameState.faseDia === "preparacao") {
+      ui.dayStatusText.textContent = "Preparação: 10 min antes de abrir";
     } else if (gameState.diaProntoParaEncerrar) {
       ui.dayStatusText.textContent = "Expediente concluído";
     } else {
-      ui.dayStatusText.textContent = `Fecha em ${formatarTempoCurto(obterTempoRestanteDia())}`;
+      ui.dayStatusText.textContent = `Aberto: fecha em ${formatarTempoCurto(obterTempoRestanteDia())}`;
     }
   }
 
   if (ui.btnPassarDia) {
-    ui.btnPassarDia.disabled = !gameState.diaProntoParaEncerrar || Boolean(gameState.fimDeJogo);
-    ui.btnPassarDia.textContent = gameState.diaProntoParaEncerrar
-      ? "Encerrar Dia"
-      : `Aguarde ${formatarTempoCurto(obterTempoRestanteDia())}`;
+    ui.btnPassarDia.disabled = Boolean(gameState.fimDeJogo) || gameState.faseDia === "expediente";
+
+    if (gameState.faseDia === "preparacao") {
+      ui.btnPassarDia.textContent = "Iniciar Expediente";
+    } else if (gameState.faseDia === "fechamento") {
+      ui.btnPassarDia.textContent = "Encerrar Dia";
+    } else {
+      ui.btnPassarDia.textContent = `Aberto ${formatarTempoCurto(obterTempoRestanteDia())}`;
+    }
   }
 }
 
@@ -300,6 +314,7 @@ function renderizarStatus() {
 
   if (operacao) {
     operacao.innerHTML = `
+      ${linhaStatus("Fase do dia", descreverFaseDia())}
       ${linhaStatus("Dia", `${gameState.dia}/${gameState.diaMaximo}`)}
       ${linhaStatus("Reputação", gameState.reputacao)}
       ${linhaStatus("Experiência", gameState.experiencia)}
@@ -338,6 +353,13 @@ function linhaStatus(rotulo, valor) {
       <strong>${valor}</strong>
     </div>
   `;
+}
+
+function descreverFaseDia() {
+  if (gameState.fimDeJogo) return "Campanha encerrada";
+  if (gameState.faseDia === "preparacao") return "Preparação, antes da abertura";
+  if (gameState.faseDia === "fechamento") return "Expediente encerrado";
+  return `Expediente aberto, ${formatarTempoCurto(obterTempoRestanteDia())}`;
 }
 
 function barraObjetivo(rotulo, percentual, detalhe) {
@@ -435,7 +457,7 @@ function renderizarQuests() {
     <div><span>Reputação</span><strong>${gameState.reputacao}</strong></div>
     <div><span>Experiência</span><strong>${gameState.experiencia}</strong></div>
     <div><span>Desconto</span><strong>${desconto}%</strong></div>
-    ${ultimoResultadoQuest ? `<div class="quest-result ${ultimoResultadoQuest.sucesso ? "success" : "failure"}"><strong>${ultimoResultadoQuest.mensagem}</strong><span>${ultimoResultadoQuest.detalhes.join(" · ") || "Sem ganhos diretos."}</span></div>` : ""}
+    ${renderizarResultadoQuest()}
   `;
 
   lista.innerHTML = questDefinitions
@@ -470,6 +492,26 @@ function renderizarQuests() {
       `;
     })
     .join("");
+}
+
+function renderizarResultadoQuest() {
+  if (!ultimoResultadoQuest) return "";
+
+  const detalhes = ultimoResultadoQuest.detalhes && ultimoResultadoQuest.detalhes.length
+    ? ultimoResultadoQuest.detalhes
+    : ["Sem ganhos diretos"];
+
+  return `
+    <div class="quest-result ${ultimoResultadoQuest.sucesso ? "success" : "failure"}">
+      <div>
+        <strong>${ultimoResultadoQuest.mensagem}</strong>
+        <span>${ultimoResultadoQuest.sucesso ? "Recompensas aplicadas" : "Efeitos da tentativa aplicados"}</span>
+      </div>
+      <div class="quest-result-tags">
+        ${detalhes.map((detalhe) => `<span>${detalhe}</span>`).join("")}
+      </div>
+    </div>
+  `;
 }
 
 function descreverCustoQuest(quest) {
@@ -561,7 +603,11 @@ function executarQuestComLoading(questId) {
     questEmAndamento = false;
     atualizarInterfaceJogo();
     abrirQuests();
-    mostrarToast(resultado.mensagem);
+
+    const detalhesResumo = resultado.detalhes && resultado.detalhes.length
+      ? ` ${resultado.detalhes.slice(0, 2).join(" · ")}`
+      : "";
+    mostrarToast(`${resultado.mensagem}${detalhesResumo}`);
   }, QUEST_LOADING_MS);
 }
 

@@ -1,5 +1,8 @@
-const MINUTOS_DIA = 24 * 60;
-const HORA_ABERTURA = 0;
+const MINUTOS_PREPARACAO = 10;
+const HORA_PREPARACAO = (8 * 60) - MINUTOS_PREPARACAO;
+const HORA_ABERTURA = 8 * 60;
+const HORA_FECHAMENTO = 18 * 60;
+const MINUTOS_EXPEDIENTE = HORA_FECHAMENTO - HORA_ABERTURA;
 
 const eventosDeMercado = [
   {
@@ -130,23 +133,51 @@ function criarRelatorioBase(evento) {
 function iniciarNovoDia() {
   if (gameState.fimDeJogo) return;
 
-  const evento = sortearEventoDeMercado();
+  gameState.faseDia = "preparacao";
   gameState.tempoDiaDecorridoMs = 0;
-  gameState.proximaVendaMs = 4500 + Math.random() * 3500;
+  gameState.diaEmAndamento = false;
+  gameState.diaProntoParaEncerrar = false;
+  gameState.diaEncerradoNotificado = false;
+  gameState.relatorioEmAndamento = criarRelatorioBase(sortearEventoDeMercado());
+}
+
+function iniciarExpediente() {
+  if (gameState.fimDeJogo) {
+    return { ok: false, mensagem: "A campanha já terminou." };
+  }
+
+  if (gameState.faseDia !== "preparacao") {
+    return { ok: false, mensagem: "O expediente já foi iniciado." };
+  }
+
+  gameState.faseDia = "expediente";
+  gameState.tempoDiaDecorridoMs = 0;
   gameState.diaEmAndamento = true;
   gameState.diaProntoParaEncerrar = false;
   gameState.diaEncerradoNotificado = false;
-  gameState.relatorioEmAndamento = criarRelatorioBase(evento);
+
+  if (!gameState.relatorioEmAndamento) {
+    gameState.relatorioEmAndamento = criarRelatorioBase(sortearEventoDeMercado());
+  }
+
+  return {
+    ok: true,
+    mensagem: "Expediente iniciado. As vendas só acontecerão com clientes reais."
+  };
 }
 
 function obterMinutosDoDia() {
-  if (!gameState.diaEmAndamento && gameState.diaProntoParaEncerrar) {
-    return 24 * 60;
+  if (gameState.faseDia === "preparacao") {
+    return HORA_PREPARACAO;
   }
 
-  const minutoDiaMs = gameState.duracaoDiaMs / MINUTOS_DIA;
+  if (gameState.faseDia === "fechamento" || gameState.diaProntoParaEncerrar) {
+    return HORA_FECHAMENTO;
+  }
+
+  const minutoDiaMs = gameState.duracaoExpedienteMs / MINUTOS_EXPEDIENTE;
   const minutosPassados = Math.floor(gameState.tempoDiaDecorridoMs / minutoDiaMs);
-  return Math.min(MINUTOS_DIA, HORA_ABERTURA + minutosPassados);
+  return Math.min(HORA_FECHAMENTO, HORA_ABERTURA + minutosPassados);
 }
 
 function formatarHoraDoJogo() {
@@ -157,11 +188,14 @@ function formatarHoraDoJogo() {
 }
 
 function obterProgressoDia() {
-  return Math.min(1, gameState.tempoDiaDecorridoMs / gameState.duracaoDiaMs);
+  if (gameState.faseDia === "preparacao") return 0;
+  if (gameState.faseDia === "fechamento") return 1;
+  return Math.min(1, gameState.tempoDiaDecorridoMs / gameState.duracaoExpedienteMs);
 }
 
 function obterTempoRestanteDia() {
-  return Math.max(0, gameState.duracaoDiaMs - gameState.tempoDiaDecorridoMs);
+  if (gameState.faseDia !== "expediente") return 0;
+  return Math.max(0, gameState.duracaoExpedienteMs - gameState.tempoDiaDecorridoMs);
 }
 
 function formatarTempoCurto(ms) {
@@ -172,18 +206,13 @@ function formatarTempoCurto(ms) {
 }
 
 function processarTempoDoDia(deltaTime) {
-  if (!gameState.diaEmAndamento || gameState.fimDeJogo) return;
+  if (gameState.faseDia !== "expediente" || !gameState.diaEmAndamento || gameState.fimDeJogo) return;
 
   gameState.tempoDiaDecorridoMs += deltaTime;
-  gameState.proximaVendaMs -= deltaTime;
 
-  while (gameState.proximaVendaMs <= 0 && gameState.diaEmAndamento) {
-    processarVendaEspontanea();
-    gameState.proximaVendaMs += 6500 + Math.random() * 4500;
-  }
-
-  if (gameState.tempoDiaDecorridoMs >= gameState.duracaoDiaMs) {
-    gameState.tempoDiaDecorridoMs = gameState.duracaoDiaMs;
+  if (gameState.tempoDiaDecorridoMs >= gameState.duracaoExpedienteMs) {
+    gameState.tempoDiaDecorridoMs = gameState.duracaoExpedienteMs;
+    gameState.faseDia = "fechamento";
     gameState.diaEmAndamento = false;
     gameState.diaProntoParaEncerrar = true;
 
@@ -191,7 +220,7 @@ function processarTempoDoDia(deltaTime) {
       gameState.diaEncerradoNotificado = true;
 
       if (typeof mostrarToast === "function") {
-        mostrarToast("O expediente terminou. Agora você pode fechar o dia.");
+        mostrarToast("O expediente terminou. Nenhuma venda acontece até o próximo dia.");
       }
     }
   }
@@ -201,41 +230,33 @@ function processarTempoDoDia(deltaTime) {
   }
 }
 
-function processarVendaEspontanea() {
-  const relatorio = gameState.relatorioEmAndamento;
-  if (!relatorio) return;
-
-  const clientes = calcularClientesDoTick(relatorio.evento);
-  if (clientes <= 0) return;
-
-  let vendeu = false;
-
-  for (let i = 0; i < clientes; i += 1) {
-    const produto = escolherProdutoParaCliente(relatorio.evento);
-    if (!produto) continue;
-
-    const estoque = obterEstoque(produto.id);
-    const quantidade = calcularQuantidadeVendida(produto, estoque.quantidade);
-    if (quantidade <= 0) continue;
-
-    registrarVenda(produto, quantidade, relatorio);
-    vendeu = true;
+function venderProdutoParaCliente(produtoId, quantidade = 1) {
+  if (gameState.faseDia !== "expediente" || !gameState.diaEmAndamento) {
+    return { ok: false, mensagem: "O mercado não está aberto para vendas." };
   }
 
-  if (vendeu && typeof atualizarInterfaceJogo === "function") {
+  const produto = obterProduto(produtoId);
+  if (!produto || !produtoEstaLiberado(produto)) {
+    return { ok: false, mensagem: "Produto indisponível." };
+  }
+
+  const estoque = obterEstoque(produtoId);
+  const quantidadeFinal = Math.min(Math.max(1, Number(quantidade) || 1), estoque.quantidade);
+
+  if (quantidadeFinal <= 0) {
+    return { ok: false, mensagem: `${produto.nome} está sem estoque.` };
+  }
+
+  const relatorio = gameState.relatorioEmAndamento;
+  if (!relatorio) return { ok: false, mensagem: "Relatório do dia não foi iniciado." };
+
+  registrarVenda(produto, quantidadeFinal, relatorio);
+
+  if (typeof atualizarInterfaceJogo === "function") {
     atualizarInterfaceJogo({ origem: "venda" });
   }
-}
 
-function calcularClientesDoTick(evento) {
-  const movimento = Math.max(0.35, calcularBonusClientela() * (evento.demanda || 1));
-  let clientes = 0;
-
-  if (Math.random() < 0.46 * movimento) clientes += 1;
-  if (Math.random() < 0.08 * movimento) clientes += 1;
-  if (gameState.ajudanteContratado && Math.random() < 0.06 * movimento) clientes += 1;
-
-  return clientes;
+  return { ok: true, mensagem: `${quantidadeFinal}x ${produto.nome} vendido(s).` };
 }
 
 function escolherProdutoParaCliente(evento) {
@@ -248,6 +269,7 @@ function escolherProdutoParaCliente(evento) {
       const fatorPreco = Math.max(0.08, Math.min(1.85, precoReferencia / preco));
       const peso = produto.demandaBase
         * Math.pow(fatorPreco, 1.35)
+        * calcularBonusClientela()
         * calcularMultiplicadorEvento(produto, evento);
 
       return { produto, peso };
@@ -268,13 +290,6 @@ function escolherProdutoParaCliente(evento) {
   }
 
   return candidatos[candidatos.length - 1].produto;
-}
-
-function calcularQuantidadeVendida(produto, quantidadeDisponivel) {
-  if (quantidadeDisponivel <= 0) return 0;
-
-  const compraExtra = produto.custo <= 5 && Math.random() < 0.26 ? 1 : 0;
-  return Math.min(quantidadeDisponivel, 1 + compraExtra);
 }
 
 function registrarVenda(produto, quantidade, relatorio) {
@@ -331,9 +346,12 @@ function passarDia() {
     return gameState.ultimoRelatorio;
   }
 
-  if (!gameState.diaProntoParaEncerrar) {
+  if (!gameState.diaProntoParaEncerrar || gameState.faseDia !== "fechamento") {
     if (typeof mostrarToast === "function") {
-      mostrarToast(`Aguarde o fim do expediente: ${formatarTempoCurto(obterTempoRestanteDia())}.`);
+      const mensagem = gameState.faseDia === "preparacao"
+        ? "Inicie o expediente antes de encerrar o dia."
+        : `Aguarde o fim do expediente: ${formatarTempoCurto(obterTempoRestanteDia())}.`;
+      mostrarToast(mensagem);
     }
 
     return null;
@@ -367,6 +385,7 @@ function passarDia() {
   gameState.relatorioEmAndamento = null;
   gameState.diaProntoParaEncerrar = false;
   gameState.diaEmAndamento = false;
+  gameState.faseDia = "preparacao";
 
   atualizarCooldownsDeQuests();
   verificarFimDeJogo();

@@ -24,7 +24,7 @@ const questDefinitions = [
       experiencia: 2
     },
     falha: {
-      caixa: 45,
+      caixa: -45,
       reputacao: -1
     }
   },
@@ -261,12 +261,12 @@ function aplicarEfeitoQuest(efeito) {
 
   if (efeito.clientela) {
     gameState.clientela = Math.min(1.45, gameState.clientela + efeito.clientela);
-    detalhes.push("Clientela permanente aumentou");
+    detalhes.push(`Clientela +${Math.round(efeito.clientela * 100)}%`);
   }
 
   if (efeito.energia) {
     gameState.energia = Math.max(25, gameState.energia + efeito.energia);
-    detalhes.push(`Energia ${efeito.energia > 0 ? "+" : ""}${formatarMoeda(efeito.energia)}`);
+    detalhes.push(`Iluminação ${efeito.energia > 0 ? "+" : ""}${formatarMoeda(efeito.energia)}`);
   }
 
   if (efeito.desbloqueiaProduto) {
@@ -276,12 +276,12 @@ function aplicarEfeitoQuest(efeito) {
 
   if (efeito.descontoFornecedor) {
     gameState.descontoFornecedor = Math.min(0.25, gameState.descontoFornecedor + efeito.descontoFornecedor);
-    detalhes.push("Desconto de fornecedor aumentado");
+    detalhes.push(`Desconto fornecedor +${Math.round(efeito.descontoFornecedor * 100)}%`);
   }
 
   if (efeito.ajudanteDesbloqueado) {
     gameState.ajudanteDesbloqueado = true;
-    detalhes.push("Ajudante liberado para contratação");
+    detalhes.push("Ajudante liberado");
   }
 
   if (efeito.estoque) {
