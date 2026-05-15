@@ -20,7 +20,7 @@
 @media (max-width: 620px) {
   .menu-screen,
   .game-screen {
-    padding: 18px;
+    padding: 0;
   }
 
   .menu-content {
@@ -33,8 +33,40 @@
 
   .game-header {
     flex-direction: column;
-    gap: 16px;
-    align-items: flex-start;
+    gap: 4px;
+    align-items: center;
+    height: auto;
+    min-height: 96px;
+    padding: 10px 86px 8px;
+    text-align: center;
+  }
+
+  .game-header h2 {
+    font-size: 2rem;
+  }
+
+  .game-header span,
+  .cash-box {
+    font-size: 0.86rem;
+  }
+
+  .cash-box {
+    padding: 8px 10px;
+    border-radius: 14px;
+  }
+
+  .hud-toggle {
+    top: 88px;
+    padding: 11px 12px;
+    border-radius: 14px;
+    font-size: 0.84rem;
+  }
+
+  .finance-panel,
+  .actions-panel {
+    top: 140px;
+    width: min(300px, 86vw);
+    height: calc(100vh - 165px);
   }
 
   .market-scene {
@@ -42,7 +74,51 @@
   }
 
   .sprite-game {
-    left: 40px;
-    transform: scale(1.5);
+    left: 50%;
+    top: 50%;
+  }
+
+  .products-area {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    max-height: 210px;
+    padding: 16px;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-backdrop {
+    padding: 12px;
+  }
+
+  .game-modal {
+    padding: 18px;
+    max-height: 94vh;
+  }
+
+  .status-grid,
+  .report-columns,
+  .stock-summary,
+  .quest-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .status-panel.wide {
+    grid-column: auto;
+  }
+
+  .objective-row,
+  .quest-footer {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stock-grid,
+  .quest-list {
+    grid-template-columns: 1fr;
   }
 }

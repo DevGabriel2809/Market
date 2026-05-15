@@ -55,6 +55,7 @@ function getTipoChao() {
 
 let dentroDoBalcao = false;
 let areaBalcao = null;
+let ultimaInteracaoAutomatica = null;
 
 function encontrarAreaBalcao() {
   return window.mapaObjetos.find((obj) => {
@@ -64,15 +65,23 @@ function encontrarAreaBalcao() {
 
 function voltarMenu() {
   tocarSom("porta");
+  if (typeof fecharModal === "function") {
+    fecharModal();
+  }
   mostrarTela(telaMenu);
 }
 
 function abrirEstoque() {
-  alert("Menu de estoque será criado.");
+  if (typeof renderizarEstoque === "function" && typeof abrirModal === "function") {
+    renderizarEstoque();
+    abrirModal("stock-modal");
+  }
 }
 
 function abrirCofre() {
-  alert("Menu do cofre será criado.");
+  if (typeof abrirStatus === "function") {
+    abrirStatus();
+  }
 }
 
 function jogadorEstaNoPisoBalcao() {
@@ -142,11 +151,6 @@ function interagir(obj) {
       entrarNoBalcao();
       break;
 
-    case "porta_balcao":
-      tocarSom("porta");
-      entrarNoBalcao();
-      break;
-
     case "estoque":
       abrirEstoque();
       break;
@@ -159,6 +163,32 @@ function interagir(obj) {
       console.log("Interação sem ação definida:", obj.name);
       break;
   }
+}
+
+function objetoTemInteracaoAutomatica(obj) {
+  return [
+    "porta_saida",
+    "porta_balcao",
+    "estoque",
+    "cofre"
+  ].includes(obj.name);
+}
+
+function processarInteracaoAutomatica() {
+  if (typeof modalEstaAberto === "function" && modalEstaAberto()) return;
+
+  const obj = getObjetoInteracao();
+
+  if (!obj || !objetoTemInteracaoAutomatica(obj)) {
+    ultimaInteracaoAutomatica = null;
+    return;
+  }
+
+  const chaveInteracao = `${obj.id}-${obj.name}`;
+  if (ultimaInteracaoAutomatica === chaveInteracao) return;
+
+  ultimaInteracaoAutomatica = chaveInteracao;
+  interagir(obj);
 }
 
 window.addEventListener("keydown", (e) => {

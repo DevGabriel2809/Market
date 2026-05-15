@@ -6,10 +6,10 @@
 
   <title>Mercado | Reino dos Custos</title>
 
-  <link rel="stylesheet" href="src/css/style.css" />
-  <link rel="stylesheet" href="src/css/menu.css" />
-  <link rel="stylesheet" href="src/css/game.css" />
-  <link rel="stylesheet" href="src/css/responsive.css" />
+  <link rel="stylesheet" href="src/css/style.css?v=7" />
+  <link rel="stylesheet" href="src/css/menu.css?v=7" />
+  <link rel="stylesheet" href="src/css/game.css?v=7" />
+  <link rel="stylesheet" href="src/css/responsive.css?v=7" />
 </head>
 
 <body>
@@ -121,7 +121,7 @@
 
       <header class="game-header">
         <div>
-          <h2>Mercado Tycoon</h2>
+          <h2 id="titulo-jogo">Mercado Tycoon</h2>
           <span>Dia <strong id="dia-atual">1</strong>/30</span>
         </div>
         <div class="cash-box">
@@ -194,8 +194,12 @@
           <h3>Ações</h3>
 
           <button id="btn-passar-dia" class="btn primary full">Passar Dia</button>
+          <button id="btn-status" class="btn secondary full">Status</button>
+          <button id="btn-estoque" class="btn secondary full">Estoque</button>
+          <button id="btn-quests" class="btn quest full">Missões</button>
           <button id="btn-relatorio" class="btn secondary full">Ver Relatório</button>
           <button id="btn-salvar" class="btn ghost full">Salvar Jogo</button>
+          <button id="btn-carregar" class="btn ghost full">Carregar</button>
         </aside>
 
       </section>
@@ -204,12 +208,99 @@
 
   </main>
 
-  <script src="src/js/gameState.js"></script>
-  <script src="src/js/products.js"></script>
-  <script src="src/js/finance.js"></script>
-  <script src="src/js/ui.js"></script>
-  <script src="src/js/events.js"></script>
-  <script src="src/js/storage.js"></script>
-  <script src="src/js/main.js"></script>
+  <div id="game-toast" class="game-toast" aria-live="polite"></div>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+
+    <section id="status-modal" class="game-modal status-modal hidden" role="dialog" aria-modal="true">
+      <header class="game-modal-header">
+        <div>
+          <span class="modal-kicker">Painel do gerente</span>
+          <h2>Status do Mercado</h2>
+        </div>
+        <button class="modal-close" data-close-modal aria-label="Fechar">×</button>
+      </header>
+
+      <div class="status-grid">
+        <aside class="status-manager">
+          <div id="status-character" class="status-character manager-male-idle"></div>
+          <h3 id="status-player-name">Gerente</h3>
+          <span id="status-player-role">Administrador iniciante</span>
+        </aside>
+
+        <section class="status-panel">
+          <h3>Finanças</h3>
+          <div id="status-finances" class="status-list"></div>
+        </section>
+
+        <section class="status-panel">
+          <h3>Operação</h3>
+          <div id="status-operation" class="status-list"></div>
+        </section>
+
+        <section class="status-panel wide">
+          <h3>Objetivos</h3>
+          <div id="status-objectives" class="objective-list"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="stock-modal" class="game-modal stock-modal hidden" role="dialog" aria-modal="true">
+      <header class="game-modal-header">
+        <div>
+          <span class="modal-kicker">Armazém</span>
+          <h2>Estoque</h2>
+        </div>
+        <button class="modal-close" data-close-modal aria-label="Fechar">×</button>
+      </header>
+
+      <div id="stock-summary" class="stock-summary"></div>
+      <div id="stock-product-list" class="stock-grid"></div>
+    </section>
+
+    <section id="quests-modal" class="game-modal quests-modal hidden" role="dialog" aria-modal="true">
+      <header class="game-modal-header">
+        <div>
+          <span class="modal-kicker">Guilda local</span>
+          <h2>Missões</h2>
+        </div>
+        <button class="modal-close" data-close-modal aria-label="Fechar">×</button>
+      </header>
+
+      <div id="quest-summary" class="quest-summary"></div>
+      <div id="quests-list" class="quest-list"></div>
+    </section>
+
+    <section id="report-modal" class="game-modal report-modal hidden" role="dialog" aria-modal="true">
+      <header class="game-modal-header">
+        <div>
+          <span class="modal-kicker">Livro-caixa</span>
+          <h2>Relatório</h2>
+        </div>
+        <button class="modal-close" data-close-modal aria-label="Fechar">×</button>
+      </header>
+
+      <div id="report-content" class="report-content"></div>
+    </section>
+
+    <section id="quest-loading-modal" class="game-modal quest-loading-modal hidden" role="dialog" aria-modal="true">
+      <div class="quest-loading-stage">
+        <div id="quest-runner" class="quest-runner manager-male-walk-side"></div>
+        <div class="quest-road"></div>
+      </div>
+      <h2 id="quest-loading-title">Missão em andamento</h2>
+      <p id="quest-loading-tip"></p>
+    </section>
+
+  </div>
+
+  <script src="src/js/gameState.js?v=7"></script>
+  <script src="src/js/products.js?v=7"></script>
+  <script src="src/js/finance.js?v=7"></script>
+  <script src="src/js/quests.js?v=7"></script>
+  <script src="src/js/ui.js?v=7"></script>
+  <script src="src/js/events.js?v=7"></script>
+  <script src="src/js/storage.js?v=7"></script>
+  <script src="src/js/main.js?v=7"></script>
 </body>
 </html>

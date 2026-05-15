@@ -39,7 +39,7 @@ let playerY = 400;
 let speed = 4.5;
 
 let ultimaDirecao = "down";
-let personagemSelecionado = "male";
+let personagemSelecionado = gameState.personagem || "male";
 
 let animacaoAtual = "";
 let transformAtual = "";
@@ -95,10 +95,15 @@ btnIniciar.addEventListener("click", () => {
   }
 
   erroNome.style.display = "none";
-  gameState.nomeJogador = nome;
+  resetarPartida(nome, personagemSelecionado);
+  resetarPosicaoPersonagem();
 
   if (tituloJogo) {
     tituloJogo.textContent = `Mercado de ${nome}`;
+  }
+
+  if (typeof atualizarInterfaceJogo === "function") {
+    atualizarInterfaceJogo();
   }
 
   mostrarTela(telaJogo);
@@ -160,6 +165,7 @@ botoesPersonagem.forEach((botao) => {
 
     botao.classList.add("selected");
     personagemSelecionado = botao.dataset.character;
+    gameState.personagem = personagemSelecionado;
 
     ultimaDirecao = "down";
 
@@ -369,6 +375,15 @@ function temColisao(x, y) {
 // ======================================================
 
 function moverPersonagem(deltaTime = 16) {
+  if (!telaJogo.classList.contains("active")) {
+    return;
+  }
+
+  if (typeof modalEstaAberto === "function" && modalEstaAberto()) {
+    aplicarAnimacaoParado();
+    return;
+  }
+
   let moving = false;
   let direcaoMovimento = null;
 
@@ -551,7 +566,39 @@ function gameLoop(tempoAtual) {
 
   moverPersonagem(deltaTime);
 
+  if (telaJogo.classList.contains("active") && typeof processarInteracaoAutomatica === "function") {
+    processarInteracaoAutomatica();
+  }
+
   requestAnimationFrame(gameLoop);
+}
+
+function aplicarPersonagemSalvo() {
+  personagemSelecionado = gameState.personagem || "male";
+  ultimaDirecao = "down";
+  animacaoAtual = "";
+  transformAtual = "";
+
+  botoesPersonagem.forEach((botao) => {
+    botao.classList.toggle("selected", botao.dataset.character === personagemSelecionado);
+  });
+
+  aplicarAnimacaoParado();
+}
+
+function resetarPosicaoPersonagem() {
+  playerX = 600;
+  playerY = 400;
+  ultimaDirecao = "down";
+  animacaoAtual = "";
+  transformAtual = "";
+
+  if (typeof ultimaInteracaoAutomatica !== "undefined") {
+    ultimaInteracaoAutomatica = null;
+  }
+
+  aplicarAnimacaoParado();
+  atualizarCamera();
 }
 
 
@@ -560,5 +607,9 @@ function gameLoop(tempoAtual) {
 // ======================================================
 
 carregarMapa();
+aplicarPersonagemSalvo();
 aplicarAnimacaoParado();
+if (typeof atualizarInterfaceJogo === "function") {
+  atualizarInterfaceJogo();
+}
 requestAnimationFrame(gameLoop);

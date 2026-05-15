@@ -472,3 +472,518 @@
   from { background-position: 0 0; }
   to { background-position: -768px 0; }
 }
+
+
+/* ======================================================
+   20. COMPONENTES DE JOGO / MODAIS
+====================================================== */
+
+.btn.quest {
+  background: linear-gradient(135deg, #5b7fcf, #2f4f9f);
+  color: white;
+  box-shadow: 0 8px 0 #20376f;
+}
+
+.btn.small {
+  min-height: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.65);
+  opacity: 0.55;
+  transform: none;
+}
+
+.game-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 80;
+  max-width: min(540px, calc(100vw - 32px));
+  padding: 16px 22px;
+  border: 2px solid rgba(243, 201, 105, 0.75);
+  border-radius: 16px;
+  background: rgba(33, 19, 10, 0.96);
+  color: var(--cream);
+  box-shadow: var(--shadow);
+  font-weight: 800;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 20px);
+  transition: 0.25s ease;
+}
+
+.game-toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(7, 4, 2, 0.68);
+  backdrop-filter: blur(4px);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.game-modal {
+  width: min(1120px, 96vw);
+  max-height: min(840px, 92vh);
+  overflow: auto;
+  border: 2px solid rgba(243, 201, 105, 0.72);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(55, 31, 17, 0.98), rgba(25, 12, 7, 0.98));
+  color: var(--cream);
+  box-shadow: var(--shadow);
+  padding: 26px;
+}
+
+.game-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.game-modal-header h2,
+.quest-loading-modal h2 {
+  font-family: 'MedievalSharp', cursive;
+  color: var(--gold);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+}
+
+.modal-kicker {
+  display: block;
+  color: #80c58b;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin-bottom: 8px;
+}
+
+.modal-close {
+  width: 44px;
+  height: 44px;
+  border: 2px solid rgba(243, 201, 105, 0.65);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--gold);
+  cursor: pointer;
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+
+.product-pill {
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(243, 201, 105, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 241, 208, 0.08);
+}
+
+.product-pill strong,
+.product-pill span {
+  display: block;
+}
+
+.product-pill span {
+  color: #f1d99f;
+  font-size: 0.88rem;
+}
+
+.product-sigil {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: #211006;
+  font-weight: 900;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr 1fr;
+  gap: 18px;
+}
+
+.status-manager,
+.status-panel,
+.stock-card,
+.quest-card,
+.report-columns section,
+.report-highlight,
+.endgame-card,
+.empty-state {
+  border: 1px solid rgba(243, 201, 105, 0.35);
+  border-radius: 18px;
+  background: rgba(15, 8, 5, 0.38);
+}
+
+.status-manager {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+  padding: 24px;
+  text-align: center;
+}
+
+.status-character {
+  width: 128px;
+  height: 128px;
+  margin: 20px 0 58px;
+  background-repeat: no-repeat;
+  background-size: 768px 128px;
+  image-rendering: pixelated;
+  transform: scale(1.55);
+  transform-origin: center;
+}
+
+.status-manager h3,
+.status-panel h3,
+.stock-card h3,
+.quest-card h3,
+.report-content h3 {
+  font-family: 'MedievalSharp', cursive;
+  color: var(--gold);
+}
+
+.status-panel {
+  padding: 20px;
+}
+
+.status-panel.wide {
+  grid-column: 2 / 4;
+}
+
+.status-list,
+.objective-list,
+.stock-metrics {
+  display: grid;
+  gap: 10px;
+}
+
+.status-row,
+.objective-row,
+.report-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 241, 208, 0.12);
+}
+
+.status-row strong,
+.objective-row strong,
+.report-row strong {
+  color: var(--gold);
+  text-align: right;
+}
+
+.objective-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(170px, 0.9fr);
+}
+
+.objective-row div:first-child span,
+.stock-summary span,
+.quest-summary span {
+  display: block;
+  color: #dfc791;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.objective-bar {
+  height: 14px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.objective-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #5fb96b, var(--gold));
+}
+
+.stock-summary,
+.quest-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.stock-summary > div,
+.quest-summary > div {
+  padding: 16px;
+  border: 1px solid rgba(243, 201, 105, 0.28);
+  border-radius: 16px;
+  background: rgba(255, 241, 208, 0.07);
+}
+
+.stock-summary strong,
+.quest-summary strong {
+  color: var(--gold);
+  font-size: 1.2rem;
+}
+
+.stock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.stock-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.stock-card.locked {
+  opacity: 0.64;
+}
+
+.stock-card-header,
+.quest-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.stock-card-header {
+  justify-content: flex-start;
+}
+
+.stock-card-header span:not(.product-sigil),
+.quest-card-header span,
+.quest-details,
+.quest-footer small,
+.stock-card p,
+.report-highlight p,
+.empty-state p,
+.endgame-card p {
+  color: #e6cca0;
+  line-height: 1.55;
+}
+
+.price-control {
+  display: grid;
+  gap: 8px;
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.price-control input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid rgba(243, 201, 105, 0.35);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--cream);
+  font: inherit;
+  font-weight: 800;
+  outline: none;
+}
+
+.price-control input:focus {
+  border-color: var(--gold);
+}
+
+.stock-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.quest-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 16px;
+}
+
+.quest-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.quest-card.available {
+  border-color: rgba(95, 185, 107, 0.6);
+}
+
+.quest-card.locked {
+  opacity: 0.72;
+}
+
+.quest-card-header strong {
+  display: grid;
+  place-items: center;
+  min-width: 58px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(95, 185, 107, 0.18);
+  color: #8fe29a;
+}
+
+.quest-details {
+  display: grid;
+  gap: 6px;
+  font-size: 0.92rem;
+}
+
+.quest-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.quest-result {
+  grid-column: 1 / -1;
+}
+
+.quest-result.success {
+  border-color: rgba(95, 185, 107, 0.65);
+}
+
+.quest-result.failure {
+  border-color: rgba(217, 79, 69, 0.65);
+}
+
+.quest-result strong,
+.quest-result span {
+  display: block;
+}
+
+.report-content {
+  display: grid;
+  gap: 18px;
+}
+
+.report-highlight {
+  padding: 22px;
+}
+
+.report-highlight.positive {
+  border-color: rgba(95, 185, 107, 0.65);
+}
+
+.report-highlight.negative {
+  border-color: rgba(217, 79, 69, 0.65);
+}
+
+.report-highlight span {
+  color: #80c58b;
+  font-weight: 900;
+}
+
+.report-highlight h3 {
+  font-size: 2.2rem;
+  margin: 8px 0;
+}
+
+.report-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.report-columns section,
+.empty-state,
+.endgame-card {
+  padding: 20px;
+}
+
+.report-row.muted {
+  color: #d9b98a;
+  opacity: 0.86;
+}
+
+.endgame-card.vitoria {
+  border-color: rgba(95, 185, 107, 0.72);
+}
+
+.endgame-card.derrota {
+  border-color: rgba(217, 79, 69, 0.72);
+}
+
+.quest-loading-modal {
+  width: min(620px, 94vw);
+  text-align: center;
+  overflow: hidden;
+}
+
+.quest-loading-stage {
+  position: relative;
+  height: 190px;
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+
+.quest-road {
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  bottom: 38px;
+  height: 16px;
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(243, 201, 105, 0.9) 0 26px,
+      rgba(243, 201, 105, 0.2) 26px 46px
+    );
+  animation: roadMove 0.7s linear infinite;
+}
+
+.quest-runner {
+  position: absolute;
+  left: 50%;
+  bottom: 32px;
+  width: 128px;
+  height: 128px;
+  background-repeat: no-repeat;
+  background-size: 768px 128px;
+  image-rendering: pixelated;
+  transform: translateX(-50%) scale(1.35);
+  z-index: 2;
+}
+
+.quest-loading-modal p {
+  margin: 16px auto 0;
+  max-width: 520px;
+  color: #e6cca0;
+  line-height: 1.65;
+  font-weight: 700;
+}
+
+@keyframes roadMove {
+  from { transform: translateX(0); }
+  to { transform: translateX(46px); }
+}
