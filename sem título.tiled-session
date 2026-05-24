@@ -1,8 +1,8 @@
 {
     "activeFile": "src/assets/maps/mapa.json",
     "expandedProjectPaths": [
-        ".",
-        "src"
+        "src",
+        "."
     ],
     "file.lastUsedOpenFilter": "Todos os Ficheiros (*)",
     "fileStates": {
@@ -30,7 +30,7 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 428,
-                "y": 774
+                "y": 774.5
             }
         },
         "src/assets/maps/mapa.tmx": {
