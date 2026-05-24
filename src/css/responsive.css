@@ -1,3 +1,10 @@
+/* ======================================================
+   DOCUMENTAÇÃO DO ARQUIVO: responsive.css
+   ======================================================
+   Define adaptações para telas menores. Ajuste breakpoints quando o HUD ficar apertado.
+====================================================== */
+
+/* @doc-css Bloco responsivo @media (max-width: 1000px): ajuste largura e regras internas para mudar comportamento em telas diferentes. */
 @media (max-width: 1000px) {
   .menu-container {
     grid-template-columns: 1fr;
@@ -17,6 +24,7 @@
   }
 }
 
+/* @doc-css Bloco responsivo @media (max-width: 620px): ajuste largura e regras internas para mudar comportamento em telas diferentes. */
 @media (max-width: 620px) {
   .menu-screen,
   .game-screen {

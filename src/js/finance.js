@@ -1,3 +1,9 @@
+// ======================================================
+// DOCUMENTAÇÃO DO ARQUIVO: finance.js
+// ======================================================
+// Controla dia, expediente, relatórios, custos fixos, vendas e fechamento. Ajuste duração do expediente e fórmulas financeiras aqui.
+// ======================================================
+
 const MINUTOS_PREPARACAO = 10;
 const HORA_PREPARACAO = (8 * 60) - MINUTOS_PREPARACAO;
 const HORA_ABERTURA = 8 * 60;
@@ -46,6 +52,13 @@ const eventosDeMercado = [
   }
 ];
 
+/**
+ * @doc-func formatarMoeda
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: valor.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function formatarMoeda(valor) {
   return Number(valor || 0).toLocaleString("pt-BR", {
     style: "currency",
@@ -53,11 +66,25 @@ function formatarMoeda(valor) {
   });
 }
 
+/**
+ * @doc-func calcularCustosFixos
+ * O que faz: calcula um valor usado pelas regras do jogo; ajuste a fórmula interna para mudar o balanceamento.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function calcularCustosFixos() {
   const custoAjudante = gameState.ajudanteContratado ? gameState.custoAjudante : 0;
   return gameState.aluguel + gameState.energia + custoAjudante;
 }
 
+/**
+ * @doc-func obterCustosFixosDetalhados
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function obterCustosFixosDetalhados() {
   const custos = [
     { nome: "Aluguel do espaço", valor: gameState.aluguel },
@@ -71,6 +98,13 @@ function obterCustosFixosDetalhados() {
   return custos;
 }
 
+/**
+ * @doc-func calcularBonusClientela
+ * O que faz: calcula um valor usado pelas regras do jogo; ajuste a fórmula interna para mudar o balanceamento.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function calcularBonusClientela() {
   const reputacao = Math.min(gameState.reputacao, 40) * 0.015;
   const experiencia = Math.min(gameState.experiencia, 25) * 0.006;
@@ -78,6 +112,13 @@ function calcularBonusClientela() {
   return gameState.clientela + reputacao + experiencia + ajudante;
 }
 
+/**
+ * @doc-func sortearEventoDeMercado
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function sortearEventoDeMercado() {
   if (Math.random() > 0.55) {
     return {
@@ -91,6 +132,13 @@ function sortearEventoDeMercado() {
   return eventosDeMercado[Math.floor(Math.random() * eventosDeMercado.length)];
 }
 
+/**
+ * @doc-func calcularMultiplicadorEvento
+ * O que faz: calcula um valor usado pelas regras do jogo; ajuste a fórmula interna para mudar o balanceamento.
+ * Parâmetros: produto, evento.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function calcularMultiplicadorEvento(produto, evento) {
   let multiplicador = evento.demanda || 1;
 
@@ -105,6 +153,13 @@ function calcularMultiplicadorEvento(produto, evento) {
   return multiplicador;
 }
 
+/**
+ * @doc-func criarRelatorioBase
+ * O que faz: cria elementos ou dados novos; mude aqui quando quiser alterar estrutura, classe CSS ou valores iniciais.
+ * Parâmetros: evento.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function criarRelatorioBase(evento) {
   return {
     dia: gameState.dia,
@@ -130,6 +185,13 @@ function criarRelatorioBase(evento) {
   };
 }
 
+/**
+ * @doc-func iniciarNovoDia
+ * O que faz: inicia um fluxo/sistema; ajuste valores iniciais e chamadas de preparação aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function iniciarNovoDia() {
   if (gameState.fimDeJogo) return;
 
@@ -139,8 +201,23 @@ function iniciarNovoDia() {
   gameState.diaProntoParaEncerrar = false;
   gameState.diaEncerradoNotificado = false;
   gameState.relatorioEmAndamento = criarRelatorioBase(sortearEventoDeMercado());
+
+  if (typeof resetarNPCsDoDia === "function") {
+    resetarNPCsDoDia();
+  }
+
+  if (typeof sincronizarAjudanteVisual === "function") {
+    sincronizarAjudanteVisual();
+  }
 }
 
+/**
+ * @doc-func iniciarExpediente
+ * O que faz: inicia um fluxo/sistema; ajuste valores iniciais e chamadas de preparação aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function iniciarExpediente() {
   if (gameState.fimDeJogo) {
     return { ok: false, mensagem: "A campanha já terminou." };
@@ -160,12 +237,23 @@ function iniciarExpediente() {
     gameState.relatorioEmAndamento = criarRelatorioBase(sortearEventoDeMercado());
   }
 
+  if (typeof abrirExpediente === "function") {
+    abrirExpediente();
+  }
+
   return {
     ok: true,
     mensagem: "Expediente iniciado. As vendas só acontecerão com clientes reais."
   };
 }
 
+/**
+ * @doc-func obterMinutosDoDia
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function obterMinutosDoDia() {
   if (gameState.faseDia === "preparacao") {
     return HORA_PREPARACAO;
@@ -180,6 +268,13 @@ function obterMinutosDoDia() {
   return Math.min(HORA_FECHAMENTO, HORA_ABERTURA + minutosPassados);
 }
 
+/**
+ * @doc-func formatarHoraDoJogo
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function formatarHoraDoJogo() {
   const minutosDoDia = obterMinutosDoDia();
   const horas = Math.floor(minutosDoDia / 60);
@@ -187,17 +282,38 @@ function formatarHoraDoJogo() {
   return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(2, "0")}`;
 }
 
+/**
+ * @doc-func obterProgressoDia
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function obterProgressoDia() {
   if (gameState.faseDia === "preparacao") return 0;
   if (gameState.faseDia === "fechamento") return 1;
   return Math.min(1, gameState.tempoDiaDecorridoMs / gameState.duracaoExpedienteMs);
 }
 
+/**
+ * @doc-func obterTempoRestanteDia
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function obterTempoRestanteDia() {
   if (gameState.faseDia !== "expediente") return 0;
   return Math.max(0, gameState.duracaoExpedienteMs - gameState.tempoDiaDecorridoMs);
 }
 
+/**
+ * @doc-func formatarTempoCurto
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: ms.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function formatarTempoCurto(ms) {
   const totalSegundos = Math.ceil(ms / 1000);
   const minutos = Math.floor(totalSegundos / 60);
@@ -205,6 +321,13 @@ function formatarTempoCurto(ms) {
   return `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
 }
 
+/**
+ * @doc-func processarTempoDoDia
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: deltaTime.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function processarTempoDoDia(deltaTime) {
   if (gameState.faseDia !== "expediente" || !gameState.diaEmAndamento || gameState.fimDeJogo) return;
 
@@ -215,6 +338,10 @@ function processarTempoDoDia(deltaTime) {
     gameState.faseDia = "fechamento";
     gameState.diaEmAndamento = false;
     gameState.diaProntoParaEncerrar = true;
+
+    if (typeof fecharExpediente === "function") {
+      fecharExpediente();
+    }
 
     if (!gameState.diaEncerradoNotificado) {
       gameState.diaEncerradoNotificado = true;
@@ -230,6 +357,13 @@ function processarTempoDoDia(deltaTime) {
   }
 }
 
+/**
+ * @doc-func venderProdutoParaCliente
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: produtoId, quantidade = 1.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function venderProdutoParaCliente(produtoId, quantidade = 1) {
   if (gameState.faseDia !== "expediente" || !gameState.diaEmAndamento) {
     return { ok: false, mensagem: "O mercado não está aberto para vendas." };
@@ -256,9 +390,82 @@ function venderProdutoParaCliente(produtoId, quantidade = 1) {
     atualizarInterfaceJogo({ origem: "venda" });
   }
 
-  return { ok: true, mensagem: `${quantidadeFinal}x ${produto.nome} vendido(s).` };
+  return {
+    ok: true,
+    mensagem: `${quantidadeFinal}x ${produto.nome} vendido(s).`,
+    produto,
+    quantidade: quantidadeFinal,
+    receita: Math.max(1, estoque.precoVenda) * quantidadeFinal
+  };
 }
 
+/**
+ * @doc-func venderCarrinhoParaCliente
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: itens = [].
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function venderCarrinhoParaCliente(itens = []) {
+  if (gameState.faseDia !== "expediente" || !gameState.diaEmAndamento) {
+    return { ok: false, mensagem: "O mercado não está aberto para vendas." };
+  }
+
+  if (!gameState.relatorioEmAndamento) {
+    return { ok: false, mensagem: "Relatório do dia não foi iniciado." };
+  }
+
+  const itensValidados = itens
+    .map((item) => {
+      const produto = obterProduto(item.produtoId);
+      const quantidade = Math.max(1, Number(item.quantidade) || 1);
+      const estoque = produto ? obterEstoque(produto.id) : null;
+
+      return { produto, quantidade, estoque };
+    })
+    .filter((item) => item.produto && produtoEstaLiberado(item.produto));
+
+  if (!itensValidados.length) {
+    return { ok: false, mensagem: "O cliente não tem itens válidos." };
+  }
+
+  const itemSemEstoque = itensValidados.find((item) => item.estoque.quantidade < item.quantidade);
+  if (itemSemEstoque) {
+    return {
+      ok: false,
+      mensagem: `${itemSemEstoque.produto.nome} não tem estoque suficiente.`
+    };
+  }
+
+  const relatorio = gameState.relatorioEmAndamento;
+  let receita = 0;
+  let quantidadeTotal = 0;
+
+  itensValidados.forEach((item) => {
+    registrarVenda(item.produto, item.quantidade, relatorio);
+    receita += Math.max(1, item.estoque.precoVenda) * item.quantidade;
+    quantidadeTotal += item.quantidade;
+  });
+
+  if (typeof atualizarInterfaceJogo === "function") {
+    atualizarInterfaceJogo({ origem: "venda" });
+  }
+
+  return {
+    ok: true,
+    mensagem: `${quantidadeTotal} item(ns) vendido(s).`,
+    receita,
+    quantidade: quantidadeTotal
+  };
+}
+
+/**
+ * @doc-func escolherProdutoParaCliente
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: evento.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function escolherProdutoParaCliente(evento) {
   const candidatos = productCatalog
     .filter((produto) => produtoEstaLiberado(produto) && obterEstoque(produto.id).quantidade > 0)
@@ -292,6 +499,20 @@ function escolherProdutoParaCliente(evento) {
   return candidatos[candidatos.length - 1].produto;
 }
 
+/**
+ * @doc-func registrarVenda
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: produto, quantidade, relatorio.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+/**
+ * @doc-func registrarVenda
+ * O que faz: registra um evento/estado temporário; edite para mudar feedback ou contadores.
+ * Parâmetros: produto, quantidade, relatorio.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function registrarVenda(produto, quantidade, relatorio) {
   const estoque = obterEstoque(produto.id);
   const preco = Math.max(1, estoque.precoVenda);
@@ -315,6 +536,13 @@ function registrarVenda(produto, quantidade, relatorio) {
   relatorio.caixaDepois = gameState.caixa;
 }
 
+/**
+ * @doc-func aplicarPerdasDeEstoque
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function aplicarPerdasDeEstoque() {
   const perdas = [];
 
@@ -341,6 +569,13 @@ function aplicarPerdasDeEstoque() {
   return perdas;
 }
 
+/**
+ * @doc-func passarDia
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function passarDia() {
   if (gameState.fimDeJogo) {
     return gameState.ultimoRelatorio;
@@ -398,6 +633,13 @@ function passarDia() {
   return relatorio;
 }
 
+/**
+ * @doc-func atualizarCooldownsDeQuests
+ * O que faz: sincroniza estado e visual; edite com cuidado porque costuma rodar várias vezes durante o jogo.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function atualizarCooldownsDeQuests() {
   Object.keys(gameState.quests.cooldowns).forEach((questId) => {
     gameState.quests.cooldowns[questId] -= 1;
@@ -408,6 +650,13 @@ function atualizarCooldownsDeQuests() {
   });
 }
 
+/**
+ * @doc-func verificarFimDeJogo
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function verificarFimDeJogo() {
   if (gameState.caixa < 0) {
     gameState.fimDeJogo = {
@@ -430,6 +679,13 @@ function verificarFimDeJogo() {
   }
 }
 
+/**
+ * @doc-func calcularResumoFinanceiro
+ * O que faz: calcula um valor usado pelas regras do jogo; ajuste a fórmula interna para mudar o balanceamento.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function calcularResumoFinanceiro() {
   const receitaTotal = gameState.historico.reduce((total, dia) => total + dia.receita, 0);
   const custoMercadorias = gameState.historico.reduce((total, dia) => total + dia.custoMercadorias, 0);

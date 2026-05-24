@@ -1,3 +1,9 @@
+// ======================================================
+// DOCUMENTAÇÃO DO ARQUIVO: ui.js
+// ======================================================
+// Renderiza HUD, modais, listas, checkout, status e relatórios. Mude textos e layout dinâmico aqui.
+// ======================================================
+
 let interfaceInicializada = false;
 let ultimoResultadoQuest = null;
 let questEmAndamento = false;
@@ -5,6 +11,13 @@ const QUEST_LOADING_MS = 10000;
 
 const ui = {};
 
+/**
+ * @doc-func inicializarInterface
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function inicializarInterface() {
   if (interfaceInicializada) return;
 
@@ -22,10 +35,12 @@ function inicializarInterface() {
   ui.stockModal = document.getElementById("stock-modal");
   ui.questsModal = document.getElementById("quests-modal");
   ui.reportModal = document.getElementById("report-modal");
+  ui.checkoutModal = document.getElementById("checkout-modal");
   ui.questLoadingModal = document.getElementById("quest-loading-modal");
   ui.toast = document.getElementById("game-toast");
 
   const btnPassarDia = ui.btnPassarDia;
+  const btnCaixa = document.getElementById("btn-caixa");
   const btnStatus = document.getElementById("btn-status");
   const btnEstoque = document.getElementById("btn-estoque");
   const btnQuests = document.getElementById("btn-quests");
@@ -34,6 +49,7 @@ function inicializarInterface() {
   const btnCarregar = document.getElementById("btn-carregar");
   const stockList = document.getElementById("stock-product-list");
   const questsList = document.getElementById("quests-list");
+  const checkoutContent = document.getElementById("checkout-content");
   const objectives = document.getElementById("status-objectives");
 
   if (btnPassarDia) {
@@ -57,6 +73,10 @@ function inicializarInterface() {
 
   if (btnStatus) {
     btnStatus.addEventListener("click", abrirStatus);
+  }
+
+  if (btnCaixa) {
+    btnCaixa.addEventListener("click", abrirCheckout);
   }
 
   if (btnEstoque) {
@@ -96,6 +116,11 @@ function inicializarInterface() {
     questsList.addEventListener("click", lidarCliqueQuest);
   }
 
+  if (checkoutContent) {
+    checkoutContent.addEventListener("click", lidarCliqueCheckout);
+    checkoutContent.addEventListener("input", lidarInputCheckout);
+  }
+
   if (objectives) {
     objectives.addEventListener("click", lidarCliqueObjetivo);
   }
@@ -122,11 +147,19 @@ function inicializarInterface() {
   atualizarInterfaceJogo();
 }
 
+/**
+ * @doc-func atualizarInterfaceJogo
+ * O que faz: sincroniza estado e visual; edite com cuidado porque costuma rodar várias vezes durante o jogo.
+ * Parâmetros: opcoes = {}.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function atualizarInterfaceJogo(opcoes = {}) {
   inicializarEstoque();
   renderizarHud();
   renderizarCustosFixos();
   renderizarProdutosResumo();
+  renderizarBotaoCheckout();
 
   if (ui.statusModal && !ui.statusModal.classList.contains("hidden")) {
     renderizarStatus();
@@ -139,8 +172,19 @@ function atualizarInterfaceJogo(opcoes = {}) {
   if (ui.questsModal && !ui.questsModal.classList.contains("hidden")) {
     renderizarQuests();
   }
+
+  if (ui.checkoutModal && !ui.checkoutModal.classList.contains("hidden")) {
+    renderizarCheckout();
+  }
 }
 
+/**
+ * @doc-func renderizarHud
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function renderizarHud() {
   if (ui.diaAtual) ui.diaAtual.textContent = gameState.dia;
   if (ui.caixaAtual) ui.caixaAtual.textContent = formatarMoeda(gameState.caixa);
@@ -154,6 +198,13 @@ function renderizarHud() {
   atualizarHudTempo();
 }
 
+/**
+ * @doc-func atualizarHudTempo
+ * O que faz: sincroniza estado e visual; edite com cuidado porque costuma rodar várias vezes durante o jogo.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function atualizarHudTempo() {
   if (ui.horaAtual) ui.horaAtual.textContent = formatarHoraDoJogo();
 
@@ -186,6 +237,13 @@ function atualizarHudTempo() {
   }
 }
 
+/**
+ * @doc-func renderizarCustosFixos
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function renderizarCustosFixos() {
   if (!ui.financeCostList) return;
 
@@ -210,6 +268,34 @@ function renderizarCustosFixos() {
   `;
 }
 
+/**
+ * @doc-func renderizarBotaoCheckout
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function renderizarBotaoCheckout() {
+  const btnCaixa = document.getElementById("btn-caixa");
+  if (!btnCaixa) return;
+
+  const fila = typeof obterFilaAtendimento === "function" ? obterFilaAtendimento() : [];
+  const aguardando = typeof existeClienteAguardando === "function" && existeClienteAguardando();
+
+  btnCaixa.textContent = aguardando
+    ? `Atender Caixa (${fila.length})`
+    : `Caixa (${fila.length})`;
+  btnCaixa.classList.toggle("attention", aguardando);
+  btnCaixa.disabled = Boolean(gameState.fimDeJogo);
+}
+
+/**
+ * @doc-func renderizarProdutosResumo
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function renderizarProdutosResumo() {
   if (!ui.listaProdutos) return;
 
@@ -230,13 +316,20 @@ function renderizarProdutosResumo() {
     .join("");
 }
 
+/**
+ * @doc-func abrirModal
+ * O que faz: abre uma tela/modal/fluxo; edite textos e chamadas caso o comportamento de abertura mude.
+ * Parâmetros: modalId.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function abrirModal(modalId) {
   if (!ui.modalBackdrop) return;
 
   document.querySelector(".actions-panel")?.classList.remove("open");
   document.querySelector(".finance-panel")?.classList.remove("open");
 
-  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.questLoadingModal].forEach((modal) => {
+  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.checkoutModal, ui.questLoadingModal].forEach((modal) => {
     if (modal) modal.classList.add("hidden");
   });
 
@@ -247,39 +340,120 @@ function abrirModal(modalId) {
   modal.classList.remove("hidden");
 }
 
+/**
+ * @doc-func fecharModal
+ * O que faz: fecha uma tela/modal/fluxo; edite para limpar estados extras ao sair.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function fecharModal() {
   if (!ui.modalBackdrop || questEmAndamento) return;
 
+  if (ui.checkoutModal && !ui.checkoutModal.classList.contains("hidden") && typeof liberarAtendimentoCheckout === "function") {
+    liberarAtendimentoCheckout();
+  }
+
   ui.modalBackdrop.classList.add("hidden");
-  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.questLoadingModal].forEach((modal) => {
+  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.checkoutModal, ui.questLoadingModal].forEach((modal) => {
     if (modal) modal.classList.add("hidden");
   });
 }
 
+/**
+ * @doc-func modalEstaAberto
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function modalEstaAberto() {
   return ui.modalBackdrop && !ui.modalBackdrop.classList.contains("hidden");
 }
 
+/**
+ * @doc-func abrirStatus
+ * O que faz: abre uma tela/modal/fluxo; edite textos e chamadas caso o comportamento de abertura mude.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function abrirStatus() {
   renderizarStatus();
   abrirModal("status-modal");
 }
 
+/**
+ * @doc-func abrirEstoque
+ * O que faz: abre uma tela/modal/fluxo; edite textos e chamadas caso o comportamento de abertura mude.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function abrirEstoque() {
   renderizarEstoque();
   abrirModal("stock-modal");
 }
 
+/**
+ * @doc-func abrirQuests
+ * O que faz: abre uma tela/modal/fluxo; edite textos e chamadas caso o comportamento de abertura mude.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function abrirQuests() {
   renderizarQuests();
   abrirModal("quests-modal");
 }
 
+/**
+ * @doc-func abrirRelatorio
+ * O que faz: abre uma tela/modal/fluxo; edite textos e chamadas caso o comportamento de abertura mude.
+ * Parâmetros: relatorio.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function abrirRelatorio(relatorio) {
   renderizarRelatorio(relatorio);
   abrirModal("report-modal");
 }
 
+/**
+ * @doc-func jogadorPodeAtenderCaixa
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function jogadorPodeAtenderCaixa() {
+  return typeof jogadorEstaNoPisoBalcao === "function" && jogadorEstaNoPisoBalcao();
+}
+
+/**
+ * @doc-func abrirCheckout
+ * O que faz: abre uma tela/modal/fluxo; edite textos e chamadas caso o comportamento de abertura mude.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function abrirCheckout() {
+  if (!jogadorPodeAtenderCaixa()) {
+    mostrarToast("Entre no balcao para atender clientes.");
+    return;
+  }
+
+  renderizarCheckout();
+  abrirModal("checkout-modal");
+}
+
+/**
+ * @doc-func renderizarStatus
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function renderizarStatus() {
   const resumo = calcularResumoFinanceiro();
   const nome = document.getElementById("status-player-name");
@@ -313,12 +487,18 @@ function renderizarStatus() {
   }
 
   if (operacao) {
+    const npcResumo = obterResumoNPCs();
+
     operacao.innerHTML = `
       ${linhaStatus("Fase do dia", descreverFaseDia())}
       ${linhaStatus("Dia", `${gameState.dia}/${gameState.diaMaximo}`)}
       ${linhaStatus("Reputação", gameState.reputacao)}
       ${linhaStatus("Experiência", gameState.experiencia)}
       ${linhaStatus("Vendas hoje", resumo.unidadesHoje)}
+      ${linhaStatus("Clientes na loja", npcResumo.naLoja)}
+      ${linhaStatus("Fila do caixa", npcResumo.fila)}
+      ${linhaStatus("Clientes do dia", npcResumo.total)}
+      ${linhaStatus("Receita dos NPCs", formatarMoeda(npcResumo.receita))}
       ${linhaStatus("Itens em estoque", resumo.quantidadeEstoque)}
       ${linhaStatus("Custo fixo diário", formatarMoeda(calcularCustosFixos()))}
       ${linhaStatus("Desconto fornecedor", `${Math.round((gameState.descontoFornecedor || 0) * 100)}%`)}
@@ -346,6 +526,33 @@ function renderizarStatus() {
   }
 }
 
+/**
+ * @doc-func obterResumoNPCs
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function obterResumoNPCs() {
+  if (typeof npcSystem === "undefined") {
+    return { naLoja: 0, fila: 0, total: 0, receita: 0 };
+  }
+
+  return {
+    naLoja: npcSystem.clientes ? npcSystem.clientes.length : 0,
+    fila: typeof obterFilaAtendimento === "function" ? obterFilaAtendimento().length : 0,
+    total: npcSystem.totalClientesDia || 0,
+    receita: npcSystem.totalVendasDia || 0
+  };
+}
+
+/**
+ * @doc-func linhaStatus
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: rotulo, valor.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function linhaStatus(rotulo, valor) {
   return `
     <div class="status-row">
@@ -355,6 +562,13 @@ function linhaStatus(rotulo, valor) {
   `;
 }
 
+/**
+ * @doc-func descreverFaseDia
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function descreverFaseDia() {
   if (gameState.fimDeJogo) return "Campanha encerrada";
   if (gameState.faseDia === "preparacao") return "Preparação, antes da abertura";
@@ -362,6 +576,13 @@ function descreverFaseDia() {
   return `Expediente aberto, ${formatarTempoCurto(obterTempoRestanteDia())}`;
 }
 
+/**
+ * @doc-func barraObjetivo
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: rotulo, percentual, detalhe.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function barraObjetivo(rotulo, percentual, detalhe) {
   const largura = Math.max(0, Math.min(100, percentual));
   return `
@@ -377,6 +598,13 @@ function barraObjetivo(rotulo, percentual, detalhe) {
   `;
 }
 
+/**
+ * @doc-func renderizarEstoque
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function renderizarEstoque() {
   const resumo = document.getElementById("stock-summary");
   const lista = document.getElementById("stock-product-list");
@@ -429,6 +657,13 @@ function renderizarEstoque() {
     .join("");
 }
 
+/**
+ * @doc-func lidarCliqueEstoque
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: event.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function lidarCliqueEstoque(event) {
   const botaoCompra = event.target.closest("[data-buy-product]");
   if (!botaoCompra) return;
@@ -438,6 +673,13 @@ function lidarCliqueEstoque(event) {
   atualizarInterfaceJogo();
 }
 
+/**
+ * @doc-func lidarAlteracaoEstoque
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: event.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function lidarAlteracaoEstoque(event) {
   const inputPreco = event.target.closest("[data-price-product]");
   if (!inputPreco) return;
@@ -447,6 +689,263 @@ function lidarAlteracaoEstoque(event) {
   atualizarInterfaceJogo();
 }
 
+/**
+ * @doc-func renderizarCheckout
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function renderizarCheckout() {
+  const conteudo = document.getElementById("checkout-content");
+  if (!conteudo) return;
+
+  const fila = typeof obterFilaAtendimento === "function" ? obterFilaAtendimento() : [];
+  const cliente = typeof obterClienteParaAtender === "function" ? obterClienteParaAtender() : null;
+
+  if (!cliente) {
+    conteudo.innerHTML = `
+      <div class="checkout-empty">
+        <h3>Nenhum cliente no caixa</h3>
+        <p>${fila.length ? "Os clientes ainda estão entrando na fila." : "Quando alguém terminar as compras, ele vai esperar atendimento aqui."}</p>
+        <div class="checkout-queue-strip">
+          ${fila.map((item) => `<span>${item.perfil.nome}</span>`).join("") || "<span>Fila vazia</span>"}
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const carrinho = cliente.carrinho;
+  if (typeof marcarClienteEmAtendimento === "function") {
+    marcarClienteEmAtendimento(cliente.id);
+  }
+
+  const estoqueOk = carrinho.itens.every((item) => obterEstoque(item.produtoId).quantidade >= item.quantidade);
+  const dinheiroOk = carrinho.valorEntregue >= carrinho.total;
+  const trocoEsperado = Math.max(0, Number(carrinho.troco) || 0);
+  const inputTrocoAtual = document.getElementById("checkout-change-input");
+  const pilhaTrocoAtual = inputTrocoAtual && inputTrocoAtual.dataset.checkoutClient === cliente.id
+    ? inputTrocoAtual.dataset.changeStack || ""
+    : "";
+  const valorTrocoAtual = calcularTotalPilhaTroco(pilhaTrocoAtual);
+
+  conteudo.innerHTML = `
+    <section class="checkout-customer">
+      <div>
+        <span>Cliente da vez</span>
+        <h3>${cliente.perfil.nome}</h3>
+      </div>
+      <strong>${fila.length} na fila</strong>
+    </section>
+
+    <section class="checkout-items">
+      <h3>Cesta do cliente</h3>
+      ${carrinho.itens.map((item) => `
+        <div class="checkout-row">
+          <span>${item.quantidade}x ${item.nome}</span>
+          <strong>${formatarMoeda(item.subtotal)}</strong>
+          <small>Estoque: ${obterEstoque(item.produtoId).quantidade}</small>
+        </div>
+      `).join("")}
+    </section>
+
+    <section class="checkout-payment">
+      ${linhaStatus("Total da compra", formatarMoeda(carrinho.total))}
+      ${linhaStatus("Cliente entregou", formatarMoeda(carrinho.valorEntregue))}
+      ${linhaStatus("Troco a devolver", formatarMoeda(trocoEsperado))}
+      ${!estoqueOk ? '<div class="checkout-warning">Estoque insuficiente para fechar essa cesta.</div>' : ""}
+      ${!dinheiroOk ? '<div class="checkout-warning">O cliente não entregou dinheiro suficiente.</div>' : ""}
+    </section>
+
+    <section class="checkout-change">
+      <div class="checkout-change-header">
+        <div>
+          <span>Bandeja de troco</span>
+          <strong id="checkout-change-preview">${formatarMoeda(Number(valorTrocoAtual) || 0)}</strong>
+        </div>
+        <small>Monte o troco com moedas e fichas antes de fechar a venda.</small>
+      </div>
+
+      <input id="checkout-change-input" data-checkout-change data-checkout-client="${cliente.id}" data-change-stack="${pilhaTrocoAtual}" type="hidden" value="${valorTrocoAtual}" />
+
+      <div class="checkout-coin-tray" aria-label="Bandeja de moedas para montar o troco">
+        ${[1, 2, 5, 10, 20, 50].map((moeda) => `
+          <button type="button" data-change-coin="${moeda}">
+            <span>${moeda}</span>
+            <strong>+ ${formatarMoeda(moeda)}</strong>
+          </button>
+        `).join("")}
+      </div>
+
+      <div id="checkout-change-ledger" class="checkout-coin-ledger">
+        ${renderizarPilhaTroco(pilhaTrocoAtual)}
+      </div>
+
+      <div class="checkout-coin-actions">
+        <button type="button" data-change-backspace>Retirar ultima moeda</button>
+        <button type="button" data-change-clear>Zerar bandeja</button>
+      </div>
+    </section>
+
+    <div class="checkout-actions">
+      <button class="btn ghost" data-checkout-reject data-checkout-client="${cliente.id}">Recusar venda</button>
+      <button class="btn primary" data-checkout-accept data-checkout-client="${cliente.id}" ${estoqueOk && dinheiroOk ? "" : "disabled"}>Receber e devolver troco</button>
+    </div>
+  `;
+}
+
+/**
+ * @doc-func lidarCliqueCheckout
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: event.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function lidarCliqueCheckout(event) {
+  const moeda = event.target.closest("[data-change-coin]");
+  const limpar = event.target.closest("[data-change-clear]");
+  const apagar = event.target.closest("[data-change-backspace]");
+
+  if (moeda || limpar || apagar) {
+    alterarTrocoCheckout({ moeda, limpar, apagar });
+    return;
+  }
+
+  const aceitar = event.target.closest("[data-checkout-accept]");
+  const recusar = event.target.closest("[data-checkout-reject]");
+  if (!aceitar && !recusar) return;
+
+  const alvo = aceitar || recusar;
+  const inputTroco = document.getElementById("checkout-change-input");
+  const trocoInformado = inputTroco ? inputTroco.value : 0;
+  const resultado = atenderClienteDaFila(Boolean(aceitar), alvo.dataset.checkoutClient, trocoInformado);
+  mostrarToast(resultado.mensagem);
+
+  if (resultado.mantemAtendimento) {
+    if (inputTroco) {
+      inputTroco.focus();
+      inputTroco.select();
+    }
+    return;
+  }
+
+  atualizarInterfaceJogo();
+  renderizarCheckout();
+}
+
+/**
+ * @doc-func lidarInputCheckout
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: event.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function lidarInputCheckout(event) {
+  if (!event.target.closest("[data-checkout-change]")) return;
+  atualizarPreviewTrocoCheckout();
+}
+
+/**
+ * @doc-func alterarTrocoCheckout
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: acao.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function alterarTrocoCheckout(acao) {
+  const input = document.getElementById("checkout-change-input");
+  if (!input) return;
+
+  const pilha = obterPilhaTroco(input.dataset.changeStack || "");
+
+  if (acao.limpar) {
+    pilha.length = 0;
+  } else if (acao.apagar) {
+    pilha.pop();
+  } else if (acao.moeda) {
+    pilha.push(Math.max(0, Number(acao.moeda.dataset.changeCoin) || 0));
+  }
+
+  input.dataset.changeStack = pilha.join(",");
+  input.value = String(pilha.reduce((total, valor) => total + valor, 0));
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+/**
+ * @doc-func atualizarPreviewTrocoCheckout
+ * O que faz: sincroniza estado e visual; edite com cuidado porque costuma rodar várias vezes durante o jogo.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function atualizarPreviewTrocoCheckout() {
+  const input = document.getElementById("checkout-change-input");
+  const preview = document.getElementById("checkout-change-preview");
+  const ledger = document.getElementById("checkout-change-ledger");
+  if (!input || !preview) return;
+
+  const pilhaTexto = input.dataset.changeStack || "";
+  const valor = calcularTotalPilhaTroco(pilhaTexto);
+  input.value = String(valor);
+  preview.textContent = formatarMoeda(valor);
+
+  if (ledger) {
+    ledger.innerHTML = renderizarPilhaTroco(pilhaTexto);
+  }
+}
+
+/**
+ * @doc-func obterPilhaTroco
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: pilhaTexto.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function obterPilhaTroco(pilhaTexto) {
+  return String(pilhaTexto || "")
+    .split(",")
+    .map((valor) => Number(valor))
+    .filter((valor) => valor > 0);
+}
+
+/**
+ * @doc-func calcularTotalPilhaTroco
+ * O que faz: calcula um valor usado pelas regras do jogo; ajuste a fórmula interna para mudar o balanceamento.
+ * Parâmetros: pilhaTexto.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function calcularTotalPilhaTroco(pilhaTexto) {
+  return obterPilhaTroco(pilhaTexto).reduce((total, valor) => total + valor, 0);
+}
+
+/**
+ * @doc-func renderizarPilhaTroco
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: pilhaTexto.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function renderizarPilhaTroco(pilhaTexto) {
+  const pilha = obterPilhaTroco(pilhaTexto);
+
+  if (!pilha.length) {
+    return "<span>Nenhuma moeda na bandeja.</span>";
+  }
+
+  return pilha
+    .map((valor) => `<strong>${formatarMoeda(valor)}</strong>`)
+    .join("");
+}
+
+/**
+ * @doc-func renderizarQuests
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function renderizarQuests() {
   const resumo = document.getElementById("quest-summary");
   const lista = document.getElementById("quests-list");
@@ -494,6 +993,13 @@ function renderizarQuests() {
     .join("");
 }
 
+/**
+ * @doc-func renderizarResultadoQuest
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function renderizarResultadoQuest() {
   if (!ultimoResultadoQuest) return "";
 
@@ -514,6 +1020,13 @@ function renderizarResultadoQuest() {
   `;
 }
 
+/**
+ * @doc-func descreverCustoQuest
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: quest.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function descreverCustoQuest(quest) {
   const custo = quest.custo || {};
   const partes = [];
@@ -530,6 +1043,13 @@ function descreverCustoQuest(quest) {
   return partes.length ? partes.join(", ") : "Nenhum";
 }
 
+/**
+ * @doc-func descreverRecompensaQuest
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: quest.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function descreverRecompensaQuest(quest) {
   const recompensa = quest.recompensa || {};
   const partes = [];
@@ -556,6 +1076,13 @@ function descreverRecompensaQuest(quest) {
   return partes.join(", ");
 }
 
+/**
+ * @doc-func lidarCliqueQuest
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: event.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function lidarCliqueQuest(event) {
   const botao = event.target.closest("[data-start-quest]");
   if (!botao || questEmAndamento) return;
@@ -563,6 +1090,13 @@ function lidarCliqueQuest(event) {
   executarQuestComLoading(botao.dataset.startQuest);
 }
 
+/**
+ * @doc-func executarQuestComLoading
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: questId.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function executarQuestComLoading(questId) {
   const quest = obterQuest(questId);
   if (!quest) return;
@@ -611,6 +1145,13 @@ function executarQuestComLoading(questId) {
   }, QUEST_LOADING_MS);
 }
 
+/**
+ * @doc-func renderizarRelatorio
+ * O que faz: monta HTML dinâmico na interface; altere classes, textos e botões aqui.
+ * Parâmetros: relatorio.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function renderizarRelatorio(relatorio) {
   const conteudo = document.getElementById("report-content");
   if (!conteudo) return;
@@ -679,6 +1220,13 @@ function renderizarRelatorio(relatorio) {
   `;
 }
 
+/**
+ * @doc-func lidarCliqueObjetivo
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: event.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function lidarCliqueObjetivo(event) {
   const contratar = event.target.closest("[data-hire-helper]");
   if (!contratar) return;
@@ -688,6 +1236,13 @@ function lidarCliqueObjetivo(event) {
   atualizarInterfaceJogo();
 }
 
+/**
+ * @doc-func mostrarToast
+ * O que faz: exibe feedback visual para o jogador; ajuste mensagens, telas ou animações aqui.
+ * Parâmetros: mensagem.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function mostrarToast(mensagem) {
   if (!ui.toast || !mensagem) return;
 

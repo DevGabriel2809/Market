@@ -6,16 +6,27 @@
 
   <title>Mercado | Reino dos Custos</title>
 
-  <link rel="stylesheet" href="src/css/style.css?v=12" />
-  <link rel="stylesheet" href="src/css/menu.css?v=12" />
-  <link rel="stylesheet" href="src/css/game.css?v=12" />
-  <link rel="stylesheet" href="src/css/responsive.css?v=12" />
+  <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
+  <link rel="stylesheet" href="src/css/style.css?v=22" />
+  <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
+  <link rel="stylesheet" href="src/css/menu.css?v=22" />
+  <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
+  <link rel="stylesheet" href="src/css/game.css?v=22" />
+  <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
+  <link rel="stylesheet" href="src/css/responsive.css?v=22" />
+  <link rel="shortcut icon" href="favicon.ico">
 </head>
 
 <body>
+
+  <!-- Camada global dos morcegos. O bat-system.js cria poucos morcegos pixel art sobre o mapa durante a intro e ondas ambiente. -->
+  <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
+  <div id="bat-layer" class="bat-layer" aria-hidden="true"></div>
+
   <main class="app">
 
     <!-- TELA INICIAL -->
+    <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="tela-menu" class="screen active menu-screen">
 
       <div class="menu-overlay"></div>
@@ -28,6 +39,7 @@
           <h1>Taberna Medieval</h1>
           <h2>Reino dos Custos</h2>
 
+          <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
           <p>
             Administre um mercado medieval, compre mercadorias, controle o estoque,
             defina preços e aprenda contabilidade de custos de forma divertida.
@@ -36,6 +48,7 @@
             <div class="player-input-area">
             <label for="player-name">Nome do gerente</label>
 
+            <!-- @doc-html Campo de entrada. O id conecta o input à validação no JavaScript. -->
             <input
                 type="text"
                 id="player-name"
@@ -49,8 +62,11 @@
             </div>
 
           <div class="menu-buttons">
+            <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
             <button id="btn-iniciar" class="btn primary">Iniciar Jogo</button>
+            <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
             <button id="btn-como-jogar" class="btn secondary">Como Jogar</button>
+            <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
             <button id="btn-creditos" class="btn ghost">Créditos</button>
           </div>
         </section>
@@ -60,11 +76,13 @@
 
           <div class="characters-options">
 
+            <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
             <button class="character-option selected" data-character="male">
               <div class="sprite-preview manager-male-idle"></div>
               <span>Gerente M.</span>
             </button>
 
+            <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
             <button class="character-option" data-character="female">
               <div class="sprite-preview manager-female-idle"></div>
               <span>Gerente F.</span>
@@ -82,41 +100,55 @@
     </section>
 
     <!-- COMO JOGAR -->
+    <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="tela-como-jogar" class="screen tutorial-screen">
       <div class="modal-card">
         <h2>Como Jogar</h2>
 
+        <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
         <p>
           Você será responsável por administrar um mercado medieval durante
           30 dias simulados.
         </p>
 
         <ul>
+          <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
           <li>Compre mercadorias para abastecer o estoque.</li>
+          <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
           <li>Defina o preço de venda de cada produto.</li>
+          <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
           <li>Controle custos como aluguel, energia e equipe contratada.</li>
+          <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
           <li>Analise o relatório diário para saber se teve lucro ou prejuízo.</li>
         </ul>
 
+        <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
         <button class="btn primary btn-voltar-menu">Voltar</button>
       </div>
     </section>
 
     <!-- CRÉDITOS -->
+    <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="tela-creditos" class="screen credits-screen">
       <div class="modal-card">
         <h2>Créditos</h2>
 
+        <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
         <p>Projeto desenvolvido para o curso técnico de Administração na Escola Técnica Estadual Professor Lucilo Ávila Pessoa</p>
+        <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
         <p>Tema: Contabilidade e Custos.</p>
+        <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
         <p>Jogo: Mercado  — Reino dos Custos.</p>
+        <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
         <p>Criadores: Marília Beatriz</p>
 
+        <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
         <button class="btn primary btn-voltar-menu">Voltar</button>
       </div>
     </section>
 
     <!-- TELA DO JOGO -->
+    <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="tela-jogo" class="screen game-screen">
 
       <header class="game-header">
@@ -141,10 +173,12 @@
         </div>
       </header>
 
+      <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
       <button id="btn-finance-toggle" class="hud-toggle finance-toggle">
         ☰ Custos
       </button>
 
+      <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
       <button id="btn-actions-toggle" class="hud-toggle actions-toggle">
         ☰ Ações
       </button>
@@ -153,6 +187,7 @@
 
         <aside class="finance-panel">
           <h3>Custos Fixos</h3>
+          <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
           <div id="finance-cost-list"></div>
         </aside>
 
@@ -160,6 +195,7 @@
 
           <div class="market-scene" id="market-scene">
   
+          <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
           <div id="world">
             <img 
               src="src/assets/images/backgrounds/MAPA.png" 
@@ -167,7 +203,9 @@
             />
           </div>
 
+          <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
           <div id="player-shadow"></div>
+          <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
           <div id="player-character" class="sprite-game manager-male-idle-down"></div>
 
             </div>
@@ -175,6 +213,7 @@
           <div class="products-area">
             <h3>Mercadorias</h3>
 
+            <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
             <div id="lista-produtos" class="products-grid">
               <!-- Produtos entram pelo JavaScript -->
             </div>
@@ -185,12 +224,21 @@
         <aside class="actions-panel">
           <h3>Ações</h3>
 
+          <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
           <button id="btn-passar-dia" class="btn primary full">Iniciar Expediente</button>
+          <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
+          <button id="btn-caixa" class="btn checkout full">Caixa (0)</button>
+          <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
           <button id="btn-status" class="btn secondary full">Status</button>
+          <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
           <button id="btn-estoque" class="btn secondary full">Estoque</button>
+          <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
           <button id="btn-quests" class="btn quest full">Missões</button>
+          <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
           <button id="btn-relatorio" class="btn secondary full">Ver Relatório</button>
+          <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
           <button id="btn-salvar" class="btn ghost full">Salvar Jogo</button>
+          <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
           <button id="btn-carregar" class="btn ghost full">Carregar</button>
         </aside>
 
@@ -200,21 +248,26 @@
 
   </main>
 
+  <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
   <div id="game-toast" class="game-toast" aria-live="polite"></div>
 
+  <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
   <div id="modal-backdrop" class="modal-backdrop hidden">
 
+    <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="status-modal" class="game-modal status-modal hidden" role="dialog" aria-modal="true">
       <header class="game-modal-header">
         <div>
           <span class="modal-kicker">Painel do gerente</span>
           <h2>Status do Mercado</h2>
         </div>
+        <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
         <button class="modal-close" data-close-modal aria-label="Fechar">×</button>
       </header>
 
       <div class="status-grid">
         <aside class="status-manager">
+          <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
           <div id="status-character" class="status-character manager-male-idle"></div>
           <h3 id="status-player-name">Gerente</h3>
           <span id="status-player-role">Administrador iniciante</span>
@@ -222,61 +275,92 @@
 
         <section class="status-panel">
           <h3>Finanças</h3>
+          <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
           <div id="status-finances" class="status-list"></div>
         </section>
 
         <section class="status-panel">
           <h3>Operação</h3>
+          <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
           <div id="status-operation" class="status-list"></div>
         </section>
 
         <section class="status-panel wide">
           <h3>Objetivos</h3>
+          <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
           <div id="status-objectives" class="objective-list"></div>
         </section>
       </div>
     </section>
 
+    <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="stock-modal" class="game-modal stock-modal hidden" role="dialog" aria-modal="true">
       <header class="game-modal-header">
         <div>
           <span class="modal-kicker">Armazém</span>
           <h2>Estoque</h2>
         </div>
+        <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
         <button class="modal-close" data-close-modal aria-label="Fechar">×</button>
       </header>
 
+      <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
       <div id="stock-summary" class="stock-summary"></div>
+      <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
       <div id="stock-product-list" class="stock-grid"></div>
     </section>
 
+    <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="quests-modal" class="game-modal quests-modal hidden" role="dialog" aria-modal="true">
       <header class="game-modal-header">
         <div>
           <span class="modal-kicker">Guilda local</span>
           <h2>Missões</h2>
         </div>
+        <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
         <button class="modal-close" data-close-modal aria-label="Fechar">×</button>
       </header>
 
+      <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
       <div id="quest-summary" class="quest-summary"></div>
+      <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
       <div id="quests-list" class="quest-list"></div>
     </section>
 
+    <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="report-modal" class="game-modal report-modal hidden" role="dialog" aria-modal="true">
       <header class="game-modal-header">
         <div>
           <span class="modal-kicker">Livro-caixa</span>
           <h2>Relatório</h2>
         </div>
+        <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
         <button class="modal-close" data-close-modal aria-label="Fechar">×</button>
       </header>
 
+      <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
       <div id="report-content" class="report-content"></div>
     </section>
 
+    <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
+    <section id="checkout-modal" class="game-modal checkout-modal hidden" role="dialog" aria-modal="true">
+      <header class="game-modal-header">
+        <div>
+          <span class="modal-kicker">Balcão</span>
+          <h2>Atendimento do Caixa</h2>
+        </div>
+        <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
+        <button class="modal-close" data-close-modal aria-label="Fechar">×</button>
+      </header>
+
+      <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
+      <div id="checkout-content" class="checkout-content"></div>
+    </section>
+
+    <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="quest-loading-modal" class="game-modal quest-loading-modal hidden" role="dialog" aria-modal="true">
       <div class="quest-loading-stage">
+        <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
         <div id="quest-runner" class="quest-runner manager-male-walk-side"></div>
         <div class="quest-road"></div>
       </div>
@@ -284,18 +368,35 @@
       <div class="quest-loading-progress">
         <span></span>
       </div>
+      <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
       <p id="quest-loading-tip"></p>
     </section>
 
   </div>
 
-  <script src="src/js/gameState.js?v=12"></script>
-  <script src="src/js/products.js?v=12"></script>
-  <script src="src/js/finance.js?v=12"></script>
-  <script src="src/js/quests.js?v=12"></script>
-  <script src="src/js/ui.js?v=12"></script>
-  <script src="src/js/events.js?v=12"></script>
-  <script src="src/js/storage.js?v=12"></script>
-  <script src="src/js/main.js?v=12"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/gameState.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/products.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/finance.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/quests.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/ui.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/events.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/storage.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/helpers-system.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/npc-system.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/static-npc-system.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/bat-system.js?v=22"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
+  <script src="src/js/main.js?v=22"></script>
 </body>
 </html>

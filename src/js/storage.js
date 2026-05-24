@@ -1,3 +1,16 @@
+// ======================================================
+// DOCUMENTAÇÃO DO ARQUIVO: storage.js
+// ======================================================
+// Salva e carrega a partida no localStorage. Ajuste migrações quando gameState ganhar novos campos.
+// ======================================================
+
+/**
+ * @doc-func salvarJogo
+ * O que faz: persiste ou restaura informações do jogo; altere junto com gameState quando criar novos dados salvos.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function salvarJogo() {
   const estado = JSON.stringify(gameState);
   localStorage.setItem(GAME_SAVE_KEY, estado);
@@ -7,6 +20,13 @@ function salvarJogo() {
   }
 }
 
+/**
+ * @doc-func carregarJogo
+ * O que faz: persiste ou restaura informações do jogo; altere junto com gameState quando criar novos dados salvos.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function carregarJogo() {
   const salvo = localStorage.getItem(GAME_SAVE_KEY);
 
@@ -71,6 +91,13 @@ function carregarJogo() {
   }
 }
 
+/**
+ * @doc-func existeJogoSalvo
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function existeJogoSalvo() {
   return Boolean(localStorage.getItem(GAME_SAVE_KEY));
 }

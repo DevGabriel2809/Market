@@ -1,4 +1,15 @@
 // ======================================================
+// DOCUMENTAÇÃO DO ARQUIVO: main.js
+// ======================================================
+// Controla o fluxo central do jogo: troca de telas, seleção do personagem, movimento, câmera e loop principal.
+// Ajustes comuns:
+// - PLAYER_SCALE muda o tamanho visual do gerente.
+// - speed muda a velocidade do player.
+// - temColisao(...) decide o que bloqueia passagem; agora inclui mapa + NPCs + ajudante.
+// - gameLoop(...) chama os sistemas que precisam atualizar a cada frame.
+// ======================================================
+
+// ======================================================
 // 1. ELEMENTOS DAS TELAS
 // ======================================================
 
@@ -77,12 +88,26 @@ window.objetosColisao = [];
 // 5. CONTROLE DE TELAS
 // ======================================================
 
+/**
+ * @doc-func mostrarTela
+ * O que faz: exibe feedback visual para o jogador; ajuste mensagens, telas ou animações aqui.
+ * Parâmetros: tela.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function mostrarTela(tela) {
+  // Remove a tela atual e ativa somente a tela solicitada.
+  // Como .screen usa display flex/none, essa função é o ponto único para navegação.
   document.querySelectorAll(".screen").forEach((item) => {
     item.classList.remove("active");
   });
 
   tela.classList.add("active");
+
+  // Mantém a camada de morcegos no z-index correto para menu ou mapa.
+  if (typeof sincronizarCamadaMorcegos === "function") {
+    sincronizarCamadaMorcegos();
+  }
 }
 
 btnIniciar.addEventListener("click", () => {
@@ -107,6 +132,11 @@ btnIniciar.addEventListener("click", () => {
   }
 
   mostrarTela(telaJogo);
+
+  // Pequena intro visual: vários morcegos cruzam a tela quando a partida começa.
+  if (typeof dispararIntroMorcegos === "function") {
+    dispararIntroMorcegos("game");
+  }
 });
 
 btnComoJogar.addEventListener("click", () => {
@@ -193,15 +223,37 @@ const keysPressed = {
   d: false
 };
 
+/**
+ * @doc-func obterTeclaMovimento
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: event.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function obterTeclaMovimento(event) {
+  if (!event || typeof event.key !== "string") return "";
+
+  // Normaliza WASD para funcionar mesmo se o navegador enviar W/A/S/D maiúsculo.
+  if (event.key.length === 1) return event.key.toLowerCase();
+
+  return event.key;
+}
+
 document.addEventListener("keydown", (event) => {
-  if (event.key in keysPressed) {
-    keysPressed[event.key] = true;
+  const tecla = obterTeclaMovimento(event);
+
+  if (tecla in keysPressed) {
+    keysPressed[tecla] = true;
+    event.preventDefault();
   }
 });
 
 document.addEventListener("keyup", (event) => {
-  if (event.key in keysPressed) {
-    keysPressed[event.key] = false;
+  const tecla = obterTeclaMovimento(event);
+
+  if (tecla in keysPressed) {
+    keysPressed[tecla] = false;
+    event.preventDefault();
   }
 });
 
@@ -210,6 +262,20 @@ document.addEventListener("keyup", (event) => {
 // 9. TRANSFORMAÇÃO VISUAL DO PERSONAGEM
 // ======================================================
 
+/**
+ * @doc-func definirTransform
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: transform.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+/**
+ * @doc-func definirTransform
+ * O que faz: define estado, caminho ou opção usada depois por outros sistemas; altere junto com seus consumidores.
+ * Parâmetros: transform.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function definirTransform(transform) {
   if (transformAtual === transform) return;
 
@@ -217,10 +283,24 @@ function definirTransform(transform) {
   transformAtual = transform;
 }
 
+/**
+ * @doc-func aplicarTransformPadrao
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function aplicarTransformPadrao() {
   definirTransform(`translate(-50%, -100%) scale(${PLAYER_SCALE})`);
 }
 
+/**
+ * @doc-func aplicarTransformLado
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: direcao.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function aplicarTransformLado(direcao) {
   if (direcao === "left") {
     definirTransform(`translate(-50%, -100%) scale(${PLAYER_SCALE}) scaleX(-1)`);
@@ -235,6 +315,20 @@ function aplicarTransformLado(direcao) {
 // 10. ANIMAÇÕES DO PERSONAGEM
 // ======================================================
 
+/**
+ * @doc-func definirAnimacao
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: classe.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+/**
+ * @doc-func definirAnimacao
+ * O que faz: define estado, caminho ou opção usada depois por outros sistemas; altere junto com seus consumidores.
+ * Parâmetros: classe.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function definirAnimacao(classe) {
   if (animacaoAtual === classe) return;
 
@@ -244,6 +338,13 @@ function definirAnimacao(classe) {
   animacaoAtual = classe;
 }
 
+/**
+ * @doc-func aplicarAnimacaoParado
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function aplicarAnimacaoParado() {
   if (personagemSelecionado === "male") {
     if (ultimaDirecao === "up") {
@@ -293,6 +394,13 @@ function aplicarAnimacaoParado() {
   }
 }
 
+/**
+ * @doc-func aplicarAnimacaoAndando
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: direcao.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function aplicarAnimacaoAndando(direcao) {
   if (personagemSelecionado === "male") {
     if (direcao === "up") {
@@ -347,6 +455,13 @@ function aplicarAnimacaoAndando(direcao) {
 // 11. COLISÃO
 // ======================================================
 
+/**
+ * @doc-func retangulosColidem
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: a, b.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function retangulosColidem(a, b) {
   return (
     a.x < b.x + b.width &&
@@ -356,6 +471,40 @@ function retangulosColidem(a, b) {
   );
 }
 
+/**
+ * @doc-func obterObjetosColisaoDinamica
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
+function obterObjetosColisaoDinamica() {
+  // Hitboxes dinâmicas são criadas em tempo real por outros sistemas.
+  // Isso evita cadastrar NPCs no mapa JSON, porque eles nascem, somem e se movem durante o expediente.
+  const caixas = [];
+
+  if (typeof obterCaixasColisaoNPCs === "function") {
+    caixas.push(...obterCaixasColisaoNPCs());
+  }
+
+  if (typeof obterCaixasColisaoNPCsEstaticos === "function") {
+    caixas.push(...obterCaixasColisaoNPCsEstaticos());
+  }
+
+  if (typeof obterCaixasColisaoAjudantes === "function") {
+    caixas.push(...obterCaixasColisaoAjudantes());
+  }
+
+  return caixas;
+}
+
+/**
+ * @doc-func temColisao
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: x, y.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function temColisao(x, y) {
   const playerBox = {
     x: x - 18,
@@ -364,7 +513,12 @@ function temColisao(x, y) {
     height: window.player.height
   };
 
-  return window.objetosColisao.some((obj) => {
+  // A colisão final combina objetos fixos do mapa com entidades vivas.
+  // Resultado: o player não atravessa balcões, paredes, clientes, NPCs estáticos ou ajudante.
+  return [
+    ...window.objetosColisao,
+    ...obterObjetosColisaoDinamica()
+  ].some((obj) => {
     return retangulosColidem(playerBox, obj);
   });
 }
@@ -374,6 +528,13 @@ function temColisao(x, y) {
 // 12. MOVIMENTO DO PERSONAGEM
 // ======================================================
 
+/**
+ * @doc-func moverPersonagem
+ * O que faz: controla deslocamento no mapa; altere velocidade, colisão ou rotas com cautela.
+ * Parâmetros: deltaTime = 16.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function moverPersonagem(deltaTime = 16) {
   if (!telaJogo.classList.contains("active")) {
     return;
@@ -477,6 +638,13 @@ function moverPersonagem(deltaTime = 16) {
 // 13. CÂMERA
 // ======================================================
 
+/**
+ * @doc-func atualizarCamera
+ * O que faz: sincroniza estado e visual; edite com cuidado porque costuma rodar várias vezes durante o jogo.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function atualizarCamera() {
   const offsetX = window.innerWidth / 2 - playerX;
   const offsetY = window.innerHeight / 2 - playerY;
@@ -495,6 +663,13 @@ function atualizarCamera() {
 // 14. CARREGAR MAPA JSON DO TILED
 // ======================================================
 
+/**
+ * @doc-func carregarMapa
+ * O que faz: persiste ou restaura informações do jogo; altere junto com gameState quando criar novos dados salvos.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function carregarMapa() {
   fetch("src/assets/maps/mapa.json")
     .then((res) => res.json())
@@ -560,6 +735,13 @@ function carregarMapa() {
 
 let ultimoTempo = performance.now();
 
+/**
+ * @doc-func gameLoop
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: tempoAtual.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function gameLoop(tempoAtual) {
   const deltaTime = tempoAtual - ultimoTempo;
   ultimoTempo = tempoAtual;
@@ -574,9 +756,24 @@ function gameLoop(tempoAtual) {
     processarInteracaoAutomatica();
   }
 
+  if (telaJogo.classList.contains("active") && typeof atualizarNPCs === "function") {
+    atualizarNPCs(deltaTime);
+  }
+
+  if (telaJogo.classList.contains("active") && typeof atualizarNPCsEstaticos === "function") {
+    atualizarNPCsEstaticos(deltaTime);
+  }
+
   requestAnimationFrame(gameLoop);
 }
 
+/**
+ * @doc-func aplicarPersonagemSalvo
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function aplicarPersonagemSalvo() {
   personagemSelecionado = gameState.personagem || "male";
   ultimaDirecao = "down";
@@ -590,6 +787,13 @@ function aplicarPersonagemSalvo() {
   aplicarAnimacaoParado();
 }
 
+/**
+ * @doc-func resetarPosicaoPersonagem
+ * O que faz: volta dados/visuais para o estado inicial; inclua novos campos aqui quando criar novos sistemas.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function resetarPosicaoPersonagem() {
   playerX = 600;
   playerY = 400;
@@ -615,5 +819,11 @@ aplicarPersonagemSalvo();
 aplicarAnimacaoParado();
 if (typeof atualizarInterfaceJogo === "function") {
   atualizarInterfaceJogo();
+}
+if (typeof inicializarNPCsEstaticos === "function") {
+  inicializarNPCsEstaticos();
+}
+if (typeof sincronizarCamadaMorcegos === "function") {
+  sincronizarCamadaMorcegos();
 }
 requestAnimationFrame(gameLoop);

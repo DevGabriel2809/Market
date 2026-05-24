@@ -1096,31 +1096,31 @@
                  "y":1103
                 }, 
                 {
-                 "height":51.5151515151515,
+                 "height":86.5151515151515,
                  "id":93,
                  "name":"parede",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1984.84848484848,
+                 "width":2038.84848484848,
                  "x":215.151515151515,
                  "y":1672.72727272727
                 }, 
                 {
-                 "height":480,
+                 "height":572,
                  "id":94,
                  "name":"parede",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":28,
-                 "x":220,
+                 "width":170,
+                 "x":78,
                  "y":1186.66666666667
                 }, 
                 {
-                 "height":12,
+                 "height":253,
                  "id":95,
                  "name":"parede",
                  "opacity":1,
@@ -1129,7 +1129,7 @@
                  "visible":true,
                  "width":164,
                  "x":246.666666666667,
-                 "y":1464
+                 "y":1223
                 }, 
                 {
                  "height":374.666666666667,
@@ -1144,7 +1144,7 @@
                  "y":1105.33333333333
                 }, 
                 {
-                 "height":50.6666666666667,
+                 "height":119.666666666667,
                  "id":97,
                  "name":"parede",
                  "opacity":1,
@@ -1156,15 +1156,15 @@
                  "y":1101.33333333333
                 }, 
                 {
-                 "height":480,
+                 "height":1144,
                  "id":98,
                  "name":"parede",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":42.6666666666667,
-                 "x":36,
+                 "width":79.6666666666667,
+                 "x":-1,
                  "y":614.666666666667
                 }, 
                 {
@@ -1192,19 +1192,19 @@
                  "y":625.333333333333
                 }, 
                 {
-                 "height":1601.33333333333,
+                 "height":1663.33333333333,
                  "id":101,
                  "name":"parede",
                  "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":33.3333333333335,
+                 "width":69.3333333333335,
                  "x":2170.66666666667,
-                 "y":61.3333333333333
+                 "y":5.3333333333333
                 }, 
                 {
-                 "height":33.3333333333333,
+                 "height":291.333333333333,
                  "id":102,
                  "name":"parede",
                  "opacity":1,
@@ -1213,10 +1213,10 @@
                  "visible":true,
                  "width":146.666666666667,
                  "x":2020,
-                 "y":260
+                 "y":2
                 }, 
                 {
-                 "height":16,
+                 "height":278,
                  "id":103,
                  "name":"parede",
                  "opacity":1,
@@ -1225,7 +1225,7 @@
                  "visible":true,
                  "width":28,
                  "x":1904,
-                 "y":278.666666666667
+                 "y":16.666666666667
                 }, 
                 {
                  "height":30,
@@ -1298,6 +1298,42 @@
                  "width":58.25,
                  "x":569.75,
                  "y":1413
+                }, 
+                {
+                 "height":849,
+                 "id":257,
+                 "name":"parede",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":407,
+                 "x":5,
+                 "y":3
+                }, 
+                {
+                 "height":268,
+                 "id":258,
+                 "name":"parede",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":105,
+                 "x":1928,
+                 "y":1
+                }, 
+                {
+                 "height":318,
+                 "id":259,
+                 "name":"parede",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1480,
+                 "x":382,
+                 "y":-6
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -3016,7 +3052,7 @@
                  "y":137
                 }, 
                 {
-                 "height":238.5,
+                 "height":210.5,
                  "id":200,
                  "name":"porta_saida",
                  "opacity":1,
@@ -3034,7 +3070,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":257,
+ "nextobjectid":261,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

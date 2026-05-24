@@ -1,5 +1,12 @@
+/* ======================================================
+   DOCUMENTAÇÃO DO ARQUIVO: style.css
+   ======================================================
+   Define base global: fontes, cores, botões, telas e cards comuns. Ajuste variáveis em :root para mudar tema.
+====================================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Poppins:wght@400;500;600;700;800&display=swap');
 
+/* @doc-css Estilo :root: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 :root {
   --bg-dark: #1b1410;
   --bg-brown: #2b1c13;
@@ -22,6 +29,7 @@
   box-sizing: border-box;
 }
 
+/* @doc-css Estilo body: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 body {
   background: var(--bg-dark);
   color: var(--cream);
@@ -30,23 +38,28 @@ body {
   overflow-x: hidden;
 }
 
+/* @doc-css Estilo de botão (button): controla clique visual; ajuste cores, espaçamento e transições aqui. */
 button {
   font-family: inherit;
 }
 
+/* @doc-css Estilo .app: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .app {
   min-height: 100vh;
 }
 
+/* @doc-css Estilo de tela/menu (.screen): controla layout das telas principais; edite para reposicionar cards e fundo. */
 .screen {
   display: none;
   min-height: 100vh;
 }
 
+/* @doc-css Estilo de tela/menu (.screen.active): controla layout das telas principais; edite para reposicionar cards e fundo. */
 .screen.active {
   display: flex;
 }
 
+/* @doc-css Estilo de botão (.btn): controla clique visual; ajuste cores, espaçamento e transições aqui. */
 .btn {
   border: none;
   outline: none;
@@ -58,36 +71,43 @@ button {
   transition: 0.25s ease;
 }
 
+/* @doc-css Estilo de botão (.btn:hover): controla clique visual; ajuste cores, espaçamento e transições aqui. */
 .btn:hover {
   transform: translateY(-3px);
 }
 
+/* @doc-css Estilo de botão (.btn.primary): controla clique visual; ajuste cores, espaçamento e transições aqui. */
 .btn.primary {
   background: linear-gradient(135deg, var(--gold), var(--gold-dark));
   color: #2a1608;
   box-shadow: 0 8px 0 #7a4a1d;
 }
 
+/* @doc-css Estilo de botão (.btn.primary:hover): controla clique visual; ajuste cores, espaçamento e transições aqui. */
 .btn.primary:hover {
   box-shadow: 0 5px 0 #7a4a1d;
 }
 
+/* @doc-css Estilo de botão (.btn.secondary): controla clique visual; ajuste cores, espaçamento e transições aqui. */
 .btn.secondary {
   background: linear-gradient(135deg, #5fb96b, #2f7d3b);
   color: white;
   box-shadow: 0 8px 0 #1f5428;
 }
 
+/* @doc-css Estilo de botão (.btn.ghost): controla clique visual; ajuste cores, espaçamento e transições aqui. */
 .btn.ghost {
   background: rgba(255, 255, 255, 0.12);
   color: var(--cream);
   border: 2px solid rgba(255, 255, 255, 0.25);
 }
 
+/* @doc-css Estilo de botão (.btn.full): controla clique visual; ajuste cores, espaçamento e transições aqui. */
 .btn.full {
   width: 100%;
 }
 
+/* @doc-css Estilo de modal (.modal-card): controla janelas sobrepostas; ajuste padding, tamanho e cores para mudar a janela. */
 .modal-card {
   width: min(720px, 92%);
   margin: auto;
@@ -98,6 +118,7 @@ button {
   padding: 34px;
 }
 
+/* @doc-css Estilo de modal (.modal-card h2): controla janelas sobrepostas; ajuste padding, tamanho e cores para mudar a janela. */
 .modal-card h2 {
   font-family: 'MedievalSharp', cursive;
   font-size: 2.4rem;
@@ -106,11 +127,13 @@ button {
 }
 
 .modal-card p,
+/* @doc-css Estilo de modal (.modal-card li): controla janelas sobrepostas; ajuste padding, tamanho e cores para mudar a janela. */
 .modal-card li {
   line-height: 1.7;
   margin-bottom: 10px;
 }
 
+/* @doc-css Estilo de modal (.modal-card ul): controla janelas sobrepostas; ajuste padding, tamanho e cores para mudar a janela. */
 .modal-card ul {
   margin: 20px 0 24px 22px;
 }

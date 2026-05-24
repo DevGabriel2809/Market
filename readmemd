@@ -23,3 +23,34 @@ Terminar os 30 dias com pelo menos R$ 5.000 em caixa.
 
 ## Condição de derrota
 Ficar com caixa negativo.
+
+## Atualização v18
+
+- NPCs clientes, NPCs estáticos e ajudante agora possuem hitboxes dinâmicas; o gerente não atravessa mais essas entidades.
+- Clientes também param quando o gerente bloqueia o caminho, evitando atravessar o player.
+- Adicionado sistema `bat-system.js` com intro de morcegos e ondas ambiente no menu/mapa.
+- Arquivos principais receberam documentação comentada no topo e comentários nas áreas novas de manutenção.
+- CSS recebeu animações extras de entrada de tela, HUD, modais e botões.
+
+## Atualização v19
+
+- Corrigido o spawn dos clientes: agora eles usam vagas em leque fora da porta e só nascem quando há espaço livre.
+- O início do expediente foi escalonado para não criar vários clientes no mesmo frame.
+- A colisão entre clientes ficou "macia" apenas no gargalo da porta, evitando engarrafamento sem deixar o gerente atravessar NPCs.
+- A camada de morcegos agora é movida para o fim do `<body>`, recebe `z-index` alto e ganhou sprite CSS maior/mais visível.
+- Removido o bloqueio de morcegos em ambientes com redução de movimento; apenas a batida das asas é reduzida.
+
+
+Atualização v21:
+- Morcegos refeitos para usar o pixel art CSS anexado, em vez de formas CSS simples.
+- Reduzida a quantidade e velocidade dos morcegos: agora aparecem poucos, lentamente, só no mapa.
+- Camada dos morcegos fica abaixo da HUD e não cobre os cards de seleção do menu.
+
+## Versão 22 - ajustes de NPCs, morcegos e documentação
+
+- Clientes agora desviam de obstáculos em vez de travar repetindo “Com licença”.
+- Tempo de espera no balcão/fila ajustado para 40 segundos.
+- Morcegos com opacidade maior e direção visual corrigida.
+- Cache de CSS/JS atualizado para `?v=22`.
+- Todos os arquivos HTML, CSS e JS receberam comentários técnicos (`@doc-html`, `@doc-css`, `@doc-func`).
+- Documentação complementar criada em `DOCUMENTACAO_TECNICA.md`.

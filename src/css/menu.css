@@ -1,5 +1,12 @@
+/* ======================================================
+   DOCUMENTAÇÃO DO ARQUIVO: menu.css
+   ======================================================
+   Define visual do menu, tutorial, créditos e seleção de personagem. Ajuste fundos e cards aqui.
+====================================================== */
+
 /* BackGrounds */
 
+/* @doc-css Estilo de tela/menu (.menu-screen): controla layout das telas principais; edite para reposicionar cards e fundo. */
 .menu-screen {
   position: relative;
   align-items: center;
@@ -12,12 +19,14 @@
   background-position: center;
 }
 
+/* @doc-css Estilo #tela-creditos: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 #tela-creditos{
   background-image: url(../assets/images/backgrounds/ETEPLAP.png);
   background-size: cover;
   background-repeat: no-repeat;
 }
 
+/* @doc-css Estilo #tela-como-jogar: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 #tela-como-jogar{
   background-image: url(../assets/images/backgrounds/howtoplay.png);
   background-size: cover;
@@ -25,6 +34,7 @@
 }
 
 
+/* @doc-css Estilo de tela/menu (.menu-overlay): controla layout das telas principais; edite para reposicionar cards e fundo. */
 .menu-overlay {
   position: absolute;
   inset: 0;
@@ -34,6 +44,7 @@
   pointer-events: none;
 }
 
+/* @doc-css Estilo de tela/menu (.menu-container): controla layout das telas principais; edite para reposicionar cards e fundo. */
 .menu-container {
   position: relative;
   z-index: 2;
@@ -44,6 +55,7 @@
   align-items: center;
 }
 
+/* @doc-css Estilo de tela/menu (.menu-content): controla layout das telas principais; edite para reposicionar cards e fundo. */
 .menu-content {
   background: rgba(41, 24, 13, 0.82);
   border: 3px solid rgba(243, 201, 105, 0.7);
@@ -53,6 +65,7 @@
   backdrop-filter: blur(8px);
 }
 
+/* @doc-css Estilo .game-badge: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .game-badge {
   display: inline-block;
   background: rgba(243, 201, 105, 0.18);
@@ -64,6 +77,7 @@
   margin-bottom: 18px;
 }
 
+/* @doc-css Estilo de tela/menu (.menu-content h1): controla layout das telas principais; edite para reposicionar cards e fundo. */
 .menu-content h1 {
   font-family: 'MedievalSharp', cursive;
   font-size: clamp(2.5rem, 7vw, 4rem);
@@ -72,12 +86,14 @@
   line-height: 1;
 }
 
+/* @doc-css Estilo de tela/menu (.menu-content h2): controla layout das telas principais; edite para reposicionar cards e fundo. */
 .menu-content h2 {
   font-size: clamp(1.4rem, 3vw, 2rem);
   color: var(--cream);
   margin: 10px 0 22px;
 }
 
+/* @doc-css Estilo de tela/menu (.menu-content p): controla layout das telas principais; edite para reposicionar cards e fundo. */
 .menu-content p {
   max-width: 680px;
   font-size: 1.05rem;
@@ -86,12 +102,14 @@
   margin-bottom: 30px;
 }
 
+/* @doc-css Estilo de botão (.menu-buttons): controla clique visual; ajuste cores, espaçamento e transições aqui. */
 .menu-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
 }
 
+/* @doc-css Estilo do gerente/player (.player-input-area): controla sprite, escala ou animação do personagem jogável. */
 .player-input-area {
   display: flex;
   flex-direction: column;
@@ -99,11 +117,13 @@
   margin-bottom: 24px;
 }
 
+/* @doc-css Estilo do gerente/player (.player-input-area label): controla sprite, escala ou animação do personagem jogável. */
 .player-input-area label {
   font-weight: 700;
   color: var(--gold);
 }
 
+/* @doc-css Estilo do gerente/player (.player-input-area input): controla sprite, escala ou animação do personagem jogável. */
 .player-input-area input {
   padding: 12px 14px;
   border-radius: 12px;
@@ -115,17 +135,20 @@
   transition: 0.2s;
 }
 
+/* @doc-css Estilo do gerente/player (.player-input-area input:focus): controla sprite, escala ou animação do personagem jogável. */
 .player-input-area input:focus {
   border-color: var(--gold);
   box-shadow: 0 0 0 2px rgba(243, 201, 105, 0.2);
 }
 
+/* @doc-css Estilo .input-error: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .input-error {
   font-size: 0.85rem;
   color: var(--red);
   display: none;
 }
 
+/* @doc-css Estilo .character-selection-card: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .character-selection-card {
   background: rgba(34, 20, 12, 0.9);
   border: 3px solid rgba(243, 201, 105, 0.7);
@@ -136,6 +159,7 @@
   backdrop-filter: blur(8px);
 }
 
+/* @doc-css Estilo .character-selection-card h3: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .character-selection-card h3 {
   font-family: 'MedievalSharp', cursive;
   font-size: 2rem;
@@ -143,12 +167,14 @@
   margin-bottom: 22px;
 }
 
+/* @doc-css Estilo .characters-options: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .characters-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
 }
 
+/* @doc-css Estilo .character-option: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .character-option {
   background: linear-gradient(145deg, #3b2416, #21130c);
   border: 3px solid transparent;
@@ -164,20 +190,24 @@
   gap: 55px;
 }
 
+/* @doc-css Estilo .character-option:hover: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .character-option:hover {
   transform: translateY(-5px);
   border-color: rgba(243, 201, 105, 0.6);
 }
 
+/* @doc-css Estilo .character-option.selected: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .character-option.selected {
   border-color: var(--gold);
   box-shadow: 0 0 0 4px rgba(243, 201, 105, 0.2);
 }
 
+/* @doc-css Estilo .character-option span: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .character-option span {
   font-weight: 800;
 }
 
+/* @doc-css Estilo .speech-box: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .speech-box {
   margin-top: 24px;
   background: #fff1d0;
@@ -188,6 +218,7 @@
   text-align: left;
 }
 
+/* @doc-css Estilo .speech-box strong: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .speech-box strong {
   display: block;
   margin-bottom: 6px;
@@ -195,6 +226,7 @@
 
 /* SPRITES DO MENU */
 
+/* @doc-css Estilo .sprite-preview: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .sprite-preview {
   width: 128px;
   height: 128px;
@@ -204,16 +236,19 @@
   transform-origin: center;
 }
 
+/* @doc-css Estilo do gerente/player (.manager-male-idle): controla sprite, escala ou animação do personagem jogável. */
 .manager-male-idle {
   background-image: url("../assets/images/characters/manager/male-idle.png");
   animation: maleIdle 0.9s steps(6) infinite;
 }
 
+/* @doc-css Estilo do gerente/player (.manager-female-idle): controla sprite, escala ou animação do personagem jogável. */
 .manager-female-idle {
   background-image: url("../assets/images/characters/manager_f/female-idle.png");
   animation: femaleIdle 0.9s steps(5) infinite;
 }
 
+/* @doc-css Animação @keyframes maleIdle: ajuste porcentagens internas para mudar movimento, entrada ou sprite frame-a-frame. */
 @keyframes maleIdle {
   from {
     background-position: 0 0;
@@ -224,6 +259,7 @@
   }
 }
 
+/* @doc-css Animação @keyframes femaleIdle: ajuste porcentagens internas para mudar movimento, entrada ou sprite frame-a-frame. */
 @keyframes femaleIdle {
   from {
     background-position: 0 0;

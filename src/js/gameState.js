@@ -1,3 +1,9 @@
+// ======================================================
+// DOCUMENTAÇÃO DO ARQUIVO: gameState.js
+// ======================================================
+// Guarda o estado principal da campanha: caixa, dia, estoque, reputação, ajudante, missões e fim de jogo. Ajuste valores iniciais no objeto gameState.
+// ======================================================
+
 const GAME_SAVE_KEY = "reino-dos-custos-save-v1";
 
 const gameState = {
@@ -34,6 +40,13 @@ const gameState = {
   fimDeJogo: null
 };
 
+/**
+ * @doc-func resetarPartida
+ * O que faz: volta dados/visuais para o estado inicial; inclua novos campos aqui quando criar novos sistemas.
+ * Parâmetros: nome, personagem.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function resetarPartida(nome, personagem) {
   gameState.nomeJogador = nome || "";
   gameState.personagem = personagem || "male";

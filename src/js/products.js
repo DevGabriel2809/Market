@@ -1,3 +1,9 @@
+// ======================================================
+// DOCUMENTAÇÃO DO ARQUIVO: products.js
+// ======================================================
+// Define catálogo de produtos, estoque, preços, compras e validações de mercadorias. Ajuste custos/demanda em productCatalog.
+// ======================================================
+
 const productCatalog = [
   {
     id: "pao",
@@ -93,6 +99,13 @@ const productCatalog = [
   }
 ];
 
+/**
+ * @doc-func inicializarEstoque
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function inicializarEstoque() {
   productCatalog.forEach((produto) => {
     if (!gameState.estoque[produto.id]) {
@@ -106,25 +119,60 @@ function inicializarEstoque() {
   });
 }
 
+/**
+ * @doc-func obterProduto
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: produtoId.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function obterProduto(produtoId) {
   return productCatalog.find((produto) => produto.id === produtoId);
 }
 
+/**
+ * @doc-func produtoEstaLiberado
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: produto.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function produtoEstaLiberado(produto) {
   if (!produto.requerQuest) return true;
   return gameState.quests.concluidas.includes(produto.requerQuest);
 }
 
+/**
+ * @doc-func obterEstoque
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: produtoId.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function obterEstoque(produtoId) {
   inicializarEstoque();
   return gameState.estoque[produtoId];
 }
 
+/**
+ * @doc-func calcularCustoCompraUnitario
+ * O que faz: calcula um valor usado pelas regras do jogo; ajuste a fórmula interna para mudar o balanceamento.
+ * Parâmetros: produto.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function calcularCustoCompraUnitario(produto) {
   const desconto = Math.min(gameState.descontoFornecedor || 0, 0.35);
   return Math.max(1, Math.round(produto.custo * (1 - desconto)));
 }
 
+/**
+ * @doc-func comprarProduto
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: produtoId, quantidade.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function comprarProduto(produtoId, quantidade) {
   const produto = obterProduto(produtoId);
   if (!produto) return { ok: false, mensagem: "Produto não encontrado." };
@@ -158,6 +206,13 @@ function comprarProduto(produtoId, quantidade) {
   };
 }
 
+/**
+ * @doc-func alterarPrecoProduto
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: produtoId, preco.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function alterarPrecoProduto(produtoId, preco) {
   const produto = obterProduto(produtoId);
   if (!produto) return { ok: false, mensagem: "Produto não encontrado." };
@@ -169,6 +224,13 @@ function alterarPrecoProduto(produtoId, preco) {
   return { ok: true, mensagem: `Preço de ${produto.nome} ajustado.` };
 }
 
+/**
+ * @doc-func adicionarEstoque
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: produtoId, quantidade.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function adicionarEstoque(produtoId, quantidade) {
   const produto = obterProduto(produtoId);
   if (!produto) return;
@@ -177,6 +239,13 @@ function adicionarEstoque(produtoId, quantidade) {
   estoque.quantidade = Math.min(produto.estoqueMaximo, estoque.quantidade + quantidade);
 }
 
+/**
+ * @doc-func calcularQuantidadeEstoque
+ * O que faz: calcula um valor usado pelas regras do jogo; ajuste a fórmula interna para mudar o balanceamento.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function calcularQuantidadeEstoque() {
   inicializarEstoque();
 
@@ -185,6 +254,13 @@ function calcularQuantidadeEstoque() {
   }, 0);
 }
 
+/**
+ * @doc-func calcularValorEstoque
+ * O que faz: calcula um valor usado pelas regras do jogo; ajuste a fórmula interna para mudar o balanceamento.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function calcularValorEstoque() {
   inicializarEstoque();
 

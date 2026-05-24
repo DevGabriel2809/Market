@@ -1,3 +1,9 @@
+// ======================================================
+// DOCUMENTAÇÃO DO ARQUIVO: quests.js
+// ======================================================
+// Controla missões, recompensas, desbloqueios e animação de missão. Ajuste requisitos e recompensas em QUEST_DEFS.
+// ======================================================
+
 const questTips = [
   "Preço alto demais reduz demanda, mesmo quando a margem parece bonita.",
   "Produtos baratos formam clientela; produtos caros constroem caixa.",
@@ -154,14 +160,35 @@ const questDefinitions = [
   }
 ];
 
+/**
+ * @doc-func obterQuest
+ * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
+ * Parâmetros: questId.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function obterQuest(questId) {
   return questDefinitions.find((quest) => quest.id === questId);
 }
 
+/**
+ * @doc-func questFoiConcluida
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: questId.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function questFoiConcluida(questId) {
   return gameState.quests.concluidas.includes(questId);
 }
 
+/**
+ * @doc-func avaliarRequisitosQuest
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: quest.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function avaliarRequisitosQuest(quest) {
   const motivos = [];
   const requisitos = quest.requisitos || {};
@@ -217,6 +244,13 @@ function avaliarRequisitosQuest(quest) {
   };
 }
 
+/**
+ * @doc-func calcularChanceQuest
+ * O que faz: calcula um valor usado pelas regras do jogo; ajuste a fórmula interna para mudar o balanceamento.
+ * Parâmetros: quest.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function calcularChanceQuest(quest) {
   const bonusReputacao = Math.min(gameState.reputacao, 20) * 0.01;
   const bonusExperiencia = Math.min(gameState.experiencia, 30) * 0.003;
@@ -224,6 +258,13 @@ function calcularChanceQuest(quest) {
   return Math.min(0.95, quest.chanceBase + bonusReputacao + bonusExperiencia + bonusAjudante);
 }
 
+/**
+ * @doc-func aplicarCustoQuest
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: quest.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function aplicarCustoQuest(quest) {
   const custo = quest.custo || {};
 
@@ -239,6 +280,13 @@ function aplicarCustoQuest(quest) {
   }
 }
 
+/**
+ * @doc-func aplicarEfeitoQuest
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: efeito.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function aplicarEfeitoQuest(efeito) {
   if (!efeito) return [];
 
@@ -295,6 +343,13 @@ function aplicarEfeitoQuest(efeito) {
   return detalhes;
 }
 
+/**
+ * @doc-func executarQuest
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: questId.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function executarQuest(questId) {
   const quest = obterQuest(questId);
   if (!quest) return { ok: false, mensagem: "Missão não encontrada." };
@@ -339,6 +394,13 @@ function executarQuest(questId) {
   };
 }
 
+/**
+ * @doc-func contratarAjudante
+ * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
+ * Parâmetros: sem parâmetros diretos.
+ * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
+ * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
+ */
 function contratarAjudante() {
   if (!gameState.ajudanteDesbloqueado) {
     return { ok: false, mensagem: "Conclua a missão de treinamento antes." };
@@ -354,6 +416,10 @@ function contratarAjudante() {
 
   gameState.caixa -= 900;
   gameState.ajudanteContratado = true;
+
+  if (typeof sincronizarAjudanteVisual === "function") {
+    sincronizarAjudanteVisual();
+  }
 
   return {
     ok: true,
