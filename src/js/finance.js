@@ -4,8 +4,8 @@
 // Controla dia, expediente, relatórios, custos fixos, vendas e fechamento. Ajuste duração do expediente e fórmulas financeiras aqui.
 // ======================================================
 
-const MINUTOS_PREPARACAO = 10;
-const HORA_PREPARACAO = (8 * 60) - MINUTOS_PREPARACAO;
+const MINUTOS_PREPARACAO_RELOGIO = 3;
+const HORA_PREPARACAO = (8 * 60) - MINUTOS_PREPARACAO_RELOGIO;
 const HORA_ABERTURA = 8 * 60;
 const HORA_FECHAMENTO = 18 * 60;
 const MINUTOS_EXPEDIENTE = HORA_FECHAMENTO - HORA_ABERTURA;
@@ -197,6 +197,8 @@ function iniciarNovoDia() {
 
   gameState.faseDia = "preparacao";
   gameState.tempoDiaDecorridoMs = 0;
+  gameState.tempoPreparacaoDecorridoMs = 0;
+  gameState.preparacaoAvisoMostrado = false;
   gameState.diaEmAndamento = false;
   gameState.diaProntoParaEncerrar = false;
   gameState.diaEncerradoNotificado = false;
@@ -204,6 +206,10 @@ function iniciarNovoDia() {
 
   if (typeof resetarNPCsDoDia === "function") {
     resetarNPCsDoDia();
+  }
+
+  if (typeof resetarDicasNPCsEstaticosDoDia === "function") {
+    resetarDicasNPCsEstaticosDoDia();
   }
 
   if (typeof sincronizarAjudanteVisual === "function") {
@@ -229,12 +235,18 @@ function iniciarExpediente() {
 
   gameState.faseDia = "expediente";
   gameState.tempoDiaDecorridoMs = 0;
+  gameState.tempoPreparacaoDecorridoMs = 0;
+  gameState.preparacaoAvisoMostrado = false;
   gameState.diaEmAndamento = true;
   gameState.diaProntoParaEncerrar = false;
   gameState.diaEncerradoNotificado = false;
 
   if (!gameState.relatorioEmAndamento) {
     gameState.relatorioEmAndamento = criarRelatorioBase(sortearEventoDeMercado());
+  }
+
+  if (typeof cancelarAvisoInicioExpediente === "function") {
+    cancelarAvisoInicioExpediente();
   }
 
   if (typeof abrirExpediente === "function") {
@@ -256,7 +268,9 @@ function iniciarExpediente() {
  */
 function obterMinutosDoDia() {
   if (gameState.faseDia === "preparacao") {
-    return HORA_PREPARACAO;
+    const duracaoPreparacao = gameState.duracaoPreparacaoMs || 150000;
+    const progressoPreparacao = Math.min(1, (gameState.tempoPreparacaoDecorridoMs || 0) / duracaoPreparacao);
+    return Math.min(HORA_ABERTURA, HORA_PREPARACAO + Math.floor(progressoPreparacao * MINUTOS_PREPARACAO_RELOGIO));
   }
 
   if (gameState.faseDia === "fechamento" || gameState.diaProntoParaEncerrar) {
@@ -290,7 +304,10 @@ function formatarHoraDoJogo() {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function obterProgressoDia() {
-  if (gameState.faseDia === "preparacao") return 0;
+  if (gameState.faseDia === "preparacao") {
+    const duracaoPreparacao = gameState.duracaoPreparacaoMs || 150000;
+    return Math.min(1, (gameState.tempoPreparacaoDecorridoMs || 0) / duracaoPreparacao);
+  }
   if (gameState.faseDia === "fechamento") return 1;
   return Math.min(1, gameState.tempoDiaDecorridoMs / gameState.duracaoExpedienteMs);
 }
@@ -303,6 +320,10 @@ function obterProgressoDia() {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function obterTempoRestanteDia() {
+  if (gameState.faseDia === "preparacao") {
+    return Math.max(0, (gameState.duracaoPreparacaoMs || 150000) - (gameState.tempoPreparacaoDecorridoMs || 0));
+  }
+
   if (gameState.faseDia !== "expediente") return 0;
   return Math.max(0, gameState.duracaoExpedienteMs - gameState.tempoDiaDecorridoMs);
 }
@@ -329,7 +350,33 @@ function formatarTempoCurto(ms) {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function processarTempoDoDia(deltaTime) {
-  if (gameState.faseDia !== "expediente" || !gameState.diaEmAndamento || gameState.fimDeJogo) return;
+  if (gameState.fimDeJogo) return;
+
+  if (gameState.faseDia === "preparacao") {
+    const duracaoPreparacao = gameState.duracaoPreparacaoMs || 150000;
+    gameState.tempoPreparacaoDecorridoMs = Math.min(
+      duracaoPreparacao,
+      (gameState.tempoPreparacaoDecorridoMs || 0) + deltaTime
+    );
+
+    if (typeof atualizarHudTempo === "function") {
+      atualizarHudTempo();
+    }
+
+    if (gameState.tempoPreparacaoDecorridoMs >= duracaoPreparacao && !gameState.preparacaoAvisoMostrado) {
+      gameState.preparacaoAvisoMostrado = true;
+
+      if (typeof mostrarAvisoInicioExpediente === "function") {
+        mostrarAvisoInicioExpediente();
+      } else {
+        iniciarExpediente();
+      }
+    }
+
+    return;
+  }
+
+  if (gameState.faseDia !== "expediente" || !gameState.diaEmAndamento) return;
 
   gameState.tempoDiaDecorridoMs += deltaTime;
 

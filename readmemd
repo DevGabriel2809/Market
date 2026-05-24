@@ -51,6 +51,52 @@ Atualização v21:
 - Clientes agora desviam de obstáculos em vez de travar repetindo “Com licença”.
 - Tempo de espera no balcão/fila ajustado para 40 segundos.
 - Morcegos com opacidade maior e direção visual corrigida.
-- Cache de CSS/JS atualizado para `?v=22`.
+- Cache de CSS/JS atualizado para `?v=25`.
 - Todos os arquivos HTML, CSS e JS receberam comentários técnicos (`@doc-html`, `@doc-css`, `@doc-func`).
 - Documentação complementar criada em `DOCUMENTACAO_TECNICA.md`.
+
+v25:
+- NPCs fixos agora liberam dicas de forma sequencial: 1ª dica disponível, 2ª/3ª após 40s a 3min depois da leitura anterior.
+- Marcador na cabeça do NPC fixo só aparece quando existe dica nova para ler.
+- Foram adicionadas dicas para os 30 dias de campanha, com foco em preço, estoque, missões, caixa e estratégia.
+- Clientes ganharam mais faixas de rota e replanejamento sem empurrão para reduzir travamentos sem vibração.
+
+v26:
+- O sistema de clientes agora lê a camada `npc_zones` do Tiled.
+- Objetos `buy_*` viram zonas de compra com vários pontos de parada automáticos.
+- O objeto `queue_checkout` gera os pontos de fila automaticamente.
+- Objetos `lane_*` viram corredores usados para variar o caminho dos clientes.
+- Cliente contra cliente deixou de ser colisão dura durante deslocamento; a organização agora acontece por rotas, pontos reservados e fila, evitando travamento e tremedeira.
+- Cache de CSS/JS atualizado para `?v=26`.
+
+- v28: clientes usam apenas `door_entry` para spawn/despawn; NPCs móveis atravessam NPCs estáticos; tutores mudam de posição em novo dia, missão concluída e carregamento.
+
+## v29 - Fluxo de caixa dos NPCs
+
+- Clientes agora usam uma rota A* simples sobre uma grade do mapa para contornar colisões reais, evitando ficar recalculando o mesmo caminho por minutos.
+- O tempo de escolha foi reduzido e a velocidade dos clientes foi aumentada para melhorar o fluxo de caixa sem diminuir a quantidade de produtos comprados.
+- Se um cliente travar indo para a fila por tempo demais, ele entra diretamente na fila para não matar o expediente inteiro.
+- Se um cliente travar antes da compra por tempo demais, ele é colocado no ponto de compra reservado e continua a rotina normalmente.
+
+
+## v30 - Morcegos mais visíveis
+- Morcegos ampliados no `src/js/bat-system.js` via `BAT_CONFIG.escalaMin/escalaMax`.
+- Opacidade dos voos travada em 100% (`--bat-opacity: 1`).
+- Sprite CSS escurecido no `src/css/game.css` para deixar corpo e contorno bem escuros.
+- Cache dos arquivos atualizado para `?v=30`.
+
+
+## v32 - Corrida por missão
+
+- A missão única "Passo apressado" libera a corrida do gerente.
+- Depois de concluir a missão, segure Ctrl enquanto usa WASD/setas para correr.
+- Ajuste a força do sprint em `PLAYER_SPRINT_MULTIPLIER` dentro de `src/js/main.js`.
+- O desbloqueio fica salvo em `gameState.sprintDesbloqueado`.
+
+
+## v32 - Preparação com tempo real
+
+- A preparação agora dura 2 minutos e 30 segundos reais.
+- O jogador ainda pode iniciar o expediente antes pelo botão “Iniciar agora”.
+- Quando o tempo acaba, uma janela avisa que o expediente vai começar e abre automaticamente após poucos segundos.
+- Para editar a duração, ajuste `duracaoPreparacaoMs` em `src/js/gameState.js`; para editar a janela, ajuste `PREP_START_MODAL_MS` em `src/js/ui.js`.

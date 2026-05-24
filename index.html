@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<!--
+  DOCUMENTAÇÃO GERAL DO HTML
+  - Este arquivo monta todas as telas visíveis do jogo: menu, tutorial, créditos, mapa, HUD e modais.
+  - A ordem dos scripts no final importa: primeiro vêm dados/regras, depois sistemas visuais, e por último main.js.
+  - Para adicionar uma nova tela, crie uma <section class="screen"> e use mostrarTela(...) no JavaScript.
+  - Para ajustar textos e botões, procure pelos IDs usados nos scripts, pois eles ligam o HTML à lógica do jogo.
+-->
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -7,14 +14,13 @@
   <title>Mercado | Reino dos Custos</title>
 
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/style.css?v=22" />
+  <link rel="stylesheet" href="src/css/style.css?v=32" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/menu.css?v=22" />
+  <link rel="stylesheet" href="src/css/menu.css?v=32" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/game.css?v=22" />
+  <link rel="stylesheet" href="src/css/game.css?v=32" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/responsive.css?v=22" />
-  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="stylesheet" href="src/css/responsive.css?v=32" />
 </head>
 
 <body>
@@ -118,6 +124,8 @@
           <li>Defina o preço de venda de cada produto.</li>
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
           <li>Controle custos como aluguel, energia e equipe contratada.</li>
+          <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
+          <li>Conclua a missão “Passo apressado” para liberar corrida com Ctrl.</li>
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
           <li>Analise o relatório diário para saber se teve lucro ou prejuízo.</li>
         </ul>
@@ -357,6 +365,21 @@
       <div id="checkout-content" class="checkout-content"></div>
     </section>
 
+    <!-- @doc-html Modal automático da preparação. Aparece quando os 2min30s de preparo acabam e inicia o expediente após poucos segundos. -->
+    <section id="prep-start-modal" class="game-modal prep-start-modal hidden" role="dialog" aria-modal="true">
+      <div class="prep-start-shell">
+        <div class="prep-start-icon" aria-hidden="true">☀</div>
+        <span class="modal-kicker">Sinos da vila</span>
+        <h2>O expediente vai começar!</h2>
+        <p>O tempo de preparação acabou. Os clientes já estão chegando ao mercado.</p>
+        <div class="prep-start-countdown-card">
+          <span>Início automático em</span>
+          <strong id="prep-start-countdown">4s</strong>
+        </div>
+        <button id="btn-prep-start-now" class="btn primary">Abrir agora</button>
+      </div>
+    </section>
+
     <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="quest-loading-modal" class="game-modal quest-loading-modal hidden" role="dialog" aria-modal="true">
       <div class="quest-loading-stage">
@@ -375,28 +398,28 @@
   </div>
 
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/gameState.js?v=22"></script>
+  <script src="src/js/gameState.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/products.js?v=22"></script>
+  <script src="src/js/products.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/finance.js?v=22"></script>
+  <script src="src/js/finance.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/quests.js?v=22"></script>
+  <script src="src/js/quests.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/ui.js?v=22"></script>
+  <script src="src/js/ui.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/events.js?v=22"></script>
+  <script src="src/js/events.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/storage.js?v=22"></script>
+  <script src="src/js/storage.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/helpers-system.js?v=22"></script>
+  <script src="src/js/helpers-system.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/npc-system.js?v=22"></script>
+  <script src="src/js/npc-system.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/static-npc-system.js?v=22"></script>
+  <script src="src/js/static-npc-system.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/bat-system.js?v=22"></script>
+  <script src="src/js/bat-system.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/main.js?v=22"></script>
+  <script src="src/js/main.js?v=32"></script>
 </body>
 </html>

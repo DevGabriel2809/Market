@@ -48,10 +48,30 @@ function carregarJogo() {
         ? "expediente"
         : "preparacao");
     gameState.duracaoExpedienteMs = gameState.duracaoExpedienteMs || gameState.duracaoDiaMs || 300000;
+    gameState.duracaoPreparacaoMs = gameState.duracaoPreparacaoMs || 150000;
+    gameState.tempoPreparacaoDecorridoMs = gameState.faseDia === "preparacao"
+      ? Math.min(gameState.duracaoPreparacaoMs, gameState.tempoPreparacaoDecorridoMs || 0)
+      : 0;
+    gameState.preparacaoAvisoMostrado = Boolean(gameState.preparacaoAvisoMostrado);
+
+    if (gameState.faseDia === "preparacao" && gameState.tempoPreparacaoDecorridoMs >= gameState.duracaoPreparacaoMs) {
+      gameState.preparacaoAvisoMostrado = false;
+    }
+
     gameState.tempoDiaDecorridoMs = gameState.tempoDiaDecorridoMs || 0;
     gameState.diaProntoParaEncerrar = Boolean(gameState.diaProntoParaEncerrar);
     gameState.diaEmAndamento = Boolean(gameState.diaEmAndamento);
     gameState.diaEncerradoNotificado = Boolean(gameState.diaEncerradoNotificado);
+    // @doc-migration Saves antigos não possuem sprintDesbloqueado; mantém a habilidade bloqueada até a missão ser concluída.
+    gameState.sprintDesbloqueado = Boolean(gameState.sprintDesbloqueado);
+
+    // @doc-migration Mantém compatibilidade com saves antigos que não tinham dicas sequenciais dos NPCs fixos.
+    gameState.staticNpcTips = {
+      dia: Number(gameState.staticNpcTips && gameState.staticNpcTips.dia ? gameState.staticNpcTips.dia : gameState.dia || 1),
+      npcs: gameState.staticNpcTips && typeof gameState.staticNpcTips.npcs === "object"
+        ? gameState.staticNpcTips.npcs
+        : {}
+    };
 
     gameState.quests = {
       concluidas: [],
@@ -62,6 +82,10 @@ function carregarJogo() {
     };
 
     inicializarEstoque();
+
+    if (typeof garantirEstadoDicasNPCsEstaticos === "function") {
+      garantirEstadoDicasNPCsEstaticos();
+    }
 
     if (!gameState.fimDeJogo && !gameState.relatorioEmAndamento && !gameState.diaProntoParaEncerrar) {
       iniciarNovoDia();

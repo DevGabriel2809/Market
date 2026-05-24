@@ -20,9 +20,19 @@ const gameState = {
   clientela: 1,
   ajudanteContratado: false,
   ajudanteDesbloqueado: false,
+  // @doc-state sprintDesbloqueado libera a corrida do gerente segurando Ctrl.
+  // O valor começa falso e vira true quando a missão inicial de mobilidade é concluída.
+  sprintDesbloqueado: false,
   descontoFornecedor: 0,
   faseDia: "preparacao",
   duracaoExpedienteMs: 300000,
+  // @doc-state duracaoPreparacaoMs define o tempo real da preparação antes da abertura automática.
+  // 150000 ms = 2 minutos e 30 segundos; aumente/diminua para balancear o preparo.
+  duracaoPreparacaoMs: 150000,
+  // @doc-state tempoPreparacaoDecorridoMs acumula quanto tempo real o jogador já ficou se preparando no dia atual.
+  tempoPreparacaoDecorridoMs: 0,
+  // @doc-state preparacaoAvisoMostrado evita abrir várias vezes a janela de início automático do expediente.
+  preparacaoAvisoMostrado: false,
   tempoDiaDecorridoMs: 0,
   diaEmAndamento: false,
   diaProntoParaEncerrar: false,
@@ -37,7 +47,10 @@ const gameState = {
     cooldowns: {}
   },
   ultimoRelatorio: null,
-  fimDeJogo: null
+  fimDeJogo: null,
+  // @doc-state staticNpcTips guarda quais dicas dos NPCs fixos já foram lidas no dia atual.
+  // Edite/limpe este campo se quiser reiniciar o ciclo de dicas sem resetar a partida inteira.
+  staticNpcTips: null
 };
 
 /**
@@ -60,9 +73,13 @@ function resetarPartida(nome, personagem) {
   gameState.clientela = 1;
   gameState.ajudanteContratado = false;
   gameState.ajudanteDesbloqueado = false;
+  gameState.sprintDesbloqueado = false;
   gameState.descontoFornecedor = 0;
   gameState.faseDia = "preparacao";
   gameState.duracaoExpedienteMs = 300000;
+  gameState.duracaoPreparacaoMs = 150000;
+  gameState.tempoPreparacaoDecorridoMs = 0;
+  gameState.preparacaoAvisoMostrado = false;
   gameState.tempoDiaDecorridoMs = 0;
   gameState.diaEmAndamento = false;
   gameState.diaProntoParaEncerrar = false;
@@ -78,6 +95,11 @@ function resetarPartida(nome, personagem) {
   };
   gameState.ultimoRelatorio = null;
   gameState.fimDeJogo = null;
+  gameState.staticNpcTips = null;
+
+  if (typeof resetarDicasNPCsEstaticosDoDia === "function") {
+    resetarDicasNPCsEstaticosDoDia();
+  }
 
   if (typeof inicializarEstoque === "function") {
     inicializarEstoque();

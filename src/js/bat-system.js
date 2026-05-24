@@ -11,7 +11,7 @@
 // - BAT_CONFIG.quantidadeAmbienteMin/Max: quantos passam nas ondas aleatórias.
 // - BAT_CONFIG.intervaloAmbienteMin/Max: intervalo entre ondas.
 // - BAT_CONFIG.duracaoMin/Max: velocidade do voo; maior = mais lento.
-// - BAT_CONFIG.escalaMin/Max: tamanho visual do sprite.
+// - BAT_CONFIG.escalaMin/Max: tamanho visual do sprite. Na v30 os morcegos foram aumentados para ficarem bem visíveis no mapa.
 //
 // Importante:
 // - A camada é movida para dentro de #market-scene quando o mapa está ativo.
@@ -27,8 +27,8 @@
     intervaloAmbienteMax: 42000,
     duracaoMin: 18000,
     duracaoMax: 28000,
-    escalaMin: 0.58,
-    escalaMax: 0.82
+    escalaMin: 0.8,
+    escalaMax: 1.15
   };
 
   const batState = {
@@ -214,7 +214,7 @@
     voo.style.setProperty("--bat-scale", `${numeroAleatorioBat(BAT_CONFIG.escalaMin, BAT_CONFIG.escalaMax).toFixed(2)}`);
     voo.style.setProperty("--bat-duration", `${duracao.toFixed(0)}ms`);
     voo.style.setProperty("--bat-delay", `${atraso.toFixed(0)}ms`);
-    voo.style.setProperty("--bat-opacity", `${numeroAleatorioBat(0.78, intro ? 0.96 : 0.88).toFixed(2)}`);
+    voo.style.setProperty("--bat-opacity", "1");
     voo.style.setProperty("--bat-rotate-start", `${numeroAleatorioBat(-4, 2).toFixed(1)}deg`);
     voo.style.setProperty("--bat-rotate-mid", `${numeroAleatorioBat(-2, 4).toFixed(1)}deg`);
     voo.style.setProperty("--bat-rotate-end", `${numeroAleatorioBat(-4, 2).toFixed(1)}deg`);

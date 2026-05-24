@@ -4,7 +4,8 @@
 // Controla o fluxo central do jogo: troca de telas, seleção do personagem, movimento, câmera e loop principal.
 // Ajustes comuns:
 // - PLAYER_SCALE muda o tamanho visual do gerente.
-// - speed muda a velocidade do player.
+// - speed muda a velocidade base do player.
+// - PLAYER_SPRINT_MULTIPLIER controla o bônus quando a corrida com Ctrl é desbloqueada.
 // - temColisao(...) decide o que bloqueia passagem; agora inclui mapa + NPCs + ajudante.
 // - gameLoop(...) chama os sistemas que precisam atualizar a cada frame.
 // ======================================================
@@ -49,6 +50,10 @@ let playerX = 600;
 let playerY = 400;
 let speed = 4.5;
 
+// Multiplicador aplicado quando o jogador segura Ctrl após concluir a missão "Passo apressado".
+// Aumente para sprint mais forte ou reduza para uma corrida mais sutil.
+const PLAYER_SPRINT_MULTIPLIER = 1.65;
+
 let ultimaDirecao = "down";
 let personagemSelecionado = gameState.personagem || "male";
 
@@ -82,6 +87,7 @@ window.mapaObjetos = [];
 window.objetosInteracao = [];
 window.objetosChao = [];
 window.objetosColisao = [];
+window.objetosNpcZones = [];
 
 
 // ======================================================
@@ -220,7 +226,8 @@ const keysPressed = {
   w: false,
   a: false,
   s: false,
-  d: false
+  d: false,
+  Control: false
 };
 
 /**
@@ -235,6 +242,9 @@ function obterTeclaMovimento(event) {
 
   // Normaliza WASD para funcionar mesmo se o navegador enviar W/A/S/D maiúsculo.
   if (event.key.length === 1) return event.key.toLowerCase();
+
+  // Ctrl vira a tecla da corrida depois que a missão certa é concluída.
+  if (event.key === "Control") return "Control";
 
   return event.key;
 }
@@ -556,9 +566,14 @@ function moverPersonagem(deltaTime = 16) {
   const esquerda = keysPressed.ArrowLeft || keysPressed.a;
   const direita = keysPressed.ArrowRight || keysPressed.d;
 
+  // A corrida só existe depois da missão de treinamento.
+  // Antes disso, segurar Ctrl não muda a velocidade e não quebra o progresso inicial.
+  const corridaAtiva = Boolean(gameState.sprintDesbloqueado && keysPressed.Control && (cima || baixo || esquerda || direita));
+  const velocidadeAtual = corridaAtiva ? speed * PLAYER_SPRINT_MULTIPLIER : speed;
+
   // CIMA
   if (cima) {
-    novoY -= speed;
+    novoY -= velocidadeAtual;
     moving = true;
     direcaoMovimento = "up";
     ultimaDirecao = "up";
@@ -566,7 +581,7 @@ function moverPersonagem(deltaTime = 16) {
 
   // BAIXO
   if (baixo) {
-    novoY += speed;
+    novoY += velocidadeAtual;
     moving = true;
     direcaoMovimento = "down";
     ultimaDirecao = "down";
@@ -574,7 +589,7 @@ function moverPersonagem(deltaTime = 16) {
 
   // ESQUERDA
   if (esquerda) {
-    novoX -= speed;
+    novoX -= velocidadeAtual;
     moving = true;
     direcaoMovimento = "left";
     ultimaDirecao = "left";
@@ -582,7 +597,7 @@ function moverPersonagem(deltaTime = 16) {
 
   // DIREITA
   if (direita) {
-    novoX += speed;
+    novoX += velocidadeAtual;
     moving = true;
     direcaoMovimento = "right";
     ultimaDirecao = "right";
@@ -694,6 +709,16 @@ function carregarMapa() {
 
         if (layer.name === "som") {
           window.objetosChao = layer.objects || [];
+        }
+
+        if (layer.name === "npc_zones") {
+          // Camada criada no Tiled para guiar clientes sem precisar mexer no código.
+          // Objetos buy_* viram pontos de compra, queue_* vira fila e lane_* vira corredor seguro.
+          window.objetosNpcZones = layer.objects || [];
+
+          if (typeof registrarZonasNPC === "function") {
+            registrarZonasNPC(window.objetosNpcZones);
+          }
         }
 
         if (layer.name === "colisao") {

@@ -1,8 +1,8 @@
 {
-    "activeFile": "src/assets/maps/MAPA.tsj",
+    "activeFile": "src/assets/maps/mapa.json",
     "expandedProjectPaths": [
-        "src",
-        "."
+        ".",
+        "src"
     ],
     "file.lastUsedOpenFilter": "Todos os Ficheiros (*)",
     "fileStates": {
@@ -26,11 +26,11 @@
             "scaleInEditor": 1
         },
         "src/assets/maps/mapa.json": {
-            "scale": 0.5,
-            "selectedLayer": 1,
+            "scale": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1537,
-                "y": -197
+                "x": 428,
+                "y": 774
             }
         },
         "src/assets/maps/mapa.tmx": {
@@ -68,8 +68,8 @@
     ],
     "project": "sem título.tiled-project",
     "recentFiles": [
-        "src/assets/maps/mapa.json",
         "src/assets/maps/MAPA.tsj",
+        "src/assets/maps/mapa.json",
         "src/assets/maps/mapa.tmx",
         "src/mapa.json",
         "src/mapa.tmx",

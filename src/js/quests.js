@@ -52,6 +52,20 @@ const questDefinitions = [
     }
   },
   {
+    id: "passo_apressado",
+    titulo: "Passo apressado",
+    tipo: "Treinamento",
+    descricao: "Praticar uma rota curta pelo mercado para aprender a correr segurando Ctrl.",
+    chanceBase: 0.98,
+    recompensa: {
+      sprintDesbloqueado: true,
+      experiencia: 1
+    },
+    falha: {
+      experiencia: 1
+    }
+  },
+  {
     id: "auditoria_custos",
     titulo: "Auditoria dos custos",
     tipo: "Gestão",
@@ -332,6 +346,11 @@ function aplicarEfeitoQuest(efeito) {
     detalhes.push("Ajudante liberado");
   }
 
+  if (efeito.sprintDesbloqueado) {
+    gameState.sprintDesbloqueado = true;
+    detalhes.push("Corrida com Ctrl liberada");
+  }
+
   if (efeito.estoque) {
     Object.entries(efeito.estoque).forEach(([produtoId, quantidade]) => {
       const produto = obterProduto(produtoId);
@@ -380,6 +399,10 @@ function executarQuest(questId) {
 
   if (quest.repetivel && quest.cooldown) {
     gameState.quests.cooldowns[quest.id] = quest.cooldown;
+  }
+
+  if (sucesso && typeof reposicionarNPCsEstaticos === "function") {
+    reposicionarNPCsEstaticos("missao_concluida");
   }
 
   return {

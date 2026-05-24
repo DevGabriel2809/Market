@@ -7,7 +7,10 @@
 let interfaceInicializada = false;
 let ultimoResultadoQuest = null;
 let questEmAndamento = false;
+let prepStartTimeoutId = null;
+let prepStartCountdownId = null;
 const QUEST_LOADING_MS = 10000;
+const PREP_START_MODAL_MS = 10000;
 
 const ui = {};
 
@@ -37,6 +40,9 @@ function inicializarInterface() {
   ui.reportModal = document.getElementById("report-modal");
   ui.checkoutModal = document.getElementById("checkout-modal");
   ui.questLoadingModal = document.getElementById("quest-loading-modal");
+  ui.prepStartModal = document.getElementById("prep-start-modal");
+  ui.prepStartCountdown = document.getElementById("prep-start-countdown");
+  ui.btnPrepStartNow = document.getElementById("btn-prep-start-now");
   ui.toast = document.getElementById("game-toast");
 
   const btnPassarDia = ui.btnPassarDia;
@@ -68,6 +74,15 @@ function inicializarInterface() {
         abrirRelatorio(relatorio);
         mostrarToast(gameState.fimDeJogo ? gameState.fimDeJogo.titulo : "Dia encerrado.");
       }
+    });
+  }
+
+  if (ui.btnPrepStartNow) {
+    ui.btnPrepStartNow.addEventListener("click", () => {
+      const resultado = iniciarExpediente();
+      atualizarInterfaceJogo();
+      fecharModal();
+      mostrarToast(resultado.mensagem);
     });
   }
 
@@ -216,7 +231,10 @@ function atualizarHudTempo() {
     if (gameState.fimDeJogo) {
       ui.dayStatusText.textContent = "Campanha encerrada";
     } else if (gameState.faseDia === "preparacao") {
-      ui.dayStatusText.textContent = "Preparação: 10 min antes de abrir";
+      const restantePreparacao = obterTempoRestanteDia();
+      ui.dayStatusText.textContent = gameState.preparacaoAvisoMostrado
+        ? "Expediente iniciando..."
+        : `Preparação: abre em ${formatarTempoCurto(restantePreparacao)}`;
     } else if (gameState.diaProntoParaEncerrar) {
       ui.dayStatusText.textContent = "Expediente concluído";
     } else {
@@ -228,7 +246,7 @@ function atualizarHudTempo() {
     ui.btnPassarDia.disabled = Boolean(gameState.fimDeJogo) || gameState.faseDia === "expediente";
 
     if (gameState.faseDia === "preparacao") {
-      ui.btnPassarDia.textContent = "Iniciar Expediente";
+      ui.btnPassarDia.textContent = "Iniciar agora";
     } else if (gameState.faseDia === "fechamento") {
       ui.btnPassarDia.textContent = "Encerrar Dia";
     } else {
@@ -236,6 +254,60 @@ function atualizarHudTempo() {
     }
   }
 }
+
+/**
+ * @doc-func cancelarAvisoInicioExpediente
+ * O que faz: cancela o modal/contador automático da preparação quando o expediente começa manualmente.
+ * Como editar: mude PREP_START_MODAL_MS no topo do arquivo para alterar o tempo da janela.
+ */
+function cancelarAvisoInicioExpediente() {
+  if (prepStartTimeoutId) {
+    clearTimeout(prepStartTimeoutId);
+    prepStartTimeoutId = null;
+  }
+
+  if (prepStartCountdownId) {
+    clearInterval(prepStartCountdownId);
+    prepStartCountdownId = null;
+  }
+}
+
+/**
+ * @doc-func mostrarAvisoInicioExpediente
+ * O que faz: abre a janela bonita avisando que a preparação acabou e agenda o início automático.
+ * Como editar: altere textos do modal no index.html e estilos .prep-start-* no CSS.
+ */
+function mostrarAvisoInicioExpediente() {
+  if (gameState.faseDia !== "preparacao" || gameState.fimDeJogo) return;
+
+  cancelarAvisoInicioExpediente();
+
+  const tempoFinal = performance.now() + PREP_START_MODAL_MS;
+  const atualizarContagem = () => {
+    if (!ui.prepStartCountdown) return;
+    const restante = Math.max(0, tempoFinal - performance.now());
+    ui.prepStartCountdown.textContent = `${Math.ceil(restante / 1000)}s`;
+  };
+
+  atualizarContagem();
+  prepStartCountdownId = setInterval(atualizarContagem, 200);
+
+  abrirModal("prep-start-modal");
+
+  prepStartTimeoutId = setTimeout(() => {
+    prepStartTimeoutId = null;
+
+    if (gameState.faseDia === "preparacao" && !gameState.fimDeJogo) {
+      const resultado = iniciarExpediente();
+      atualizarInterfaceJogo();
+      fecharModal();
+      mostrarToast(resultado.mensagem);
+    }
+  }, PREP_START_MODAL_MS);
+}
+
+window.cancelarAvisoInicioExpediente = cancelarAvisoInicioExpediente;
+window.mostrarAvisoInicioExpediente = mostrarAvisoInicioExpediente;
 
 /**
  * @doc-func renderizarCustosFixos
@@ -329,7 +401,7 @@ function abrirModal(modalId) {
   document.querySelector(".actions-panel")?.classList.remove("open");
   document.querySelector(".finance-panel")?.classList.remove("open");
 
-  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.checkoutModal, ui.questLoadingModal].forEach((modal) => {
+  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.checkoutModal, ui.questLoadingModal, ui.prepStartModal].forEach((modal) => {
     if (modal) modal.classList.add("hidden");
   });
 
@@ -355,7 +427,7 @@ function fecharModal() {
   }
 
   ui.modalBackdrop.classList.add("hidden");
-  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.checkoutModal, ui.questLoadingModal].forEach((modal) => {
+  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.checkoutModal, ui.questLoadingModal, ui.prepStartModal].forEach((modal) => {
     if (modal) modal.classList.add("hidden");
   });
 }
@@ -502,12 +574,14 @@ function renderizarStatus() {
       ${linhaStatus("Itens em estoque", resumo.quantidadeEstoque)}
       ${linhaStatus("Custo fixo diário", formatarMoeda(calcularCustosFixos()))}
       ${linhaStatus("Desconto fornecedor", `${Math.round((gameState.descontoFornecedor || 0) * 100)}%`)}
+      ${linhaStatus("Corrida", gameState.sprintDesbloqueado ? "Ctrl liberado" : "Bloqueada por missão")}
     `;
   }
 
   if (objetivos) {
     const progressoCaixa = Math.min(100, Math.round((gameState.caixa / 5000) * 100));
     const concluidas = gameState.quests.concluidas.length;
+    const totalMissoesUnicas = questDefinitions.filter((quest) => !quest.repetivel).length || 1;
     const ajudanteTexto = gameState.ajudanteContratado
       ? "Ajudante contratado"
       : gameState.ajudanteDesbloqueado
@@ -517,7 +591,7 @@ function renderizarStatus() {
     objetivos.innerHTML = `
       ${barraObjetivo("Meta de caixa", progressoCaixa, `${formatarMoeda(gameState.caixa)} / ${formatarMoeda(5000)}`)}
       ${barraObjetivo("Campanha", Math.round((gameState.dia / gameState.diaMaximo) * 100), `Dia ${gameState.dia} de ${gameState.diaMaximo}`)}
-      ${barraObjetivo("Missões únicas", Math.round((concluidas / 4) * 100), `${concluidas} concluída(s)`)}
+      ${barraObjetivo("Missões únicas", Math.round((concluidas / totalMissoesUnicas) * 100), `${concluidas}/${totalMissoesUnicas} concluída(s)`)}
       <div class="objective-row">
         <span>Equipe</span>
         <strong>${ajudanteTexto}</strong>
@@ -1061,6 +1135,7 @@ function descreverRecompensaQuest(quest) {
   if (recompensa.energia) partes.push("energia reduzida");
   if (recompensa.descontoFornecedor) partes.push("desconto");
   if (recompensa.ajudanteDesbloqueado) partes.push("ajudante");
+  if (recompensa.sprintDesbloqueado) partes.push("corrida com Ctrl");
   if (recompensa.desbloqueiaProduto) {
     const produto = obterProduto(recompensa.desbloqueiaProduto);
     partes.push(`${produto ? produto.nome : "produto"} liberado`);
