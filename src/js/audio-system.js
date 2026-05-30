@@ -349,6 +349,9 @@ function definirMusicaAtiva(ativo) {
   } else if (musicState.audio) {
     pararFadeMusica();
     musicState.audio.pause();
+    if (musicState.caption) {
+      musicState.caption.classList.remove("visible");
+    }
   }
 }
 
