@@ -120,13 +120,13 @@ function zIndexProfundidadeNPC(y, ajuste = 0) {
 }
 
 const NPC_PERFIS = [
-  { nome: "Lia", classe: "npc-lia", preferencias: ["maca", "pao"], paciencia: 1.18, chanceCompra: 0.8 },
-  { nome: "Bruno", classe: "npc-bruno", preferencias: ["carne", "queijo"], paciencia: 1, chanceCompra: 1 },
-  { nome: "Marta", classe: "npc-marta", preferencias: ["pao", "vela"], paciencia: 1.22, chanceCompra: 0.66 },
-  { nome: "Caio", classe: "npc-caio", preferencias: ["pocao", "vela"], paciencia: 0.88, chanceCompra: 1 },
-  { nome: "Nina", classe: "npc-nina", preferencias: ["queijo", "maca"], paciencia: 1.06, chanceCompra: 0.84 },
-  { nome: "Tomas", classe: "npc-tomas", preferencias: ["vela", "pao"], paciencia: 0.98, chanceCompra: 0.41 },
-  { nome: "Rosa", classe: "npc-rosa", preferencias: ["especiaria", "pocao", "queijo"], paciencia: 1.12, chanceCompra: 0.53 }
+  { nome: "Lia", classe: "npc-lia", preferencias: ["maca", "pao"], paciencia: 1.18, chanceCompra: 0.08 },
+  { nome: "Bruno", classe: "npc-bruno", preferencias: ["carne", "queijo"], paciencia: 1, chanceCompra: 0.41 },
+  { nome: "Marta", classe: "npc-marta", preferencias: ["pao", "vela"], paciencia: 1.22, chanceCompra: 0.36 },
+  { nome: "Caio", classe: "npc-caio", preferencias: ["pocao", "vela"], paciencia: 0.88, chanceCompra: 0.41 },
+  { nome: "Nina", classe: "npc-nina", preferencias: ["queijo", "maca"], paciencia: 1.06, chanceCompra: 0.14 },
+  { nome: "Tomas", classe: "npc-tomas", preferencias: ["vela", "pao"], paciencia: 0.98, chanceCompra: 0.21 },
+  { nome: "Rosa", classe: "npc-rosa", preferencias: ["especiaria", "pocao", "queijo"], paciencia: 1.12, chanceCompra: 0.13 }
 ];
 
 /**
@@ -1892,7 +1892,7 @@ function limitarClienteAoMapa(cliente) {
 function atualizarPosicaoCliente(cliente) {
   cliente.el.style.left = `${cliente.x}px`;
   cliente.el.style.top = `${cliente.y}px`;
-  cliente.el.style.zIndex = zIndexProfundidadeNPC(cliente.y);
+  cliente.el.style.zIndex = String(3 + Math.floor(cliente.y / 24));
 }
 
 /**
@@ -1913,12 +1913,12 @@ function atualizarDirecaoCliente(cliente, dx, dy) {
   if (Math.abs(dx) > Math.abs(dy)) {
     cliente.sprite.classList.add("customer-walk-side");
     cliente.sprite.style.transform = dx < 0
-      ? "translateX(-50%) scale(var(--npc-map-scale, 0.86)) scaleX(-1)"
-      : "translateX(-50%) scale(var(--npc-map-scale, 0.86)) scaleX(1)";
+      ? "translateX(-50%) scale(0.55) scaleX(-1)"
+      : "translateX(-50%) scale(0.55) scaleX(1)";
     return;
   }
 
-  cliente.sprite.style.transform = "translateX(-50%) scale(var(--npc-map-scale, 0.86))";
+  cliente.sprite.style.transform = "translateX(-50%) scale(0.55)";
   cliente.sprite.classList.add(dy < 0 ? "customer-walk-up" : "customer-walk-down");
 }
 
@@ -1935,7 +1935,7 @@ function clienteIdle(cliente) {
     "customer-walk-up",
     "customer-walk-down"
   );
-  cliente.sprite.style.transform = "translateX(-50%) scale(var(--npc-map-scale, 0.86))";
+  cliente.sprite.style.transform = "translateX(-50%) scale(0.55)";
   cliente.sprite.classList.add("customer-idle");
 }
 
