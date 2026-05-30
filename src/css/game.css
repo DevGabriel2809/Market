@@ -54,7 +54,6 @@
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 1;
   transform-origin: 0 0;
 }
 
@@ -1795,8 +1794,8 @@
 /* @doc-css Estilo de NPC/cliente (.static-npc): controla sprite, fala ou posição visual dos personagens automáticos. */
 .static-npc {
   position: absolute;
-  width: 94px;
-  height: 132px;
+  width: 118px;
+  height: 168px;
   transform: translate(-50%, -100%);
   transform-origin: center bottom;
   pointer-events: auto;
@@ -1808,17 +1807,17 @@
   position: absolute;
   left: 50%;
   bottom: 0;
-  width: 128px;
-  height: 128px;
+  width: var(--npc-frame-width, 128px);
+  height: var(--npc-frame-height, 128px);
   background-repeat: no-repeat;
   background-position: 0 0;
-  background-size: 768px 128px;
+  background-size: var(--npc-sheet-width, 768px) var(--npc-frame-height, 128px);
   filter:
     hue-rotate(var(--npc-hue, 0deg))
     saturate(var(--npc-saturation, 1))
     brightness(var(--npc-brightness, 1));
   image-rendering: pixelated;
-  transform: translateX(-50%) scale(0.55);
+  transform: translateX(-50%) scale(var(--npc-map-scale, 0.86));
   transform-origin: center bottom;
 }
 
@@ -1826,7 +1825,7 @@
 .static-npc-name {
   position: absolute;
   left: 50%;
-  bottom: 86px;
+  bottom: var(--npc-label-bottom, 116px);
   z-index: 2;
   padding: 4px 8px;
   border: 1px solid rgba(255, 241, 208, 0.34);
@@ -1846,7 +1845,7 @@
 .static-npc-marker {
   position: absolute;
   left: 50%;
-  bottom: 112px;
+  bottom: var(--npc-marker-bottom, 142px);
   z-index: 4;
   width: 22px;
   height: 22px;
@@ -1897,7 +1896,7 @@
 .static-npc-chat {
   position: absolute;
   left: 50%;
-  bottom: 124px;
+  bottom: var(--npc-chat-bottom, 150px);
   z-index: 30;
   width: min(310px, 82vw);
   padding: 14px;
@@ -1999,8 +1998,8 @@
 /* @doc-css Estilo de NPC/cliente (.customer-npc): controla sprite, fala ou posição visual dos personagens automáticos. */
 .customer-npc {
   position: absolute;
-  width: 94px;
-  height: 132px;
+  width: 118px;
+  height: 168px;
   transform: translate(-50%, -100%);
   transform-origin: center bottom;
   pointer-events: none;
@@ -2012,17 +2011,17 @@
   position: absolute;
   left: 50%;
   bottom: 0;
-  width: 128px;
-  height: 128px;
+  width: var(--npc-frame-width, 128px);
+  height: var(--npc-frame-height, 128px);
   background-repeat: no-repeat;
   background-position: 0 0;
-  background-size: 768px 128px;
+  background-size: var(--npc-sheet-width, 768px) var(--npc-frame-height, 128px);
   filter:
     hue-rotate(var(--npc-hue, 0deg))
     saturate(var(--npc-saturation, 1))
     brightness(var(--npc-brightness, 1));
   image-rendering: pixelated;
-  transform: translateX(-50%) scale(0.55);
+  transform: translateX(-50%) scale(var(--npc-map-scale, 0.86));
   transform-origin: center bottom;
 }
 
@@ -2030,7 +2029,7 @@
 .customer-name {
   position: absolute;
   left: 50%;
-  bottom: 86px;
+  bottom: var(--npc-label-bottom, 116px);
   z-index: 2;
   min-width: 42px;
   max-width: 86px;
@@ -2052,7 +2051,7 @@
 .customer-bubble {
   position: absolute;
   left: 50%;
-  bottom: 108px;
+  bottom: var(--npc-bubble-bottom, 140px);
   z-index: 3;
   width: max-content;
   min-width: 68px;
@@ -2142,6 +2141,51 @@
   --npc-back: url("../assets/images/characters/npc's/Rosa/rosa_back.png");
 }
 
+.npc-runa {
+  --npc-idle: url("../assets/images/characters/npc's/Runa/runa_idle.png");
+  --npc-sheet-width: 970px;
+  --npc-sheet-offset: -970px;
+  --npc-frame-width: 161.667px;
+  --npc-frame-height: 257px;
+  --npc-map-scale: 0.43;
+}
+
+.npc-cedro {
+  --npc-idle: url("../assets/images/characters/npc's/Cedro/cedro_idle.png");
+  --npc-sheet-width: 801px;
+  --npc-sheet-offset: -801px;
+  --npc-frame-width: 133.5px;
+  --npc-frame-height: 312px;
+  --npc-map-scale: 0.35;
+}
+
+.npc-mira {
+  --npc-idle: url("../assets/images/characters/npc's/Mira/mira_idle.png");
+  --npc-sheet-width: 964px;
+  --npc-sheet-offset: -964px;
+  --npc-frame-width: 160.667px;
+  --npc-frame-height: 259px;
+  --npc-map-scale: 0.425;
+}
+
+.npc-borin {
+  --npc-idle: url("../assets/images/characters/npc's/Borin/borin_idle.png");
+  --npc-sheet-width: 956px;
+  --npc-sheet-offset: -956px;
+  --npc-frame-width: 159.333px;
+  --npc-frame-height: 261px;
+  --npc-map-scale: 0.422;
+}
+
+.npc-sibil {
+  --npc-idle: url("../assets/images/characters/npc's/Sibil/sibil_idle.png");
+  --npc-sheet-width: 960px;
+  --npc-sheet-offset: -960px;
+  --npc-frame-width: 160px;
+  --npc-frame-height: 260px;
+  --npc-map-scale: 0.423;
+}
+
 /* @doc-css Estilo de NPC/cliente (.customer-idle): controla sprite, fala ou posição visual dos personagens automáticos. */
 .customer-idle {
   background-image: var(--npc-idle, url("../assets/images/characters/manager/male_front.png"));
@@ -2150,6 +2194,7 @@
 }
 
 .customer-sprite.customer-idle,
+.static-npc-sprite.customer-idle,
 .checkout-customer-sprite.customer-idle {
   animation: customerIdle 1.1s steps(6) infinite;
 }
@@ -2175,25 +2220,25 @@
 /* @doc-css Animação @keyframes customerIdle: ajuste porcentagens internas para mudar movimento, entrada ou sprite frame-a-frame. */
 @keyframes customerIdle {
   from { background-position: 0 0; }
-  to { background-position: -768px 0; }
+  to { background-position: var(--npc-sheet-offset, -768px) 0; }
 }
 
 /* @doc-css Animação @keyframes customerWalkSide: ajuste porcentagens internas para mudar movimento, entrada ou sprite frame-a-frame. */
 @keyframes customerWalkSide {
   from { background-position: 0 0; }
-  to { background-position: -768px 0; }
+  to { background-position: var(--npc-sheet-offset, -768px) 0; }
 }
 
 /* @doc-css Animação @keyframes customerWalkFront: ajuste porcentagens internas para mudar movimento, entrada ou sprite frame-a-frame. */
 @keyframes customerWalkFront {
   from { background-position: 0 0; }
-  to { background-position: -768px 0; }
+  to { background-position: var(--npc-sheet-offset, -768px) 0; }
 }
 
 /* @doc-css Animação @keyframes customerWalkBack: ajuste porcentagens internas para mudar movimento, entrada ou sprite frame-a-frame. */
 @keyframes customerWalkBack {
   from { background-position: 0 0; }
-  to { background-position: -768px 0; }
+  to { background-position: var(--npc-sheet-offset, -768px) 0; }
 }
 
 
@@ -2214,10 +2259,9 @@
 
   image-rendering: pixelated;
 
-  transform: translate(-50%, -100%) scale(0.55);
+  transform: translate(-50%, -100%) scale(0.86);
   transform-origin: center bottom;
 
-  z-index: 4;
   pointer-events: none;
 
   animation: none;

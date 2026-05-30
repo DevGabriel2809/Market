@@ -308,15 +308,15 @@
   }
 
   .mobile-dpad {
-    width: 158px;
-    height: 158px;
+    width: 176px;
+    height: 176px;
     display: grid;
     grid-template-areas:
       ". up ."
       "left center right"
       ". down .";
-    grid-template-columns: repeat(3, 48px);
-    grid-template-rows: repeat(3, 48px);
+    grid-template-columns: repeat(3, 54px);
+    grid-template-rows: repeat(3, 54px);
     gap: 7px;
     pointer-events: auto;
   }
@@ -344,8 +344,8 @@
   }
 
   .mobile-control {
-    width: 48px;
-    height: 48px;
+    width: 54px;
+    height: 54px;
   }
 
   .mobile-control-up {
@@ -366,8 +366,8 @@
 
   .mobile-dpad-center {
     grid-area: center;
-    width: 48px;
-    height: 48px;
+    width: 54px;
+    height: 54px;
     border: 1px solid rgba(255, 241, 208, 0.12);
     border-radius: 50%;
     background: rgba(10, 6, 3, 0.26);
@@ -382,8 +382,8 @@
   }
 
   .mobile-action {
-    width: 70px;
-    height: 70px;
+    width: 78px;
+    height: 78px;
     border-color: rgba(128, 197, 139, 0.78);
     color: #a7e0aa;
     font-size: 1.32rem;
@@ -414,7 +414,7 @@
   .game-modal {
     width: calc(100vw - 16px);
     max-height: calc(100dvh - 16px);
-    padding: 14px;
+    padding: 12px;
     border-radius: 16px;
   }
 
@@ -433,6 +433,216 @@
     height: 46px;
     flex: 0 0 auto;
     border-radius: 14px;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .status-manager {
+    min-height: 0;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 12px;
+    text-align: left;
+  }
+
+  .status-character {
+    flex: 0 0 88px;
+    margin: 0;
+    transform: scale(0.78);
+  }
+
+  .status-panel,
+  .stock-card,
+  .quest-card,
+  .report-columns section,
+  .report-highlight,
+  .endgame-card,
+  .empty-state,
+  .checkout-empty,
+  .checkout-customer,
+  .checkout-items,
+  .checkout-payment,
+  .checkout-change {
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .status-panel.wide {
+    grid-column: auto;
+  }
+
+  .status-row,
+  .objective-row,
+  .report-row,
+  .checkout-row {
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 0.82rem;
+  }
+
+  .stock-summary,
+  .quest-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .stock-summary > div,
+  .quest-summary > div {
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .stock-grid,
+  .quest-list,
+  .report-columns {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .stock-card,
+  .quest-card {
+    gap: 9px;
+  }
+
+  .stock-card p,
+  .quest-details,
+  .report-highlight p,
+  .empty-state p,
+  .endgame-card p {
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .stock-actions {
+    gap: 6px;
+  }
+
+  .stock-actions .btn,
+  .quest-footer .btn,
+  .checkout-actions .btn {
+    min-height: 38px;
+    padding: 8px 9px;
+    border-radius: 10px;
+    font-size: 0.78rem;
+  }
+
+  .checkout-content {
+    gap: 8px;
+  }
+
+  .checkout-customer {
+    min-height: 82px;
+    grid-template-columns: 70px minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  .checkout-customer-avatar {
+    width: 68px;
+    height: 76px;
+  }
+
+  .checkout-customer-shadow {
+    bottom: 6px;
+    width: 46px;
+  }
+
+  .checkout-customer-sprite {
+    bottom: 3px;
+    transform: translateX(-50%) scale(0.52);
+  }
+
+  .checkout-customer h3 {
+    font-size: 1.28rem;
+  }
+
+  .checkout-queue-count {
+    padding: 7px 9px;
+    font-size: 0.78rem;
+  }
+
+  .checkout-items h3 {
+    font-size: 1rem;
+  }
+
+  .checkout-items {
+    gap: 4px;
+    max-height: 32dvh;
+    overflow: auto;
+  }
+
+  .checkout-payment {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .checkout-payment .status-row {
+    display: grid;
+    gap: 2px;
+    padding: 7px 8px;
+    border: 1px solid rgba(255, 241, 208, 0.12);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .checkout-payment .status-row strong {
+    text-align: left;
+  }
+
+  .checkout-change {
+    gap: 8px;
+  }
+
+  .checkout-change-header {
+    align-items: center;
+  }
+
+  .checkout-change-header strong {
+    font-size: 1.08rem;
+  }
+
+  .checkout-change-header small {
+    max-width: 160px;
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+
+  .checkout-coin-tray {
+    gap: 6px;
+  }
+
+  .checkout-coin-tray button {
+    min-height: 48px;
+    grid-template-columns: 30px 1fr;
+    gap: 7px;
+    padding: 7px;
+  }
+
+  .checkout-coin-tray button span {
+    width: 28px;
+    height: 28px;
+    font-size: 0.72rem;
+  }
+
+  .checkout-coin-tray button strong,
+  .checkout-coin-actions button,
+  .checkout-coin-ledger strong {
+    font-size: 0.72rem;
+  }
+
+  .checkout-coin-ledger {
+    min-height: 34px;
+    gap: 5px;
+    padding: 7px;
+  }
+
+  .checkout-coin-actions,
+  .checkout-actions {
+    gap: 7px;
   }
 }
 
@@ -506,20 +716,31 @@
   }
 
   .actions-panel {
-    gap: 8px;
+    width: min(360px, 44vw);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: 5px;
+    padding: 8px;
+    border-radius: 16px;
   }
 
   .actions-panel h3,
   .finance-panel h3 {
-    margin-bottom: 8px;
     font-size: 1.25rem;
   }
 
+  .actions-panel h3 {
+    grid-column: 1 / -1;
+    margin-bottom: 2px;
+    font-size: 1.08rem;
+  }
+
   .actions-panel .btn {
-    min-height: 38px;
-    padding: 8px 10px;
-    border-radius: 12px;
-    font-size: 0.78rem;
+    min-height: 28px;
+    padding: 4px 6px;
+    border-radius: 10px;
+    font-size: 0.68rem;
   }
 
   .finance-item,
@@ -540,24 +761,24 @@
   }
 
   .mobile-dpad {
-    width: 116px;
-    height: 116px;
-    grid-template-columns: repeat(3, 36px);
-    grid-template-rows: repeat(3, 36px);
+    width: 134px;
+    height: 134px;
+    grid-template-columns: repeat(3, 42px);
+    grid-template-rows: repeat(3, 42px);
     gap: 4px;
   }
 
   .mobile-control,
   .mobile-dpad-center {
-    width: 36px;
-    height: 36px;
-    font-size: 0.95rem;
+    width: 42px;
+    height: 42px;
+    font-size: 1.02rem;
   }
 
   .mobile-action {
-    width: 58px;
-    height: 58px;
-    font-size: 1.1rem;
+    width: 66px;
+    height: 66px;
+    font-size: 1.18rem;
   }
 
   .game-toast {
@@ -574,16 +795,16 @@
   .game-modal {
     width: min(860px, calc(100vw - 16px));
     max-height: calc(100dvh - 12px);
-    padding: 12px;
+    padding: 9px;
   }
 
   .game-modal-header {
-    margin-bottom: 10px;
+    margin-bottom: 7px;
   }
 
   .game-modal-header h2,
   .quest-loading-modal h2 {
-    font-size: 1.45rem;
+    font-size: 1.32rem;
   }
 
   .checkout-content,
@@ -591,6 +812,226 @@
   .stock-grid,
   .quest-list,
   .report-columns {
-    gap: 10px;
+    gap: 8px;
+  }
+
+  .modal-kicker {
+    font-size: 0.72rem;
+  }
+
+  .modal-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+  }
+
+  .status-grid {
+    grid-template-columns: minmax(116px, 0.56fr) repeat(3, minmax(0, 1fr));
+  }
+
+  .status-panel.wide {
+    grid-column: auto;
+  }
+
+  .status-manager {
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding: 9px;
+    text-align: center;
+  }
+
+  .status-character {
+    flex: 0 0 auto;
+    margin: -8px 0 12px;
+    transform: scale(0.7);
+  }
+
+  .status-panel,
+  .stock-card,
+  .quest-card,
+  .report-columns section,
+  .report-highlight,
+  .endgame-card,
+  .empty-state,
+  .checkout-empty,
+  .checkout-customer,
+  .checkout-items,
+  .checkout-payment,
+  .checkout-change {
+    padding: 8px;
+  }
+
+  .status-row,
+  .objective-row,
+  .report-row,
+  .checkout-row {
+    padding: 4px 0;
+    font-size: 0.72rem;
+  }
+
+  .stock-summary,
+  .quest-summary {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .stock-summary > div,
+  .quest-summary > div {
+    padding: 7px;
+  }
+
+  .stock-summary strong,
+  .quest-summary strong {
+    font-size: 0.92rem;
+  }
+
+  .stock-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .quest-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .report-columns {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stock-card,
+  .quest-card {
+    gap: 6px;
+  }
+
+  .stock-card h3,
+  .quest-card h3,
+  .report-content h3,
+  .status-panel h3 {
+    font-size: 1rem;
+  }
+
+  .stock-card p,
+  .quest-details,
+  .report-highlight p,
+  .empty-state p,
+  .endgame-card p {
+    font-size: 0.74rem;
+    line-height: 1.25;
+  }
+
+  .stock-actions .btn,
+  .quest-footer .btn,
+  .checkout-actions .btn {
+    min-height: 34px;
+    padding: 6px 8px;
+    font-size: 0.72rem;
+  }
+
+  .price-control {
+    gap: 4px;
+  }
+
+  .price-control input {
+    padding: 7px;
+    border-radius: 9px;
+  }
+
+  .checkout-modal {
+    width: min(920px, calc(100vw - 12px));
+  }
+
+  .checkout-content {
+    grid-template-columns: minmax(170px, 0.88fr) minmax(210px, 1fr) minmax(260px, 1.14fr);
+    grid-template-areas:
+      "cliente itens troco"
+      "pagamento itens troco"
+      "acoes acoes acoes";
+    align-items: start;
+  }
+
+  .checkout-customer {
+    grid-area: cliente;
+    min-height: 74px;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 7px;
+  }
+
+  .checkout-customer-avatar {
+    width: 54px;
+    height: 66px;
+  }
+
+  .checkout-customer-sprite {
+    transform: translateX(-50%) scale(0.46);
+  }
+
+  .checkout-customer h3 {
+    font-size: 1.05rem;
+  }
+
+  .checkout-customer span,
+  .checkout-customer small,
+  .checkout-row small {
+    font-size: 0.68rem;
+  }
+
+  .checkout-queue-count {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    padding: 5px 7px;
+    text-align: center;
+  }
+
+  .checkout-items {
+    grid-area: itens;
+    max-height: calc(100dvh - 96px);
+  }
+
+  .checkout-payment {
+    grid-area: pagamento;
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-change {
+    grid-area: troco;
+  }
+
+  .checkout-actions {
+    grid-area: acoes;
+    justify-content: flex-end;
+  }
+
+  .checkout-change-header strong {
+    font-size: 1rem;
+  }
+
+  .checkout-change-header small {
+    max-width: 132px;
+    font-size: 0.66rem;
+  }
+
+  .checkout-coin-tray {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .checkout-coin-tray button {
+    min-height: 42px;
+    grid-template-columns: 26px 1fr;
+    padding: 5px 6px;
+  }
+
+  .checkout-coin-tray button span {
+    width: 25px;
+    height: 25px;
+  }
+
+  .checkout-coin-ledger {
+    max-height: 52px;
+    overflow: auto;
+  }
+
+  .checkout-coin-actions {
+    justify-content: flex-start;
   }
 }

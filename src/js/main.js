@@ -69,6 +69,22 @@ const PLAYER_SCALE_DESKTOP = 0.86;
 const PLAYER_SCALE_TABLET = 0.78;
 const PLAYER_SCALE_MOBILE = 0.68;
 
+function calcularZIndexProfundidadeMapa(y, ajuste = 0) {
+  return String(1000 + Math.round(Number(y) || 0) + ajuste);
+}
+
+window.calcularZIndexProfundidadeMapa = calcularZIndexProfundidadeMapa;
+
+function garantirPlayerNaCamadaDoMundo() {
+  if (!world || !playerElement) return;
+  if (playerShadow && playerShadow.parentElement !== world) {
+    world.appendChild(playerShadow);
+  }
+  if (playerElement.parentElement !== world) {
+    world.appendChild(playerElement);
+  }
+}
+
 // Hitbox real do player.
 // O ponto principal do personagem continua sendo o "pé".
 window.player = {
@@ -95,6 +111,10 @@ function obterZoomCamera() {
   if (window.innerWidth <= 760 || window.innerHeight <= 540 || viewportUsaLayoutMovel()) return 0.78;
   if (window.innerWidth <= 1000) return 0.88;
   return 1;
+}
+
+function obterEscalaPlayerNoMundo() {
+  return obterEscalaPlayer() / Math.max(0.1, obterZoomCamera());
 }
 
 function limitarOffsetCamera(offset, tamanhoViewport, tamanhoMundo, zoomCamera) {
@@ -480,7 +500,7 @@ function definirTransform(transform) {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function aplicarTransformPadrao() {
-  definirTransform(`translate(-50%, -100%) scale(${obterEscalaPlayer()})`);
+  definirTransform(`translate(-50%, -100%) scale(${obterEscalaPlayerNoMundo()})`);
 }
 
 /**
@@ -491,7 +511,7 @@ function aplicarTransformPadrao() {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function aplicarTransformLado(direcao) {
-  const escalaPlayer = obterEscalaPlayer();
+  const escalaPlayer = obterEscalaPlayerNoMundo();
 
   if (direcao === "left") {
     definirTransform(`translate(-50%, -100%) scale(${escalaPlayer}) scaleX(-1)`);
@@ -845,6 +865,8 @@ function moverPersonagem(deltaTime = 16) {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function atualizarCamera() {
+  garantirPlayerNaCamadaDoMundo();
+
   const zoomCamera = obterZoomCamera();
   const offsetX = limitarOffsetCamera(
     window.innerWidth / 2 - playerX * zoomCamera,
@@ -858,8 +880,6 @@ function atualizarCamera() {
     mapHeight,
     zoomCamera
   );
-  const playerScreenX = playerX * zoomCamera + offsetX;
-  const playerScreenY = playerY * zoomCamera + offsetY;
 
   const cameraTransform = `translate(${offsetX}px, ${offsetY}px) scale(${zoomCamera})`;
 
@@ -869,12 +889,14 @@ function atualizarCamera() {
     foregroundWorld.style.transform = cameraTransform;
   }
 
-  playerElement.style.left = `${playerScreenX}px`;
-  playerElement.style.top = `${playerScreenY}px`;
+  playerElement.style.left = `${playerX}px`;
+  playerElement.style.top = `${playerY}px`;
+  playerElement.style.zIndex = calcularZIndexProfundidadeMapa(playerY, 2);
 
   if (playerShadow) {
-    playerShadow.style.left = `${playerScreenX}px`;
-    playerShadow.style.top = `${playerScreenY}px`;
+    playerShadow.style.left = `${playerX}px`;
+    playerShadow.style.top = `${playerY}px`;
+    playerShadow.style.zIndex = calcularZIndexProfundidadeMapa(playerY, -1);
   }
 }
 

@@ -35,11 +35,19 @@ const STATIC_NPC_COLLISION = {
   margemPlayer: 2
 };
 
+function zIndexProfundidadeNpcEstatico(y, ajuste = 0) {
+  if (typeof window.calcularZIndexProfundidadeMapa === "function") {
+    return window.calcularZIndexProfundidadeMapa(y, ajuste);
+  }
+
+  return String(1000 + Math.round(Number(y) || 0) + ajuste);
+}
+
 const STATIC_NPC_DEFS = [
   {
     "nome": "Runa",
     "titulo": "contadora errante",
-    "classe": "npc-variant-2",
+    "classe": "npc-runa",
     "x": 700,
     "y": 385,
     "id": "runa"
@@ -47,7 +55,7 @@ const STATIC_NPC_DEFS = [
   {
     "nome": "Cedro",
     "titulo": "almoxarife velho",
-    "classe": "npc-variant-3",
+    "classe": "npc-cedro",
     "x": 570,
     "y": 1000,
     "id": "cedro"
@@ -55,7 +63,7 @@ const STATIC_NPC_DEFS = [
   {
     "nome": "Mira",
     "titulo": "olheira da feira",
-    "classe": "npc-variant-5",
+    "classe": "npc-mira",
     "x": 1010,
     "y": 900,
     "id": "mira"
@@ -63,7 +71,7 @@ const STATIC_NPC_DEFS = [
   {
     "nome": "Borin",
     "titulo": "fiscal do caixa",
-    "classe": "npc-variant-6",
+    "classe": "npc-borin",
     "x": 1770,
     "y": 720,
     "id": "borin"
@@ -71,7 +79,7 @@ const STATIC_NPC_DEFS = [
   {
     "nome": "Sibil",
     "titulo": "mensageira discreta",
-    "classe": "npc-variant-7",
+    "classe": "npc-sibil",
     "x": 1310,
     "y": 1020,
     "id": "sibil"
@@ -964,7 +972,7 @@ function aplicarPosicaoNpcEstatico(npc, ponto) {
   if (npc.el) {
     npc.el.style.left = `${npc.x}px`;
     npc.el.style.top = `${npc.y}px`;
-    npc.el.style.zIndex = String(5 + Math.floor(npc.y / 24));
+    npc.el.style.zIndex = zIndexProfundidadeNpcEstatico(npc.y);
   }
 }
 
@@ -1227,7 +1235,7 @@ function inicializarNPCsEstaticos() {
     el.dataset.staticNpcId = definicao.id;
     el.style.left = `${definicao.x}px`;
     el.style.top = `${definicao.y}px`;
-    el.style.zIndex = String(5 + Math.floor(definicao.y / 24));
+    el.style.zIndex = zIndexProfundidadeNpcEstatico(definicao.y);
 
     const nome = document.createElement("div");
     nome.className = "static-npc-name";
@@ -1368,8 +1376,8 @@ function atualizarPromptNpcEstatico(npc) {
   }
 
   prompt.style.left = `${npc.x}px`;
-  prompt.style.top = `${npc.y - 118}px`;
-  prompt.style.zIndex = String(20 + Math.floor(npc.y / 24));
+  prompt.style.top = `${npc.y - 136}px`;
+  prompt.style.zIndex = zIndexProfundidadeNpcEstatico(npc.y, 40);
   prompt.classList.remove("hidden");
 }
 

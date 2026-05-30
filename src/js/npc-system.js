@@ -111,6 +111,14 @@ const NPC_COLLISION = {
   margemPlayer: 2
 };
 
+function zIndexProfundidadeNPC(y, ajuste = 0) {
+  if (typeof window.calcularZIndexProfundidadeMapa === "function") {
+    return window.calcularZIndexProfundidadeMapa(y, ajuste);
+  }
+
+  return String(1000 + Math.round(Number(y) || 0) + ajuste);
+}
+
 const NPC_PERFIS = [
   { nome: "Lia", classe: "npc-lia", preferencias: ["maca", "pao"], paciencia: 1.18, chanceCompra: 0.8 },
   { nome: "Bruno", classe: "npc-bruno", preferencias: ["carne", "queijo"], paciencia: 1, chanceCompra: 1 },
@@ -1884,7 +1892,7 @@ function limitarClienteAoMapa(cliente) {
 function atualizarPosicaoCliente(cliente) {
   cliente.el.style.left = `${cliente.x}px`;
   cliente.el.style.top = `${cliente.y}px`;
-  cliente.el.style.zIndex = String(3 + Math.floor(cliente.y / 24));
+  cliente.el.style.zIndex = zIndexProfundidadeNPC(cliente.y);
 }
 
 /**
@@ -1905,12 +1913,12 @@ function atualizarDirecaoCliente(cliente, dx, dy) {
   if (Math.abs(dx) > Math.abs(dy)) {
     cliente.sprite.classList.add("customer-walk-side");
     cliente.sprite.style.transform = dx < 0
-      ? "translateX(-50%) scale(0.55) scaleX(-1)"
-      : "translateX(-50%) scale(0.55) scaleX(1)";
+      ? "translateX(-50%) scale(var(--npc-map-scale, 0.86)) scaleX(-1)"
+      : "translateX(-50%) scale(var(--npc-map-scale, 0.86)) scaleX(1)";
     return;
   }
 
-  cliente.sprite.style.transform = "translateX(-50%) scale(0.55)";
+  cliente.sprite.style.transform = "translateX(-50%) scale(var(--npc-map-scale, 0.86))";
   cliente.sprite.classList.add(dy < 0 ? "customer-walk-up" : "customer-walk-down");
 }
 
@@ -1927,7 +1935,7 @@ function clienteIdle(cliente) {
     "customer-walk-up",
     "customer-walk-down"
   );
-  cliente.sprite.style.transform = "translateX(-50%) scale(0.55)";
+  cliente.sprite.style.transform = "translateX(-50%) scale(var(--npc-map-scale, 0.86))";
   cliente.sprite.classList.add("customer-idle");
 }
 

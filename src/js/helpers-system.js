@@ -40,6 +40,9 @@ function criarSpriteAjudante() {
   helper.dataset.helperId = "principal";
   helper.style.left = `${HELPER_COLLISION.x}px`;
   helper.style.top = `${HELPER_COLLISION.y}px`;
+  helper.style.zIndex = typeof window.calcularZIndexProfundidadeMapa === "function"
+    ? window.calcularZIndexProfundidadeMapa(HELPER_COLLISION.y)
+    : String(1000 + Math.round(HELPER_COLLISION.y));
 
   world.appendChild(helper);
   return helper;
