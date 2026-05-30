@@ -187,6 +187,10 @@ function mostrarTela(tela) {
 
   tela.classList.add("active");
 
+  if (typeof trocarContextoMusical === "function") {
+    trocarContextoMusical(tela === telaJogo ? "game" : "menu");
+  }
+
   // Mantém a camada de morcegos no z-index correto para menu ou mapa.
   if (typeof sincronizarCamadaMorcegos === "function") {
     sincronizarCamadaMorcegos();
@@ -1076,6 +1080,12 @@ window.addEventListener("orientationchange", recalcularLayoutJogo);
 // ======================================================
 
 carregarMapa();
+if (typeof inicializarSistemaAudio === "function") {
+  inicializarSistemaAudio();
+}
+if (typeof trocarContextoMusical === "function") {
+  trocarContextoMusical("menu", { imediato: true });
+}
 inicializarControlesMoveis();
 aplicarPersonagemSalvo();
 aplicarAnimacaoParado();

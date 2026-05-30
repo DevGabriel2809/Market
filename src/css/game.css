@@ -727,6 +727,49 @@
   transform: translate(-50%, 0);
 }
 
+.music-caption {
+  position: fixed;
+  left: 50%;
+  bottom: 92px;
+  z-index: 82;
+  display: grid;
+  gap: 2px;
+  min-width: min(320px, calc(100vw - 32px));
+  max-width: min(440px, calc(100vw - 32px));
+  padding: 11px 16px;
+  border: 1px solid rgba(243, 201, 105, 0.42);
+  border-radius: 14px;
+  background: rgba(20, 12, 7, 0.72);
+  color: var(--cream);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.36);
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  transform: translate(-50%, 12px);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+  backdrop-filter: blur(8px);
+}
+
+.music-caption.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.music-caption span,
+.settings-panel span,
+.settings-now-playing span {
+  color: rgba(255, 241, 208, 0.68);
+  font-size: 0.68rem;
+  font-weight: 1000;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.music-caption strong {
+  color: var(--gold);
+  font-size: 0.96rem;
+}
+
 /* @doc-css Estilo de modal (.modal-backdrop): controla janelas sobrepostas; ajuste padding, tamanho e cores para mudar a janela. */
 .modal-backdrop {
   position: fixed;
@@ -760,6 +803,105 @@
     0 24px 70px rgba(0, 0, 0, 0.62),
     inset 0 0 0 1px rgba(255, 241, 208, 0.08);
   padding: 26px;
+}
+
+.settings-modal {
+  width: min(720px, 96vw);
+}
+
+.settings-content {
+  display: grid;
+  gap: 14px;
+}
+
+.settings-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-row,
+.settings-now-playing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid rgba(243, 201, 105, 0.2);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.settings-row strong,
+.settings-now-playing strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--gold);
+  font-size: 1.05rem;
+}
+
+.settings-row p {
+  margin-top: 5px;
+  color: rgba(255, 241, 208, 0.72);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.settings-switch {
+  position: relative;
+  display: inline-flex;
+  width: 68px;
+  height: 38px;
+  cursor: pointer;
+}
+
+.settings-switch input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.settings-switch span {
+  width: 100%;
+  border: 2px solid rgba(255, 241, 208, 0.22);
+  border-radius: 999px;
+  background: rgba(12, 7, 4, 0.76);
+  transition: 0.2s ease;
+}
+
+.settings-switch span::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 241, 208, 0.84);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  transition: 0.2s ease;
+}
+
+.settings-switch input:checked + span {
+  border-color: rgba(128, 197, 139, 0.74);
+  background: rgba(61, 143, 75, 0.62);
+}
+
+.settings-switch input:checked + span::after {
+  transform: translateX(30px);
+}
+
+.volume-row {
+  grid-template-columns: minmax(0, 0.8fr) minmax(180px, 1fr);
+}
+
+.settings-range {
+  width: 100%;
+  accent-color: var(--gold);
+}
+
+.settings-now-playing {
+  grid-template-columns: 1fr;
+  gap: 2px;
 }
 
 /* @doc-css Estilo de modal (.game-modal-header): controla janelas sobrepostas; ajuste padding, tamanho e cores para mudar a janela. */

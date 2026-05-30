@@ -9,7 +9,9 @@ let ultimoResultadoQuest = null;
 let questEmAndamento = false;
 let prepStartTimeoutId = null;
 let prepStartCountdownId = null;
-const QUEST_LOADING_MS = 10000;
+const QUEST_LOADING_BASE_MS = 10000;
+const QUEST_LOADING_STEP_MS = 5000;
+const QUEST_LOADING_MAX_MS = 35000;
 const PREP_START_MODAL_MS = 10000;
 
 const ui = {};
@@ -38,6 +40,7 @@ function inicializarInterface() {
   ui.stockModal = document.getElementById("stock-modal");
   ui.questsModal = document.getElementById("quests-modal");
   ui.reportModal = document.getElementById("report-modal");
+  ui.settingsModal = document.getElementById("settings-modal");
   ui.checkoutModal = document.getElementById("checkout-modal");
   ui.questLoadingModal = document.getElementById("quest-loading-modal");
   ui.prepStartModal = document.getElementById("prep-start-modal");
@@ -51,11 +54,13 @@ function inicializarInterface() {
   const btnEstoque = document.getElementById("btn-estoque");
   const btnQuests = document.getElementById("btn-quests");
   const btnRelatorio = document.getElementById("btn-relatorio");
+  const btnConfiguracoes = document.getElementById("btn-configuracoes");
   const btnSalvar = document.getElementById("btn-salvar");
   const btnCarregar = document.getElementById("btn-carregar");
   const stockList = document.getElementById("stock-product-list");
   const questsList = document.getElementById("quests-list");
   const checkoutContent = document.getElementById("checkout-content");
+  const settingsContent = document.getElementById("settings-content");
   const objectives = document.getElementById("status-objectives");
 
   if (btnPassarDia) {
@@ -106,6 +111,10 @@ function inicializarInterface() {
     btnRelatorio.addEventListener("click", () => abrirRelatorio(gameState.ultimoRelatorio));
   }
 
+  if (btnConfiguracoes) {
+    btnConfiguracoes.addEventListener("click", abrirConfiguracoes);
+  }
+
   if (btnSalvar) {
     btnSalvar.addEventListener("click", () => {
       if (typeof salvarJogo === "function") {
@@ -134,6 +143,11 @@ function inicializarInterface() {
   if (checkoutContent) {
     checkoutContent.addEventListener("click", lidarCliqueCheckout);
     checkoutContent.addEventListener("input", lidarInputCheckout);
+  }
+
+  if (settingsContent) {
+    settingsContent.addEventListener("input", lidarInputConfiguracoes);
+    settingsContent.addEventListener("change", lidarInputConfiguracoes);
   }
 
   if (objectives) {
@@ -190,6 +204,10 @@ function atualizarInterfaceJogo(opcoes = {}) {
 
   if (ui.checkoutModal && !ui.checkoutModal.classList.contains("hidden")) {
     renderizarCheckout();
+  }
+
+  if (ui.settingsModal && !ui.settingsModal.classList.contains("hidden")) {
+    renderizarConfiguracoes();
   }
 }
 
@@ -401,7 +419,7 @@ function abrirModal(modalId) {
   document.querySelector(".actions-panel")?.classList.remove("open");
   document.querySelector(".finance-panel")?.classList.remove("open");
 
-  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.checkoutModal, ui.questLoadingModal, ui.prepStartModal].forEach((modal) => {
+  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.settingsModal, ui.checkoutModal, ui.questLoadingModal, ui.prepStartModal].forEach((modal) => {
     if (modal) modal.classList.add("hidden");
   });
 
@@ -427,7 +445,7 @@ function fecharModal() {
   }
 
   ui.modalBackdrop.classList.add("hidden");
-  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.checkoutModal, ui.questLoadingModal, ui.prepStartModal].forEach((modal) => {
+  [ui.statusModal, ui.stockModal, ui.questsModal, ui.reportModal, ui.settingsModal, ui.checkoutModal, ui.questLoadingModal, ui.prepStartModal].forEach((modal) => {
     if (modal) modal.classList.add("hidden");
   });
 }
@@ -489,6 +507,69 @@ function abrirQuests() {
 function abrirRelatorio(relatorio) {
   renderizarRelatorio(relatorio);
   abrirModal("report-modal");
+}
+
+function abrirConfiguracoes() {
+  renderizarConfiguracoes();
+  abrirModal("settings-modal");
+}
+
+function renderizarConfiguracoes() {
+  const conteudo = document.getElementById("settings-content");
+  if (!conteudo) return;
+
+  const musica = typeof obterConfiguracoesMusica === "function"
+    ? obterConfiguracoesMusica()
+    : { enabled: false, volume: 0, currentTrack: "Sistema de musica indisponivel" };
+  const volumePercentual = Math.round((Number(musica.volume) || 0) * 100);
+
+  conteudo.innerHTML = `
+    <section class="settings-panel">
+      <div class="settings-row">
+        <div>
+          <span>Musica</span>
+          <strong>Trilha sonora do jogo</strong>
+          <p>Ativa a musica ambiente do menu, da loja e das missoes.</p>
+        </div>
+        <label class="settings-switch">
+          <input id="music-enabled" type="checkbox" ${musica.enabled ? "checked" : ""}>
+          <span></span>
+        </label>
+      </div>
+
+      <div class="settings-row volume-row">
+        <div>
+          <span>Volume</span>
+          <strong id="music-volume-label">${volumePercentual}%</strong>
+          <p>Volume recomendado: entre 30% e 45%.</p>
+        </div>
+        <input id="music-volume" class="settings-range" type="range" min="0" max="100" step="1" value="${volumePercentual}">
+      </div>
+
+      <div class="settings-now-playing">
+        <span>Tocando agora</span>
+        <strong>${musica.currentTrack}</strong>
+      </div>
+    </section>
+  `;
+}
+
+function lidarInputConfiguracoes(event) {
+  const alvo = event.target;
+  if (!alvo) return;
+
+  if (alvo.id === "music-enabled" && typeof definirMusicaAtiva === "function") {
+    definirMusicaAtiva(alvo.checked);
+    renderizarConfiguracoes();
+  }
+
+  if (alvo.id === "music-volume" && typeof definirVolumeMusica === "function") {
+    const volume = Math.min(100, Math.max(0, Number(alvo.value) || 0));
+    definirVolumeMusica(volume / 100);
+
+    const label = document.getElementById("music-volume-label");
+    if (label) label.textContent = `${Math.round(volume)}%`;
+  }
 }
 
 /**
@@ -1173,6 +1254,19 @@ function lidarCliqueQuest(event) {
   executarQuestComLoading(botao.dataset.startQuest);
 }
 
+function contarTentativasDeQuests() {
+  return Object.values(gameState.quests && gameState.quests.tentativas ? gameState.quests.tentativas : {})
+    .reduce((total, tentativas) => total + Math.max(0, Number(tentativas) || 0), 0);
+}
+
+function calcularDuracaoLoadingQuest() {
+  const tentativasAnteriores = contarTentativasDeQuests();
+  return Math.min(
+    QUEST_LOADING_MAX_MS,
+    QUEST_LOADING_BASE_MS + tentativasAnteriores * QUEST_LOADING_STEP_MS
+  );
+}
+
 /**
  * @doc-func executarQuestComLoading
  * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
@@ -1192,6 +1286,7 @@ function executarQuestComLoading(questId) {
 
   questEmAndamento = true;
   ultimoResultadoQuest = null;
+  const duracaoMissaoMs = calcularDuracaoLoadingQuest();
 
   const titulo = document.getElementById("quest-loading-title");
   const dica = document.getElementById("quest-loading-tip");
@@ -1209,15 +1304,24 @@ function executarQuestComLoading(questId) {
   if (progress) {
     progress.style.animation = "none";
     progress.offsetHeight;
-    progress.style.animation = "";
+    progress.style.animation = `questProgress ${duracaoMissaoMs}ms linear forwards`;
   }
 
   abrirModal("quest-loading-modal");
+
+  if (typeof iniciarMusicaMissao === "function") {
+    iniciarMusicaMissao();
+  }
 
   window.setTimeout(() => {
     const resultado = executarQuest(questId);
     ultimoResultadoQuest = resultado.ok ? resultado : null;
     questEmAndamento = false;
+
+    if (typeof encerrarMusicaMissao === "function") {
+      encerrarMusicaMissao();
+    }
+
     atualizarInterfaceJogo();
     abrirQuests();
 
@@ -1225,7 +1329,7 @@ function executarQuestComLoading(questId) {
       ? ` ${resultado.detalhes.slice(0, 2).join(" · ")}`
       : "";
     mostrarToast(`${resultado.mensagem}${detalhesResumo}`);
-  }, QUEST_LOADING_MS);
+  }, duracaoMissaoMs);
 }
 
 /**

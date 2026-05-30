@@ -21,11 +21,11 @@
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
   <link rel="stylesheet" href="src/css/style.css?v=33" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/menu.css?v=32" />
+  <link rel="stylesheet" href="src/css/menu.css?v=33" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/game.css?v=37" />
+  <link rel="stylesheet" href="src/css/game.css?v=38" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/responsive.css?v=37" />
+  <link rel="stylesheet" href="src/css/responsive.css?v=38" />
 </head>
 
 <body>
@@ -250,6 +250,8 @@
           <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
           <button id="btn-relatorio" class="btn secondary full">Ver Relatório</button>
           <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
+          <button id="btn-configuracoes" class="btn ghost full">DefiniÃ§Ãµes</button>
+          <!-- @doc-html BotÃ£o interativo. O id/data-attribute Ã© ligado a eventos JS; mantenha o id se nÃ£o for atualizar o JS junto. -->
           <button id="btn-salvar" class="btn ghost full">Salvar Jogo</button>
           <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
           <button id="btn-carregar" class="btn ghost full">Carregar</button>
@@ -370,6 +372,18 @@
     </section>
 
     <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
+    <section id="settings-modal" class="game-modal settings-modal hidden" role="dialog" aria-modal="true">
+      <header class="game-modal-header">
+        <div>
+          <span class="modal-kicker">PreferÃªncias</span>
+          <h2>DefiniÃ§Ãµes</h2>
+        </div>
+        <button class="modal-close" data-close-modal aria-label="Fechar">Ã—</button>
+      </header>
+
+      <div id="settings-content" class="settings-content"></div>
+    </section>
+
     <section id="checkout-modal" class="game-modal checkout-modal hidden" role="dialog" aria-modal="true">
       <header class="game-modal-header">
         <div>
@@ -425,7 +439,9 @@
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/quests.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/ui.js?v=33"></script>
+  <script src="src/js/audio-system.js?v=1"></script>
+  <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por Ãºltimo. -->
+  <script src="src/js/ui.js?v=34"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/events.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
@@ -439,6 +455,6 @@
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/bat-system.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/main.js?v=37"></script>
+  <script src="src/js/main.js?v=38"></script>
 </body>
 </html>
