@@ -803,14 +803,22 @@ function renderizarCheckout() {
     ? inputTrocoAtual.dataset.changeStack || ""
     : "";
   const valorTrocoAtual = calcularTotalPilhaTroco(pilhaTrocoAtual);
+  const classeCliente = cliente.perfil && cliente.perfil.classe ? cliente.perfil.classe : "";
+  const quantidadeItens = carrinho.quantidadeTotal || carrinho.itens.reduce((total, item) => total + item.quantidade, 0);
+  const resumoCesta = `${quantidadeItens} ${quantidadeItens === 1 ? "item" : "itens"} no cesto`;
 
   conteudo.innerHTML = `
-    <section class="checkout-customer">
-      <div>
+    <section class="checkout-customer ${classeCliente}">
+      <div class="checkout-customer-avatar" aria-hidden="true">
+        <div class="checkout-customer-shadow"></div>
+        <div class="checkout-customer-sprite customer-idle"></div>
+      </div>
+      <div class="checkout-customer-info">
         <span>Cliente da vez</span>
         <h3>${cliente.perfil.nome}</h3>
+        <small>${resumoCesta}</small>
       </div>
-      <strong>${fila.length} na fila</strong>
+      <strong class="checkout-queue-count">${fila.length} na fila</strong>
     </section>
 
     <section class="checkout-items">

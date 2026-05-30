@@ -112,13 +112,13 @@ const NPC_COLLISION = {
 };
 
 const NPC_PERFIS = [
-  { nome: "Lia", classe: "npc-variant-1", preferencias: ["maca", "pao"], paciencia: 1.18, chanceCompra: 0.08 },
-  { nome: "Bruno", classe: "npc-variant-2", preferencias: ["carne", "queijo"], paciencia: 1, chanceCompra: 0.03 },
-  { nome: "Marta", classe: "npc-variant-3", preferencias: ["pao", "vela"], paciencia: 1.22, chanceCompra: 0.06 },
-  { nome: "Caio", classe: "npc-variant-4", preferencias: ["pocao", "vela"], paciencia: 0.88, chanceCompra: -0.02 },
-  { nome: "Nina", classe: "npc-variant-5", preferencias: ["queijo", "maca"], paciencia: 1.06, chanceCompra: 0.04 },
-  { nome: "Tomas", classe: "npc-variant-6", preferencias: ["vela", "pao"], paciencia: 0.98, chanceCompra: 0.01 },
-  { nome: "Rosa", classe: "npc-variant-7", preferencias: ["especiaria", "pocao", "queijo"], paciencia: 1.12, chanceCompra: 0.03 }
+  { nome: "Lia", classe: "npc-lia", preferencias: ["maca", "pao"], paciencia: 1.18, chanceCompra: 0.8 },
+  { nome: "Bruno", classe: "npc-bruno", preferencias: ["carne", "queijo"], paciencia: 1, chanceCompra: 1 },
+  { nome: "Marta", classe: "npc-marta", preferencias: ["pao", "vela"], paciencia: 1.22, chanceCompra: 0.66 },
+  { nome: "Caio", classe: "npc-caio", preferencias: ["pocao", "vela"], paciencia: 0.88, chanceCompra: 1 },
+  { nome: "Nina", classe: "npc-nina", preferencias: ["queijo", "maca"], paciencia: 1.06, chanceCompra: 0.84 },
+  { nome: "Tomas", classe: "npc-tomas", preferencias: ["vela", "pao"], paciencia: 0.98, chanceCompra: 0.41 },
+  { nome: "Rosa", classe: "npc-rosa", preferencias: ["especiaria", "pocao", "queijo"], paciencia: 1.12, chanceCompra: 0.53 }
 ];
 
 /**

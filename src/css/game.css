@@ -55,6 +55,7 @@
   left: 0;
   top: 0;
   z-index: 1;
+  transform-origin: 0 0;
 }
 
 /* @doc-css Estilo #map: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
@@ -75,6 +76,7 @@
   top: 0;
   z-index: 8;
   pointer-events: none;
+  transform-origin: 0 0;
 }
 
 /* @doc-css Estilo #map-overlay: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
@@ -240,6 +242,10 @@
   cursor: pointer;
   box-shadow: var(--shadow);
   backdrop-filter: blur(5px);
+}
+
+.mobile-controls {
+  display: none;
 }
 
 /* @doc-css Estilo .finance-toggle: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
@@ -1444,13 +1450,58 @@
 
 /* @doc-css Estilo de NPC/cliente (.checkout-customer): controla sprite, fala ou posição visual dos personagens automáticos. */
 .checkout-customer {
-  display: flex;
+  position: relative;
+  min-height: 112px;
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  gap: 16px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 42px 82%, rgba(243, 201, 105, 0.18), transparent 34%),
+    linear-gradient(145deg, rgba(49, 27, 14, 0.72), rgba(20, 11, 7, 0.62));
+}
+
+.checkout-customer-avatar {
+  position: relative;
+  width: 88px;
+  height: 96px;
+  align-self: end;
+  overflow: hidden;
+}
+
+.checkout-customer-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 54px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.42);
+  filter: blur(2px);
+  transform: translateX(-50%);
+}
+
+.checkout-customer-sprite {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  width: 128px;
+  height: 128px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 768px 128px;
+  image-rendering: pixelated;
+  transform: translateX(-50%) scale(0.72);
+  transform-origin: center bottom;
+}
+
+.checkout-customer-info {
+  min-width: 0;
 }
 
 .checkout-customer span,
+.checkout-customer small,
 /* @doc-css Estilo .checkout-row small: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .checkout-row small {
   color: rgba(255, 241, 208, 0.72);
@@ -1463,14 +1514,18 @@
   margin-top: 3px;
   color: #fff1d0;
   font-size: 1.8rem;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
 /* @doc-css Estilo de NPC/cliente (.checkout-customer strong): controla sprite, fala ou posição visual dos personagens automáticos. */
-.checkout-customer strong {
+.checkout-queue-count {
+  justify-self: end;
   padding: 8px 12px;
   border-radius: 10px;
   background: rgba(95, 185, 107, 0.16);
   color: #9be5a4;
+  white-space: nowrap;
 }
 
 /* @doc-css Estilo .checkout-items: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
@@ -1692,6 +1747,26 @@
 
 /* @doc-css Bloco responsivo @media (max-width: 640px): ajuste largura e regras internas para mudar comportamento em telas diferentes. */
 @media (max-width: 640px) {
+  .checkout-customer {
+    grid-template-columns: 76px minmax(0, 1fr);
+    min-height: 104px;
+  }
+
+  .checkout-customer-avatar {
+    width: 72px;
+    height: 88px;
+  }
+
+  .checkout-customer-sprite {
+    transform: translateX(-50%) scale(0.64);
+  }
+
+  .checkout-queue-count {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    text-align: center;
+  }
+
   .checkout-change-header,
   .checkout-actions {
     align-items: stretch;
@@ -2018,28 +2093,82 @@
 /* @doc-css Estilo de NPC/cliente (.npc-variant-7): controla sprite, fala ou posição visual dos personagens automáticos. */
 .npc-variant-7 { --npc-hue: 314deg; --npc-saturation: 1.1; --npc-brightness: 0.98; }
 
+.npc-lia {
+  --npc-idle: url("../assets/images/characters/npc's/Lia/lia_idle.png");
+  --npc-walk: url("../assets/images/characters/npc's/Lia/lia_walk.png");
+  --npc-front: url("../assets/images/characters/npc's/Lia/lia_front.png");
+  --npc-back: url("../assets/images/characters/npc's/Lia/lia_back.png");
+}
+
+.npc-bruno {
+  --npc-idle: url("../assets/images/characters/npc's/Bruno/bruno_idle.png");
+  --npc-walk: url("../assets/images/characters/npc's/Bruno/bruno_walk.png");
+  --npc-front: url("../assets/images/characters/npc's/Bruno/bruno_front.png");
+  --npc-back: url("../assets/images/characters/npc's/Bruno/bruno_back.png");
+}
+
+.npc-marta {
+  --npc-idle: url("../assets/images/characters/npc's/Marta/marta_idle.png");
+  --npc-walk: url("../assets/images/characters/npc's/Marta/marta_walk.png");
+  --npc-front: url("../assets/images/characters/npc's/Marta/marta_front.png");
+  --npc-back: url("../assets/images/characters/npc's/Marta/marta_back.png");
+}
+
+.npc-caio {
+  --npc-idle: url("../assets/images/characters/npc's/Caio/caio_idle.png");
+  --npc-walk: url("../assets/images/characters/npc's/Caio/caio_walk.png");
+  --npc-front: url("../assets/images/characters/npc's/Caio/caio_front.png");
+  --npc-back: url("../assets/images/characters/npc's/Caio/caio_back.png");
+}
+
+.npc-nina {
+  --npc-idle: url("../assets/images/characters/npc's/Nina/nina_idle.png");
+  --npc-walk: url("../assets/images/characters/npc's/Nina/nina_walk.png");
+  --npc-front: url("../assets/images/characters/npc's/Nina/nina_front.png");
+  --npc-back: url("../assets/images/characters/npc's/Nina/nina_back.png");
+}
+
+.npc-tomas {
+  --npc-idle: url("../assets/images/characters/npc's/Tomas/tomas_idle.png");
+  --npc-walk: url("../assets/images/characters/npc's/Tomas/tomas_walk.png");
+  --npc-front: url("../assets/images/characters/npc's/Tomas/tomas_front.png");
+  --npc-back: url("../assets/images/characters/npc's/Tomas/tomas_back.png");
+}
+
+.npc-rosa {
+  --npc-idle: url("../assets/images/characters/npc's/Rosa/rosa_idle.png");
+  --npc-walk: url("../assets/images/characters/npc's/Rosa/rosa_walk.png");
+  --npc-front: url("../assets/images/characters/npc's/Rosa/rosa_front.png");
+  --npc-back: url("../assets/images/characters/npc's/Rosa/rosa_back.png");
+}
+
 /* @doc-css Estilo de NPC/cliente (.customer-idle): controla sprite, fala ou posição visual dos personagens automáticos. */
 .customer-idle {
-  background-image: url("../assets/images/characters/manager/male_front.png");
-  background-position: 0 0 !important;
+  background-image: var(--npc-idle, url("../assets/images/characters/manager/male_front.png"));
+  background-position: 0 0;
   animation: none;
+}
+
+.customer-sprite.customer-idle,
+.checkout-customer-sprite.customer-idle {
+  animation: customerIdle 1.1s steps(6) infinite;
 }
 
 /* @doc-css Estilo de NPC/cliente (.customer-walk-side): controla sprite, fala ou posição visual dos personagens automáticos. */
 .customer-walk-side {
-  background-image: url("../assets/images/characters/manager/male_walk.png");
+  background-image: var(--npc-walk, url("../assets/images/characters/manager/male_walk.png"));
   animation: customerWalkSide 0.85s steps(6) infinite;
 }
 
 /* @doc-css Estilo de NPC/cliente (.customer-walk-down): controla sprite, fala ou posição visual dos personagens automáticos. */
 .customer-walk-down {
-  background-image: url("../assets/images/characters/manager/male_front.png");
+  background-image: var(--npc-front, url("../assets/images/characters/manager/male_front.png"));
   animation: customerWalkFront 0.85s steps(6) infinite;
 }
 
 /* @doc-css Estilo de NPC/cliente (.customer-walk-up): controla sprite, fala ou posição visual dos personagens automáticos. */
 .customer-walk-up {
-  background-image: url("../assets/images/characters/manager/male_back.png");
+  background-image: var(--npc-back, url("../assets/images/characters/manager/male_back.png"));
   animation: customerWalkBack 0.85s steps(6) infinite;
 }
 

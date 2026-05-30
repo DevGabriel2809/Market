@@ -3,7 +3,7 @@
 // ======================================================
 // Controla o fluxo central do jogo: troca de telas, seleção do personagem, movimento, câmera e loop principal.
 // Ajustes comuns:
-// - PLAYER_SCALE muda o tamanho visual do gerente.
+// - PLAYER_SCALE_* muda o tamanho visual do gerente por tipo de tela.
 // - speed muda a velocidade base do player.
 // - PLAYER_SPRINT_MULTIPLIER controla o bônus quando a corrida com Ctrl é desbloqueada.
 // - temColisao(...) decide o que bloqueia passagem; agora inclui mapa + NPCs + ajudante.
@@ -35,6 +35,7 @@ const tituloJogo = document.getElementById("titulo-jogo");
 
 const world = document.getElementById("world");
 const playerElement = document.getElementById("player-character");
+const playerShadow = document.getElementById("player-shadow");
 const mapElement = document.getElementById("map");
 
 // Overlay opcional de decoração acima do player
@@ -60,9 +61,11 @@ let personagemSelecionado = gameState.personagem || "male";
 let animacaoAtual = "";
 let transformAtual = "";
 
-// Escala visual do personagem.
+// Escala visual do personagem por tipo de tela.
 // Como o sprite tem 128px de altura, 128 * 0.56 ≈ 72px.
-const PLAYER_SCALE = 0.86;
+const PLAYER_SCALE_DESKTOP = 0.86;
+const PLAYER_SCALE_TABLET = 0.78;
+const PLAYER_SCALE_MOBILE = 0.68;
 
 // Hitbox real do player.
 // O ponto principal do personagem continua sendo o "pé".
@@ -74,6 +77,33 @@ window.player = {
   width: 36,
   height: 24
 };
+
+function viewportUsaLayoutMovel() {
+  return window.matchMedia("(max-width: 760px), (pointer: coarse) and (max-width: 1180px)").matches;
+}
+
+function obterEscalaPlayer() {
+  if (window.innerWidth <= 480 || viewportUsaLayoutMovel()) return PLAYER_SCALE_MOBILE;
+  if (window.innerWidth <= 1000 || window.innerHeight <= 620) return PLAYER_SCALE_TABLET;
+  return PLAYER_SCALE_DESKTOP;
+}
+
+function obterZoomCamera() {
+  if (window.innerWidth <= 430) return 0.72;
+  if (window.innerWidth <= 760 || window.innerHeight <= 540 || viewportUsaLayoutMovel()) return 0.78;
+  if (window.innerWidth <= 1000) return 0.88;
+  return 1;
+}
+
+function limitarOffsetCamera(offset, tamanhoViewport, tamanhoMundo, zoomCamera) {
+  const tamanhoEscalado = tamanhoMundo * zoomCamera;
+
+  if (tamanhoEscalado <= tamanhoViewport) {
+    return (tamanhoViewport - tamanhoEscalado) / 2;
+  }
+
+  return Math.min(0, Math.max(tamanhoViewport - tamanhoEscalado, offset));
+}
 
 
 // ======================================================
@@ -286,6 +316,88 @@ document.addEventListener("keyup", (event) => {
  * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
+const MOBILE_CONTROL_KEYS = {
+  up: "w",
+  down: "s",
+  left: "a",
+  right: "d"
+};
+
+function setarMovimentoVirtual(tecla, ativo) {
+  if (!(tecla in keysPressed)) return;
+  keysPressed[tecla] = Boolean(ativo);
+}
+
+function limparMovimentoVirtual() {
+  Object.values(MOBILE_CONTROL_KEYS).forEach((tecla) => {
+    setarMovimentoVirtual(tecla, false);
+  });
+
+  document.querySelectorAll(".mobile-control.active, .mobile-action.active").forEach((botao) => {
+    botao.classList.remove("active");
+  });
+}
+
+function dispararInteracaoVirtual() {
+  window.dispatchEvent(new KeyboardEvent("keydown", {
+    key: "e",
+    code: "KeyE",
+    bubbles: true
+  }));
+}
+
+function inicializarControlesMoveis() {
+  document.querySelectorAll("[data-mobile-control]").forEach((botao) => {
+    const tecla = MOBILE_CONTROL_KEYS[botao.dataset.mobileControl];
+    if (!tecla) return;
+
+    const ativar = (event) => {
+      event.preventDefault();
+      setarMovimentoVirtual(tecla, true);
+      botao.classList.add("active");
+
+      if (typeof botao.setPointerCapture === "function" && event.pointerId !== undefined) {
+        botao.setPointerCapture(event.pointerId);
+      }
+    };
+
+    const desativar = (event) => {
+      event.preventDefault();
+      setarMovimentoVirtual(tecla, false);
+      botao.classList.remove("active");
+
+      if (typeof botao.releasePointerCapture === "function" && event.pointerId !== undefined) {
+        try {
+          botao.releasePointerCapture(event.pointerId);
+        } catch (erro) {
+          // O ponteiro pode ja ter sido solto pelo navegador.
+        }
+      }
+    };
+
+    botao.addEventListener("pointerdown", ativar);
+    botao.addEventListener("pointerup", desativar);
+    botao.addEventListener("pointercancel", desativar);
+    botao.addEventListener("lostpointercapture", desativar);
+  });
+
+  document.querySelectorAll("[data-mobile-action='interact']").forEach((botao) => {
+    botao.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      botao.classList.add("active");
+      dispararInteracaoVirtual();
+    });
+
+    ["pointerup", "pointercancel", "pointerleave", "lostpointercapture"].forEach((evento) => {
+      botao.addEventListener(evento, () => {
+        botao.classList.remove("active");
+      });
+    });
+  });
+}
+
+window.addEventListener("blur", limparMovimentoVirtual);
+
 function definirTransform(transform) {
   if (transformAtual === transform) return;
 
@@ -301,7 +413,7 @@ function definirTransform(transform) {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function aplicarTransformPadrao() {
-  definirTransform(`translate(-50%, -100%) scale(${PLAYER_SCALE})`);
+  definirTransform(`translate(-50%, -100%) scale(${obterEscalaPlayer()})`);
 }
 
 /**
@@ -312,12 +424,14 @@ function aplicarTransformPadrao() {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function aplicarTransformLado(direcao) {
+  const escalaPlayer = obterEscalaPlayer();
+
   if (direcao === "left") {
-    definirTransform(`translate(-50%, -100%) scale(${PLAYER_SCALE}) scaleX(-1)`);
+    definirTransform(`translate(-50%, -100%) scale(${escalaPlayer}) scaleX(-1)`);
     return;
   }
 
-  definirTransform(`translate(-50%, -100%) scale(${PLAYER_SCALE}) scaleX(1)`);
+  definirTransform(`translate(-50%, -100%) scale(${escalaPlayer}) scaleX(1)`);
 }
 
 
@@ -661,15 +775,36 @@ function moverPersonagem(deltaTime = 16) {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function atualizarCamera() {
-  const offsetX = window.innerWidth / 2 - playerX;
-  const offsetY = window.innerHeight / 2 - playerY;
+  const zoomCamera = obterZoomCamera();
+  const offsetX = limitarOffsetCamera(
+    window.innerWidth / 2 - playerX * zoomCamera,
+    window.innerWidth,
+    mapWidth,
+    zoomCamera
+  );
+  const offsetY = limitarOffsetCamera(
+    window.innerHeight / 2 - playerY * zoomCamera,
+    window.innerHeight,
+    mapHeight,
+    zoomCamera
+  );
+  const playerScreenX = playerX * zoomCamera + offsetX;
+  const playerScreenY = playerY * zoomCamera + offsetY;
 
-  const cameraTransform = `translate(${offsetX}px, ${offsetY}px)`;
+  const cameraTransform = `translate(${offsetX}px, ${offsetY}px) scale(${zoomCamera})`;
 
   world.style.transform = cameraTransform;
 
   if (foregroundWorld) {
     foregroundWorld.style.transform = cameraTransform;
+  }
+
+  playerElement.style.left = `${playerScreenX}px`;
+  playerElement.style.top = `${playerScreenY}px`;
+
+  if (playerShadow) {
+    playerShadow.style.left = `${playerScreenX}px`;
+    playerShadow.style.top = `${playerScreenY}px`;
   }
 }
 
@@ -834,12 +969,22 @@ function resetarPosicaoPersonagem() {
   atualizarCamera();
 }
 
+function recalcularLayoutJogo() {
+  transformAtual = "";
+  aplicarAnimacaoParado();
+  atualizarCamera();
+}
+
+window.addEventListener("resize", recalcularLayoutJogo);
+window.addEventListener("orientationchange", recalcularLayoutJogo);
+
 
 // ======================================================
 // 16. INICIAR JOGO
 // ======================================================
 
 carregarMapa();
+inicializarControlesMoveis();
 aplicarPersonagemSalvo();
 aplicarAnimacaoParado();
 if (typeof atualizarInterfaceJogo === "function") {
