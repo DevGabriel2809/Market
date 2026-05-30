@@ -10,7 +10,7 @@ const gameState = {
   nomeJogador: "",
   personagem: "male",
   dia: 1,
-  diaMaximo: 30,
+  diaMaximo: 7,
   caixa: 2000,
   aluguel: 150,
   energia: 50,
