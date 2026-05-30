@@ -54,6 +54,8 @@ let speed = 4.5;
 // Multiplicador aplicado quando o jogador segura Ctrl após concluir a missão "Passo apressado".
 // Aumente para sprint mais forte ou reduza para uma corrida mais sutil.
 const PLAYER_SPRINT_MULTIPLIER = 1.65;
+const PLAYER_FRAME_PADRAO_MS = 1000 / 60;
+const PLAYER_FRAME_MAX_MULTIPLIER = 1.35;
 
 let ultimaDirecao = "down";
 let personagemSelecionado = gameState.personagem || "male";
@@ -352,12 +354,20 @@ const MOBILE_CONTROL_KEYS = {
 function setarMovimentoVirtual(tecla, ativo) {
   if (!(tecla in keysPressed)) return;
   keysPressed[tecla] = Boolean(ativo);
+
+  if (ativo && viewportUsaLayoutMovel()) {
+    keysPressed.Control = false;
+  }
 }
 
 function limparMovimentoVirtual() {
   Object.values(MOBILE_CONTROL_KEYS).forEach((tecla) => {
     setarMovimentoVirtual(tecla, false);
   });
+
+  if (viewportUsaLayoutMovel()) {
+    keysPressed.Control = false;
+  }
 
   document.querySelectorAll(".mobile-control.active, .mobile-action.active").forEach((botao) => {
     botao.classList.remove("active");
@@ -370,6 +380,26 @@ function dispararInteracaoVirtual() {
     code: "KeyE",
     bubbles: true
   }));
+}
+
+function gestoNativoDeveSerBloqueado(event) {
+  if (!viewportUsaLayoutMovel() || !event.target) return false;
+
+  const alvo = typeof event.target.closest === "function"
+    ? event.target
+    : event.target.parentElement;
+
+  if (!alvo || typeof alvo.closest !== "function") return false;
+
+  return Boolean(alvo.closest(
+    ".mobile-controls, .game-header, .hud-toggle, .finance-panel, .actions-panel, .market-area, .game-toast"
+  ));
+}
+
+function bloquearGestoNativoDoJogo(event) {
+  if (gestoNativoDeveSerBloqueado(event)) {
+    event.preventDefault();
+  }
 }
 
 function inicializarControlesMoveis() {
@@ -403,9 +433,11 @@ function inicializarControlesMoveis() {
     };
 
     botao.addEventListener("pointerdown", ativar);
+    botao.addEventListener("pointermove", bloquearGestoNativoDoJogo);
     botao.addEventListener("pointerup", desativar);
     botao.addEventListener("pointercancel", desativar);
     botao.addEventListener("lostpointercapture", desativar);
+    botao.addEventListener("contextmenu", bloquearGestoNativoDoJogo);
   });
 
   document.querySelectorAll("[data-mobile-action='interact']").forEach((botao) => {
@@ -421,6 +453,13 @@ function inicializarControlesMoveis() {
         botao.classList.remove("active");
       });
     });
+
+    botao.addEventListener("pointermove", bloquearGestoNativoDoJogo);
+    botao.addEventListener("contextmenu", bloquearGestoNativoDoJogo);
+  });
+
+  ["contextmenu", "selectstart", "dragstart"].forEach((evento) => {
+    document.addEventListener(evento, bloquearGestoNativoDoJogo, { capture: true });
   });
 }
 
@@ -711,7 +750,10 @@ function moverPersonagem(deltaTime = 16) {
   // A corrida só existe depois da missão de treinamento.
   // Antes disso, segurar Ctrl não muda a velocidade e não quebra o progresso inicial.
   const corridaAtiva = Boolean(gameState.sprintDesbloqueado && keysPressed.Control && (cima || baixo || esquerda || direita));
-  const velocidadeAtual = corridaAtiva ? speed * PLAYER_SPRINT_MULTIPLIER : speed;
+  const deltaSeguro = Number.isFinite(deltaTime) && deltaTime > 0 ? deltaTime : PLAYER_FRAME_PADRAO_MS;
+  const fatorTempo = Math.min(PLAYER_FRAME_MAX_MULTIPLIER, deltaSeguro / PLAYER_FRAME_PADRAO_MS);
+  const velocidadeBase = corridaAtiva ? speed * PLAYER_SPRINT_MULTIPLIER : speed;
+  const velocidadeAtual = velocidadeBase * fatorTempo;
 
   // CIMA
   if (cima) {

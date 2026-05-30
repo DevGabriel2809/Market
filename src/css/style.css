@@ -41,6 +41,10 @@ body {
 /* @doc-css Estilo de botão (button): controla clique visual; ajuste cores, espaçamento e transições aqui. */
 button {
   font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* @doc-css Estilo .app: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */

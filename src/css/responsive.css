@@ -153,13 +153,36 @@
     overflow: hidden;
   }
 
+  html,
+  body,
+  .game-screen.active {
+    overscroll-behavior: none;
+  }
+
   .market-area,
   .market-scene,
+  .game-header,
+  .hud-toggle,
   .mobile-controls,
   .mobile-control,
   .mobile-action {
     touch-action: none;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .game-layout,
+  .game-header,
+  .hud-toggle,
+  .finance-panel,
+  .actions-panel,
+  .game-toast,
+  .mobile-controls,
+  .mobile-controls * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
     user-select: none;
   }
 
@@ -415,14 +438,20 @@
 
 @media (max-width: 1180px) and (max-height: 540px) and (orientation: landscape) {
   .game-header {
-    grid-template-columns: minmax(0, 1.1fr) auto auto;
-    gap: 4px 10px;
-    padding: 6px 8px 7px;
+    left: calc(max(8px, env(safe-area-inset-left)) + 96px);
+    right: calc(max(8px, env(safe-area-inset-right)) + 96px);
+    grid-template-columns: minmax(0, 1fr) auto minmax(164px, 190px);
+    gap: 5px 12px;
+    padding: 7px 12px 8px;
+    border: 1px solid rgba(243, 201, 105, 0.3);
     border-radius: 14px;
+    background: rgba(35, 20, 11, 0.5);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(4px);
   }
 
   .game-header h2 {
-    font-size: 1rem;
+    font-size: 1.12rem;
   }
 
   .day-meta {
@@ -433,22 +462,28 @@
 
   .day-meta span,
   .game-header span {
-    font-size: 0.7rem;
+    font-size: 0.78rem;
   }
 
   .cash-box {
-    padding: 6px 8px;
-    font-size: 0.7rem;
+    padding: 7px 9px;
+    border-color: rgba(243, 201, 105, 0.38);
+    background: rgba(243, 201, 105, 0.12);
+    font-size: 0.78rem;
   }
 
   .day-progress-card {
-    grid-column: 1 / -1;
-    padding: 4px 8px;
+    grid-column: auto;
+    width: 100%;
+    padding: 5px 9px;
+    border-color: rgba(128, 197, 139, 0.24);
+    background: rgba(18, 38, 24, 0.34);
+    box-shadow: none;
   }
 
   .day-progress-card span {
     margin-bottom: 3px;
-    font-size: 0.68rem;
+    font-size: 0.72rem;
   }
 
   .day-progress-track {
@@ -456,7 +491,7 @@
   }
 
   .hud-toggle {
-    top: calc(max(6px, env(safe-area-inset-top)) + 72px);
+    top: calc(max(6px, env(safe-area-inset-top)) + 64px);
     min-height: 38px;
     padding: 7px 10px;
     font-size: 0.76rem;
