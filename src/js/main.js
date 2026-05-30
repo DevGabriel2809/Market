@@ -79,7 +79,7 @@ window.player = {
 };
 
 function viewportUsaLayoutMovel() {
-  return window.matchMedia("(max-width: 760px), (pointer: coarse) and (max-width: 1180px)").matches;
+  return window.matchMedia("(max-width: 760px), (max-width: 1180px) and (max-height: 540px), (pointer: coarse) and (max-width: 1180px)").matches;
 }
 
 function obterEscalaPlayer() {
@@ -103,6 +103,31 @@ function limitarOffsetCamera(offset, tamanhoViewport, tamanhoMundo, zoomCamera) 
   }
 
   return Math.min(0, Math.max(tamanhoViewport - tamanhoEscalado, offset));
+}
+
+function appEstaEmModoInstalado() {
+  return Boolean(
+    window.navigator.standalone
+    || window.matchMedia("(display-mode: standalone)").matches
+    || window.matchMedia("(display-mode: fullscreen)").matches
+  );
+}
+
+function tentarModoImersivo() {
+  if (!viewportUsaLayoutMovel() || appEstaEmModoInstalado()) return;
+
+  const root = document.documentElement;
+  const pedirTelaCheia = root.requestFullscreen
+    || root.webkitRequestFullscreen
+    || root.msRequestFullscreen;
+
+  if (pedirTelaCheia && !document.fullscreenElement && !document.webkitFullscreenElement) {
+    Promise.resolve(pedirTelaCheia.call(root)).catch(() => {});
+  }
+
+  window.setTimeout(() => {
+    window.scrollTo(0, 1);
+  }, 80);
 }
 
 
@@ -156,6 +181,7 @@ btnIniciar.addEventListener("click", () => {
   }
 
   erroNome.style.display = "none";
+  tentarModoImersivo();
   resetarPartida(nome, personagemSelecionado);
   resetarPosicaoPersonagem();
 
@@ -353,6 +379,7 @@ function inicializarControlesMoveis() {
 
     const ativar = (event) => {
       event.preventDefault();
+      tentarModoImersivo();
       setarMovimentoVirtual(tecla, true);
       botao.classList.add("active");
 
@@ -384,6 +411,7 @@ function inicializarControlesMoveis() {
   document.querySelectorAll("[data-mobile-action='interact']").forEach((botao) => {
     botao.addEventListener("pointerdown", (event) => {
       event.preventDefault();
+      tentarModoImersivo();
       botao.classList.add("active");
       dispararInteracaoVirtual();
     });

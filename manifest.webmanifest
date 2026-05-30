@@ -1,0 +1,17 @@
+{
+  "name": "Mercado | Reino dos Custos",
+  "short_name": "Mercado",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#17100b",
+  "theme_color": "#17100b",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}
