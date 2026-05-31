@@ -5,12 +5,29 @@
 // ======================================================
 
 const GAME_SAVE_KEY = "reino-dos-custos-save-v1";
+const GAME_NORMAL_DAYS = 30;
+const GAME_DEMO_DAYS = 7;
+const GAME_NORMAL_CASH_GOAL = 5000;
+const GAME_DEMO_CASH_GOAL = 2600;
+
+function jogoEstaEmDemo() {
+  return gameState.modoJogo === "demo";
+}
+
+function obterMetaCaixaCampanha() {
+  return jogoEstaEmDemo() ? GAME_DEMO_CASH_GOAL : GAME_NORMAL_CASH_GOAL;
+}
+
+function obterRotuloModoJogo() {
+  return jogoEstaEmDemo() ? "Demo" : "Campanha";
+}
 
 const gameState = {
   nomeJogador: "",
   personagem: "male",
+  modoJogo: "normal",
   dia: 1,
-  diaMaximo: 7,
+  diaMaximo: GAME_NORMAL_DAYS,
   caixa: 2000,
   aluguel: 150,
   energia: 50,
@@ -50,7 +67,8 @@ const gameState = {
   fimDeJogo: null,
   // @doc-state staticNpcTips guarda quais dicas dos NPCs fixos já foram lidas no dia atual.
   // Edite/limpe este campo se quiser reiniciar o ciclo de dicas sem resetar a partida inteira.
-  staticNpcTips: null
+  staticNpcTips: null,
+  alertasEstoqueBaixo: {}
 };
 
 /**
@@ -60,24 +78,27 @@ const gameState = {
  * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
-function resetarPartida(nome, personagem) {
+function resetarPartida(nome, personagem, modoJogo = "normal") {
+  const demo = modoJogo === "demo";
   gameState.nomeJogador = nome || "";
   gameState.personagem = personagem || "male";
+  gameState.modoJogo = demo ? "demo" : "normal";
   gameState.dia = 1;
-  gameState.caixa = 2000;
+  gameState.diaMaximo = demo ? GAME_DEMO_DAYS : GAME_NORMAL_DAYS;
+  gameState.caixa = demo ? 2200 : 2000;
   gameState.aluguel = 150;
   gameState.energia = 50;
   gameState.custoAjudante = 120;
   gameState.reputacao = 0;
   gameState.experiencia = 0;
-  gameState.clientela = 1;
+  gameState.clientela = demo ? 1.08 : 1;
   gameState.ajudanteContratado = false;
   gameState.ajudanteDesbloqueado = false;
   gameState.sprintDesbloqueado = false;
   gameState.descontoFornecedor = 0;
   gameState.faseDia = "preparacao";
-  gameState.duracaoExpedienteMs = 300000;
-  gameState.duracaoPreparacaoMs = 150000;
+  gameState.duracaoExpedienteMs = demo ? 240000 : 300000;
+  gameState.duracaoPreparacaoMs = demo ? 75000 : 150000;
   gameState.tempoPreparacaoDecorridoMs = 0;
   gameState.preparacaoAvisoMostrado = false;
   gameState.tempoDiaDecorridoMs = 0;
@@ -96,6 +117,7 @@ function resetarPartida(nome, personagem) {
   gameState.ultimoRelatorio = null;
   gameState.fimDeJogo = null;
   gameState.staticNpcTips = null;
+  gameState.alertasEstoqueBaixo = {};
 
   if (typeof resetarDicasNPCsEstaticosDoDia === "function") {
     resetarDicasNPCsEstaticosDoDia();

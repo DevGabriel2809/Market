@@ -715,13 +715,14 @@ function verificarFimDeJogo() {
   }
 
   if (gameState.dia >= gameState.diaMaximo) {
-    const venceu = gameState.caixa >= 5000;
+    const metaCaixa = typeof obterMetaCaixaCampanha === "function" ? obterMetaCaixaCampanha() : 5000;
+    const venceu = gameState.caixa >= metaCaixa;
     gameState.fimDeJogo = {
       tipo: venceu ? "vitoria" : "derrota",
       titulo: venceu ? "Mercado consolidado" : "Meta não alcançada",
       mensagem: venceu
-        ? "O reino reconheceu seu mercado como uma operação sustentável."
-        : "O mercado sobreviveu, mas não juntou caixa suficiente para vencer."
+        ? `O reino reconheceu seu mercado como uma operação sustentável ao bater ${formatarMoeda(metaCaixa)}.`
+        : `O mercado sobreviveu, mas não juntou os ${formatarMoeda(metaCaixa)} necessários para vencer.`
     };
   }
 }

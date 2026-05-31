@@ -196,6 +196,41 @@ function questFoiConcluida(questId) {
   return gameState.quests.concluidas.includes(questId);
 }
 
+function ajustarNumeroDemo(valor, fator, minimo = 1) {
+  if (typeof jogoEstaEmDemo !== "function" || !jogoEstaEmDemo()) return valor;
+  return Math.max(minimo, Math.ceil(valor * fator));
+}
+
+function obterRequisitosQuestAjustados(quest) {
+  const requisitos = { ...(quest.requisitos || {}) };
+  if (typeof jogoEstaEmDemo !== "function" || !jogoEstaEmDemo()) return requisitos;
+
+  const fatorDias = GAME_DEMO_DAYS / GAME_NORMAL_DAYS;
+  if (requisitos.diaMinimo) requisitos.diaMinimo = ajustarNumeroDemo(requisitos.diaMinimo, fatorDias);
+  if (requisitos.diasJogados) requisitos.diasJogados = ajustarNumeroDemo(requisitos.diasJogados, fatorDias);
+  if (requisitos.reputacaoMinima) requisitos.reputacaoMinima = ajustarNumeroDemo(requisitos.reputacaoMinima, 0.55);
+  if (requisitos.caixaMinimo) requisitos.caixaMinimo = ajustarNumeroDemo(requisitos.caixaMinimo, 0.65);
+
+  return requisitos;
+}
+
+function obterCustoQuestAjustado(quest) {
+  const custo = quest.custo || {};
+  if (typeof jogoEstaEmDemo !== "function" || !jogoEstaEmDemo()) return custo;
+
+  const ajustado = {};
+  if (custo.caixa) ajustado.caixa = Math.max(1, Math.ceil(custo.caixa * 0.75));
+
+  if (custo.estoque) {
+    ajustado.estoque = {};
+    Object.entries(custo.estoque).forEach(([produtoId, quantidade]) => {
+      ajustado.estoque[produtoId] = Math.max(1, Math.ceil(quantidade * 0.75));
+    });
+  }
+
+  return ajustado;
+}
+
 /**
  * @doc-func avaliarRequisitosQuest
  * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
@@ -205,7 +240,7 @@ function questFoiConcluida(questId) {
  */
 function avaliarRequisitosQuest(quest) {
   const motivos = [];
-  const requisitos = quest.requisitos || {};
+  const requisitos = obterRequisitosQuestAjustados(quest);
 
   if (!quest.repetivel && questFoiConcluida(quest.id)) {
     motivos.push("Missão já concluída.");
@@ -236,7 +271,7 @@ function avaliarRequisitosQuest(quest) {
     motivos.push(`Requer "${questRequerida ? questRequerida.titulo : requisitos.questConcluida}".`);
   }
 
-  const custo = quest.custo || {};
+  const custo = obterCustoQuestAjustado(quest);
   if (custo.caixa && gameState.caixa < custo.caixa) {
     motivos.push(`Custa ${formatarMoeda(custo.caixa)}.`);
   }
@@ -269,7 +304,8 @@ function calcularChanceQuest(quest) {
   const bonusReputacao = Math.min(gameState.reputacao, 20) * 0.01;
   const bonusExperiencia = Math.min(gameState.experiencia, 30) * 0.003;
   const bonusAjudante = gameState.ajudanteContratado ? 0.04 : 0;
-  return Math.min(0.95, quest.chanceBase + bonusReputacao + bonusExperiencia + bonusAjudante);
+  const bonusDemo = typeof jogoEstaEmDemo === "function" && jogoEstaEmDemo() ? 0.08 : 0;
+  return Math.min(0.97, quest.chanceBase + bonusReputacao + bonusExperiencia + bonusAjudante + bonusDemo);
 }
 
 /**
@@ -280,7 +316,7 @@ function calcularChanceQuest(quest) {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function aplicarCustoQuest(quest) {
-  const custo = quest.custo || {};
+  const custo = obterCustoQuestAjustado(quest);
 
   if (custo.caixa) {
     gameState.caixa -= custo.caixa;

@@ -20,6 +20,7 @@ const telaCreditos = document.getElementById("tela-creditos");
 const telaJogo = document.getElementById("tela-jogo");
 
 const btnIniciar = document.getElementById("btn-iniciar");
+const btnDemo = document.getElementById("btn-demo");
 const btnComoJogar = document.getElementById("btn-como-jogar");
 const btnCreditos = document.getElementById("btn-creditos");
 const btnVoltarMenu = document.querySelectorAll(".btn-voltar-menu");
@@ -27,6 +28,12 @@ const btnVoltarMenu = document.querySelectorAll(".btn-voltar-menu");
 const inputNome = document.getElementById("player-name");
 const erroNome = document.getElementById("name-error");
 const tituloJogo = document.getElementById("titulo-jogo");
+const introOverlay = document.getElementById("intro-overlay");
+const introSkip = document.getElementById("intro-skip");
+const introModeLabel = document.getElementById("intro-mode-label");
+const introTitle = document.getElementById("intro-title");
+const introSubtitle = document.getElementById("intro-subtitle");
+const introRunner = document.querySelector(".intro-runner");
 
 
 // ======================================================
@@ -195,9 +202,88 @@ function mostrarTela(tela) {
   if (typeof sincronizarCamadaMorcegos === "function") {
     sincronizarCamadaMorcegos();
   }
+
+  if (tela !== telaJogo && typeof limparMovimentoVirtual === "function") {
+    limparMovimentoVirtual();
+  }
 }
 
-btnIniciar.addEventListener("click", () => {
+let introTimeoutId = null;
+let introAoConcluir = null;
+
+function concluirIntroInicio() {
+  if (!introOverlay || !introAoConcluir) return;
+
+  window.clearTimeout(introTimeoutId);
+  introTimeoutId = null;
+  introOverlay.classList.add("ending");
+
+  const aoConcluir = introAoConcluir;
+  introAoConcluir = null;
+
+  window.setTimeout(() => {
+    introOverlay.classList.add("hidden");
+    introOverlay.classList.remove("playing", "ending");
+    document.body.classList.remove("intro-active");
+    aoConcluir();
+  }, 360);
+}
+
+function exibirIntroInicio({ nome, modoJogo, aoConcluir }) {
+  if (!introOverlay) {
+    aoConcluir();
+    return;
+  }
+
+  window.clearTimeout(introTimeoutId);
+  introAoConcluir = aoConcluir;
+
+  if (introModeLabel) {
+    introModeLabel.textContent = modoJogo === "demo" ? "Demo de 7 dias" : "Campanha de 30 dias";
+  }
+
+  if (introTitle) {
+    introTitle.textContent = `${nome}, as portas se abrem`;
+  }
+
+  if (introSubtitle) {
+    introSubtitle.textContent = modoJogo === "demo"
+      ? "Uma semana, poucas moedas e uma chance de provar que o balcao pode virar lenda."
+      : "Trinta dias para transformar compras pequenas em um mercado respeitado por todo o reino.";
+  }
+
+  if (introRunner) {
+    introRunner.className = "intro-runner";
+    introRunner.classList.add(personagemSelecionado === "female" ? "manager-female-walk-side" : "manager-male-walk-side");
+  }
+
+  document.body.classList.add("intro-active");
+  introOverlay.classList.remove("hidden", "ending");
+  introOverlay.classList.add("playing");
+
+  introTimeoutId = window.setTimeout(concluirIntroInicio, 5200);
+}
+
+function iniciarPartida(nome, modoJogo) {
+  resetarPartida(nome, personagemSelecionado, modoJogo);
+  resetarPosicaoPersonagem();
+
+  if (tituloJogo) {
+    tituloJogo.textContent = `Mercado de ${nome}`;
+  }
+
+  if (typeof atualizarInterfaceJogo === "function") {
+    atualizarInterfaceJogo({ silenciarEstoqueBaixo: true });
+  }
+
+  mostrarTela(telaJogo);
+
+  if (typeof dispararIntroMorcegos === "function") {
+    dispararIntroMorcegos("game");
+  }
+}
+
+function iniciarPartidaPeloMenu(modoJogo = "normal") {
   const nome = inputNome.value.trim();
 
   if (nome === "") {
@@ -208,24 +294,22 @@ btnIniciar.addEventListener("click", () => {
 
   erroNome.style.display = "none";
   tentarModoImersivo();
-  resetarPartida(nome, personagemSelecionado);
-  resetarPosicaoPersonagem();
+  exibirIntroInicio({
+    nome,
+    modoJogo,
+    aoConcluir: () => iniciarPartida(nome, modoJogo)
+  });
+}
 
-  if (tituloJogo) {
-    tituloJogo.textContent = `Mercado de ${nome}`;
-  }
+btnIniciar.addEventListener("click", () => iniciarPartidaPeloMenu("normal"));
 
-  if (typeof atualizarInterfaceJogo === "function") {
-    atualizarInterfaceJogo();
-  }
+if (btnDemo) {
+  btnDemo.addEventListener("click", () => iniciarPartidaPeloMenu("demo"));
+}
 
-  mostrarTela(telaJogo);
-
-  // Pequena intro visual: vários morcegos cruzam a tela quando a partida começa.
-  if (typeof dispararIntroMorcegos === "function") {
-    dispararIntroMorcegos("game");
-  }
-});
+if (introSkip) {
+  introSkip.addEventListener("click", concluirIntroInicio);
+}
 
 btnComoJogar.addEventListener("click", () => {
   mostrarTela(telaComoJogar);
@@ -331,7 +415,20 @@ function obterTeclaMovimento(event) {
   return event.key;
 }
 
+function eventoVemDeCampoEditavel(event) {
+  const alvo = event && event.target;
+  if (!alvo) return false;
+
+  const tag = alvo.tagName ? alvo.tagName.toLowerCase() : "";
+  return tag === "input"
+    || tag === "textarea"
+    || tag === "select"
+    || Boolean(alvo.isContentEditable);
+}
+
 document.addEventListener("keydown", (event) => {
+  if (eventoVemDeCampoEditavel(event) || !telaJogo.classList.contains("active")) return;
+
   const tecla = obterTeclaMovimento(event);
 
   if (tecla in keysPressed) {
@@ -341,6 +438,8 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("keyup", (event) => {
+  if (eventoVemDeCampoEditavel(event) || !telaJogo.classList.contains("active")) return;
+
   const tecla = obterTeclaMovimento(event);
 
   if (tecla in keysPressed) {
@@ -385,13 +484,9 @@ function setarMovimentoVirtual(tecla, ativo) {
 }
 
 function limparMovimentoVirtual() {
-  Object.values(MOBILE_CONTROL_KEYS).forEach((tecla) => {
-    setarMovimentoVirtual(tecla, false);
+  Object.keys(keysPressed).forEach((tecla) => {
+    keysPressed[tecla] = false;
   });
-
-  if (viewportUsaLayoutMovel()) {
-    keysPressed.Control = false;
-  }
 
   document.querySelectorAll(".mobile-control.active, .mobile-action.active").forEach((botao) => {
     botao.classList.remove("active");

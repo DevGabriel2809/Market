@@ -41,14 +41,17 @@ function carregarJogo() {
     const dados = JSON.parse(salvo);
     Object.assign(gameState, dados);
 
+    gameState.modoJogo = dados.modoJogo === "demo" ? "demo" : "normal";
+    gameState.diaMaximo = gameState.modoJogo === "demo" ? GAME_DEMO_DAYS : GAME_NORMAL_DAYS;
+    const demo = gameState.modoJogo === "demo";
     gameState.custoAjudante = gameState.custoAjudante || 120;
     gameState.faseDia = gameState.faseDia || (gameState.diaProntoParaEncerrar
       ? "fechamento"
       : gameState.diaEmAndamento
         ? "expediente"
         : "preparacao");
-    gameState.duracaoExpedienteMs = gameState.duracaoExpedienteMs || gameState.duracaoDiaMs || 300000;
-    gameState.duracaoPreparacaoMs = gameState.duracaoPreparacaoMs || 150000;
+    gameState.duracaoExpedienteMs = gameState.duracaoExpedienteMs || gameState.duracaoDiaMs || (demo ? 240000 : 300000);
+    gameState.duracaoPreparacaoMs = gameState.duracaoPreparacaoMs || (demo ? 75000 : 150000);
     gameState.tempoPreparacaoDecorridoMs = gameState.faseDia === "preparacao"
       ? Math.min(gameState.duracaoPreparacaoMs, gameState.tempoPreparacaoDecorridoMs || 0)
       : 0;
@@ -62,6 +65,9 @@ function carregarJogo() {
     gameState.diaProntoParaEncerrar = Boolean(gameState.diaProntoParaEncerrar);
     gameState.diaEmAndamento = Boolean(gameState.diaEmAndamento);
     gameState.diaEncerradoNotificado = Boolean(gameState.diaEncerradoNotificado);
+    gameState.alertasEstoqueBaixo = gameState.alertasEstoqueBaixo && typeof gameState.alertasEstoqueBaixo === "object"
+      ? gameState.alertasEstoqueBaixo
+      : {};
     // @doc-migration Saves antigos não possuem sprintDesbloqueado; mantém a habilidade bloqueada até a missão ser concluída.
     gameState.sprintDesbloqueado = Boolean(gameState.sprintDesbloqueado);
 

@@ -64,11 +64,11 @@ window.npcSystem = {
     ],
 
     prateleiras: [
-      { id: "pao", nome: "Pães", x: 690, y: 840, produtos: ["pao", "queijo"] },
-      { id: "frutas", nome: "Frutas", x: 840, y: 840, produtos: ["maca"] },
-      { id: "frios", nome: "Frios", x: 1040, y: 805, produtos: ["queijo", "carne"] },
-      { id: "utilidades", nome: "Utilidades", x: 1190, y: 840, produtos: ["vela"] },
-      { id: "especial", nome: "Especiais", x: 600, y: 500, produtos: ["pocao", "especiaria"] }
+      { id: "pao", nome: "Pães", x: 690, y: 840, produtos: ["pao", "queijo", "mel"] },
+      { id: "frutas", nome: "Frutas", x: 840, y: 840, produtos: ["maca", "mel"] },
+      { id: "frios", nome: "Frios", x: 1040, y: 805, produtos: ["queijo", "carne", "hidromel"] },
+      { id: "utilidades", nome: "Utilidades", x: 1190, y: 840, produtos: ["vela", "corda"] },
+      { id: "especial", nome: "Especiais", x: 600, y: 500, produtos: ["pocao", "ervas", "hidromel", "especiaria"] }
     ]
   }
 };
@@ -80,7 +80,7 @@ const NPC_CONFIG = {
   spawnIntervalMin: 2200,
   tempoEscolhendoMin: 1000,
   tempoEscolhendoMax: 2400,
-  tempoEsperaFilaMax: 40000,
+  tempoEsperaFilaMax: 62000,
   chanceCompraBase: 0.88,
   intervaloClientesIniciais: 1150,
   tentativaRespawnBloqueado: 420,
@@ -120,13 +120,13 @@ function zIndexProfundidadeNPC(y, ajuste = 0) {
 }
 
 const NPC_PERFIS = [
-  { nome: "Lia", classe: "npc-lia", preferencias: ["maca", "pao"], paciencia: 1.18, chanceCompra: 0.08 },
-  { nome: "Bruno", classe: "npc-bruno", preferencias: ["carne", "queijo"], paciencia: 1, chanceCompra: 0.41 },
-  { nome: "Marta", classe: "npc-marta", preferencias: ["pao", "vela"], paciencia: 1.22, chanceCompra: 0.36 },
-  { nome: "Caio", classe: "npc-caio", preferencias: ["pocao", "vela"], paciencia: 0.88, chanceCompra: 0.41 },
-  { nome: "Nina", classe: "npc-nina", preferencias: ["queijo", "maca"], paciencia: 1.06, chanceCompra: 0.14 },
-  { nome: "Tomas", classe: "npc-tomas", preferencias: ["vela", "pao"], paciencia: 0.98, chanceCompra: 0.21 },
-  { nome: "Rosa", classe: "npc-rosa", preferencias: ["especiaria", "pocao", "queijo"], paciencia: 1.12, chanceCompra: 0.13 }
+  { nome: "Lia", classe: "npc-lia", preferencias: ["maca", "pao", "mel"], paciencia: 1.42, chanceCompra: 0.24 },
+  { nome: "Bruno", classe: "npc-bruno", preferencias: ["carne", "queijo", "hidromel"], paciencia: 1.24, chanceCompra: 0.43 },
+  { nome: "Marta", classe: "npc-marta", preferencias: ["pao", "vela", "corda"], paciencia: 1.46, chanceCompra: 0.38 },
+  { nome: "Caio", classe: "npc-caio", preferencias: ["pocao", "vela", "ervas"], paciencia: 1.18, chanceCompra: 0.42 },
+  { nome: "Nina", classe: "npc-nina", preferencias: ["queijo", "maca", "mel"], paciencia: 1.32, chanceCompra: 0.24 },
+  { nome: "Tomas", classe: "npc-tomas", preferencias: ["vela", "pao", "corda"], paciencia: 1.22, chanceCompra: 0.28 },
+  { nome: "Rosa", classe: "npc-rosa", preferencias: ["especiaria", "pocao", "queijo", "ervas"], paciencia: 1.36, chanceCompra: 0.25 }
 ];
 
 /**
@@ -159,28 +159,32 @@ function escolherItem(lista) {
 // Relaciona os nomes simples usados na camada npc_zones com os produtos reais do jogo.
 // Para editar no Tiled: basta criar/renomear um retângulo buy_nome. Ex.: buy_breads -> pão.
 const NPC_ZONE_PRODUCT_MAP = {
-  breads: ["pao"],
-  bread: ["pao"],
-  paes: ["pao"],
-  cheese: ["queijo"],
-  queijo: ["queijo"],
-  meat: ["carne"],
-  meats: ["carne"],
-  carne: ["carne"],
-  fruits: ["maca"],
-  fruit: ["maca"],
-  frutas: ["maca"],
-  maca: ["maca"],
-  candles: ["vela"],
-  candle: ["vela"],
-  velas: ["vela"],
-  potions: ["pocao"],
-  potion: ["pocao"],
-  pocoes: ["pocao"],
-  spices: ["especiaria"],
-  spice: ["especiaria"],
-  especiarias: ["especiaria"],
-  especiais: ["pocao", "especiaria"]
+  breads: ["pao", "mel"],
+  bread: ["pao", "mel"],
+  paes: ["pao", "mel"],
+  cheese: ["queijo", "hidromel"],
+  queijo: ["queijo", "hidromel"],
+  meat: ["carne", "hidromel"],
+  meats: ["carne", "hidromel"],
+  carne: ["carne", "hidromel"],
+  fruits: ["maca", "mel"],
+  fruit: ["maca", "mel"],
+  frutas: ["maca", "mel"],
+  maca: ["maca", "mel"],
+  candles: ["vela", "corda"],
+  candle: ["vela", "corda"],
+  velas: ["vela", "corda"],
+  utilities: ["vela", "corda"],
+  utilidades: ["vela", "corda"],
+  potions: ["pocao", "ervas"],
+  potion: ["pocao", "ervas"],
+  pocoes: ["pocao", "ervas"],
+  herbs: ["ervas"],
+  ervas: ["ervas"],
+  spices: ["especiaria", "ervas"],
+  spice: ["especiaria", "ervas"],
+  especiarias: ["especiaria", "ervas"],
+  especiais: ["pocao", "ervas", "hidromel", "especiaria"]
 };
 
 function obterNomeZona(objeto) {
@@ -1279,12 +1283,16 @@ function criarClienteNPC() {
   nome.className = "customer-name";
   nome.textContent = perfil.nome;
 
+  const sombra = document.createElement("div");
+  sombra.className = "customer-shadow";
+
   const sprite = document.createElement("div");
   sprite.className = "customer-sprite customer-walk-up";
 
   const bubble = document.createElement("div");
   bubble.className = "customer-bubble";
 
+  el.appendChild(sombra);
   el.appendChild(nome);
   el.appendChild(sprite);
   el.appendChild(bubble);
@@ -1770,8 +1778,22 @@ function forcarClienteParaFila(cliente, texto = "Na fila") {
   atualizarPosicaoCliente(cliente);
   clienteIdle(cliente);
   atualizarHumorCliente(cliente, texto);
+  alertarClienteNaFila(cliente);
   atualizarInterfaceJogo();
   return true;
+}
+
+function alertarClienteNaFila(cliente) {
+  if (!cliente || cliente.alertaFilaEmitido) return;
+
+  cliente.alertaFilaEmitido = true;
+  const nome = cliente.perfil && cliente.perfil.nome ? cliente.perfil.nome : "Cliente";
+
+  criarPopupCliente(cliente.x, cliente.y, "Caixa!", "money");
+
+  if (typeof mostrarToast === "function") {
+    mostrarToast(`${nome} entrou na fila do caixa.`);
+  }
 }
 
 function respawnarClienteNoDoorEntry(cliente, texto = "Recalculando") {
@@ -1892,7 +1914,7 @@ function limitarClienteAoMapa(cliente) {
 function atualizarPosicaoCliente(cliente) {
   cliente.el.style.left = `${cliente.x}px`;
   cliente.el.style.top = `${cliente.y}px`;
-  cliente.el.style.zIndex = String(3 + Math.floor(cliente.y / 24));
+  cliente.el.style.zIndex = zIndexProfundidadeNPC(cliente.y);
 }
 
 /**
@@ -2034,6 +2056,7 @@ function atualizarCliente(cliente, deltaTime) {
       cliente.tempoFila = 0;
       clienteIdle(cliente);
       atualizarHumorCliente(cliente, "Na fila");
+      alertarClienteNaFila(cliente);
       atualizarInterfaceJogo();
     }
 
@@ -2091,8 +2114,9 @@ function atualizarCliente(cliente, deltaTime) {
  */
 function montarCarrinhoCliente(cliente) {
   const linhas = [];
-  const maxLinhas = gameState.reputacao >= 5 ? 3 : 2;
-  const tentativas = 2 + Math.floor(Math.random() * maxLinhas);
+  const maxLinhas = gameState.reputacao >= 5 ? 4 : 3;
+  const linhasDesejadas = Math.max(1, Math.min(maxLinhas, 1 + Math.floor(Math.random() * maxLinhas)));
+  const tentativas = linhasDesejadas + 3 + Math.floor(Math.random() * 3);
 
   for (let i = 0; i < tentativas; i += 1) {
     const produto = escolherProdutoParaClientePreferencias(cliente);
@@ -2117,7 +2141,7 @@ function montarCarrinhoCliente(cliente) {
       });
     }
 
-    if (linhas.length >= maxLinhas) break;
+    if (linhas.length >= linhasDesejadas) break;
   }
 
   if (!linhas.length) return null;
@@ -2199,9 +2223,20 @@ function calcularQuantidadePedidoNPC(produto) {
   const estoque = obterEstoque(produto.id);
   if (!estoque || estoque.quantidade <= 0) return 0;
 
-  const extraProdutoBarato = produto.custo <= 5 && Math.random() < 0.34 ? 1 : 0;
-  const extraBoaReputacao = gameState.reputacao >= 6 && Math.random() < 0.16 ? 1 : 0;
-  return Math.min(estoque.quantidade, 1 + extraProdutoBarato + extraBoaReputacao);
+  const barato = produto.custo <= 7;
+  const medio = produto.custo <= 14;
+  let limiteDesejado = barato ? 4 : medio ? 3 : 2;
+
+  if (gameState.reputacao >= 6 && Math.random() < 0.28) {
+    limiteDesejado += 1;
+  }
+
+  if (Math.random() < 0.16) {
+    limiteDesejado += 1;
+  }
+
+  const quantidade = 1 + Math.floor(Math.random() * Math.max(1, limiteDesejado));
+  return Math.min(estoque.quantidade, quantidade);
 }
 
 /**

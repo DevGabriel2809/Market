@@ -1241,6 +1241,9 @@ function inicializarNPCsEstaticos() {
     nome.className = "static-npc-name";
     nome.textContent = definicao.nome;
 
+    const sombra = document.createElement("div");
+    sombra.className = "static-npc-shadow";
+
     const sprite = document.createElement("div");
     sprite.className = "static-npc-sprite customer-idle";
 
@@ -1252,6 +1255,7 @@ function inicializarNPCsEstaticos() {
     chat.className = "static-npc-chat hidden";
 
     el.appendChild(marker);
+    el.appendChild(sombra);
     el.appendChild(nome);
     el.appendChild(sprite);
     el.appendChild(chat);

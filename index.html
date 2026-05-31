@@ -16,16 +16,16 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="manifest.webmanifest" />
 
-  <title>Mercado | Reino dos Custos</title>
+  <title>Mercado do Carvalho Dourado | Reino dos Custos</title>
 
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
   <link rel="stylesheet" href="src/css/style.css?v=33" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/menu.css?v=33" />
+  <link rel="stylesheet" href="src/css/menu.css?v=34" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/game.css?v=38" />
+  <link rel="stylesheet" href="src/css/game.css?v=39" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/responsive.css?v=38" />
+  <link rel="stylesheet" href="src/css/responsive.css?v=39" />
 </head>
 
 <body>
@@ -47,13 +47,13 @@
         <section class="menu-content">
           <span class="game-badge">UM JOGO ETEPLAP</span>
 
-          <h1>Taberna Medieval</h1>
+          <h1>Mercado do Carvalho Dourado</h1>
           <h2>Reino dos Custos</h2>
 
           <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
           <p>
-            Administre um mercado medieval, compre mercadorias, controle o estoque,
-            defina preços e aprenda contabilidade de custos de forma divertida.
+            Administre um mercado medieval de estrada, compre mercadorias, controle o estoque,
+            defina pre&ccedil;os e transforme pequenas vendas em um neg&oacute;cio reconhecido pelo reino.
           </p>
 
             <div class="player-input-area">
@@ -75,6 +75,7 @@
           <div class="menu-buttons">
             <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
             <button id="btn-iniciar" class="btn primary">Iniciar Jogo</button>
+            <button id="btn-demo" class="btn secondary">Iniciar Demo</button>
             <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
             <button id="btn-como-jogar" class="btn secondary">Como Jogar</button>
             <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
@@ -102,8 +103,8 @@
           </div>
 
           <div class="speech-box">
-            <strong>Bem-vindo ao reino!</strong>
-            <span>Seu mercado precisa de boas decisões financeiras.</span>
+            <strong>Bem-vindo ao Carvalho Dourado!</strong>
+            <span>Seu mercado precisa de estoque, caixa e boas decis&otilde;es.</span>
           </div>
         </section>
 
@@ -118,21 +119,27 @@
 
         <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
         <p>
-          Você será responsável por administrar um mercado medieval durante
-          30 dias simulados.
+          Voc&ecirc; ser&aacute; respons&aacute;vel por administrar o Mercado do Carvalho Dourado
+          durante uma campanha de 30 dias simulados, ou por jogar uma demo compacta de 7 dias.
         </p>
 
         <ul>
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
-          <li>Compre mercadorias para abastecer o estoque.</li>
+          <li>Compre mercadorias para abastecer o estoque antes e durante o expediente.</li>
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
-          <li>Defina o preço de venda de cada produto.</li>
+          <li>Defina o pre&ccedil;o de venda de cada produto; pre&ccedil;os altos reduzem a procura.</li>
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
-          <li>Controle custos como aluguel, energia e equipe contratada.</li>
+          <li>Atenda clientes no caixa, confira a cesta e devolva o troco correto.</li>
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
-          <li>Conclua a missão “Passo apressado” para liberar corrida com Ctrl.</li>
+          <li>Conclua miss&otilde;es da guilda para ganhar reputa&ccedil;&atilde;o, descontos e novos recursos.</li>
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
-          <li>Analise o relatório diário para saber se teve lucro ou prejuízo.</li>
+          <li>Conclua a miss&atilde;o &ldquo;Passo apressado&rdquo; para liberar corrida com Ctrl.</li>
+          <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instruÃ§Ã£o sem alterar a lÃ³gica. -->
+          <li>Fique atento aos alertas de fila no caixa e de estoque abaixo de 5 unidades.</li>
+          <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instruÃ§Ã£o sem alterar a lÃ³gica. -->
+          <li>Use as Defini&ccedil;&otilde;es dentro do jogo para ativar/desativar m&uacute;sica e ajustar o volume.</li>
+          <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instruÃ§Ã£o sem alterar a lÃ³gica. -->
+          <li>Analise o relat&oacute;rio di&aacute;rio para saber se teve lucro ou preju&iacute;zo.</li>
         </ul>
 
         <!-- @doc-html Botão interativo. O id/data-attribute é ligado a eventos JS; mantenha o id se não for atualizar o JS junto. -->
@@ -151,7 +158,7 @@
         <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
         <p>Tema: Contabilidade e Custos.</p>
         <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
-        <p>Jogo: Mercado  — Reino dos Custos.</p>
+        <p>Jogo: Mercado do Carvalho Dourado - Reino dos Custos.</p>
         <!-- @doc-html Parágrafo de texto visível. Edite apenas o conteúdo textual se quiser mudar a explicação ao jogador. -->
         <p>Criadores: Marília Beatriz</p>
 
@@ -168,7 +175,7 @@
         <div>
           <h2 id="titulo-jogo">Mercado Tycoon</h2>
           <div class="day-meta">
-            <span>Dia <strong id="dia-atual">1</strong>/30</span>
+            <span>Dia <strong id="dia-atual">1</strong>/<strong id="dia-maximo">30</strong></span>
             <span>Hora <strong id="hora-atual">00:00</strong></span>
           </div>
         </div>
@@ -279,6 +286,43 @@
 
   <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
   <div id="game-toast" class="game-toast" aria-live="polite"></div>
+
+  <div id="intro-overlay" class="intro-overlay hidden" aria-live="polite">
+    <div class="intro-scene" aria-hidden="true">
+      <div class="intro-sky"></div>
+      <div class="intro-moon"></div>
+      <div class="intro-gate">
+        <span></span>
+        <span></span>
+      </div>
+      <div class="intro-banner">
+        <small>Mercado do</small>
+        <strong>Carvalho Dourado</strong>
+      </div>
+      <div class="intro-road"></div>
+      <div class="intro-cart"></div>
+      <div class="intro-runner manager-male-walk-side"></div>
+      <div class="intro-coins">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="intro-sparks">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="intro-copy">
+      <span id="intro-mode-label">Campanha</span>
+      <h2 id="intro-title">As portas do mercado se abrem</h2>
+      <p id="intro-subtitle">A vila desperta, as moedas tilintam e seu nome sera lembrado no balcao.</p>
+    </div>
+
+    <button id="intro-skip" class="intro-skip" type="button">Pular</button>
+  </div>
 
   <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
   <div id="modal-backdrop" class="modal-backdrop hidden">
@@ -416,9 +460,23 @@
     <!-- @doc-html Section principal de tela/modal. O id é usado pelo JS para mostrar, esconder ou preencher conteúdo. -->
     <section id="quest-loading-modal" class="game-modal quest-loading-modal hidden" role="dialog" aria-modal="true">
       <div class="quest-loading-stage">
+        <div class="quest-sky"></div>
+        <div class="quest-horizon">
+          <span class="quest-keep"></span>
+          <span class="quest-hill"></span>
+          <span class="quest-sign"></span>
+        </div>
+        <div class="quest-torch quest-torch-left"></div>
+        <div class="quest-torch quest-torch-right"></div>
         <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
         <div id="quest-runner" class="quest-runner manager-male-walk-side"></div>
+        <div class="quest-pack"></div>
         <div class="quest-road"></div>
+        <div class="quest-dust">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </div>
       <h2 id="quest-loading-title">Missão em andamento</h2>
       <div class="quest-loading-progress">
@@ -431,30 +489,30 @@
   </div>
 
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/gameState.js?v=32"></script>
+  <script src="src/js/gameState.js?v=33"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/products.js?v=32"></script>
+  <script src="src/js/products.js?v=33"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/finance.js?v=32"></script>
+  <script src="src/js/finance.js?v=33"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/quests.js?v=32"></script>
+  <script src="src/js/quests.js?v=33"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/audio-system.js?v=2"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por Ãºltimo. -->
-  <script src="src/js/ui.js?v=34"></script>
+  <script src="src/js/ui.js?v=35"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/events.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/storage.js?v=32"></script>
+  <script src="src/js/storage.js?v=33"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/helpers-system.js?v=33"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/npc-system.js?v=34"></script>
+  <script src="src/js/npc-system.js?v=35"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/static-npc-system.js?v=33"></script>
+  <script src="src/js/static-npc-system.js?v=34"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/bat-system.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/main.js?v=38"></script>
+  <script src="src/js/main.js?v=39"></script>
 </body>
 </html>

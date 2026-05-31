@@ -58,6 +58,19 @@ const productCatalog = [
     descricao: "Ticket alto e giro menor."
   },
   {
+    id: "mel",
+    nome: "Mel silvestre",
+    sigla: "MS",
+    categoria: "Alimento",
+    custo: 7,
+    precoInicial: 15,
+    demandaBase: 9,
+    estoqueInicial: 8,
+    estoqueMaximo: 60,
+    perecivel: 0.02,
+    descricao: "Produto versatil, bom para clientes que buscam algo doce e acessivel."
+  },
+  {
     id: "vela",
     nome: "Vela de sebo",
     sigla: "VS",
@@ -71,6 +84,19 @@ const productCatalog = [
     descricao: "Não estraga e segura o caixa em dias fracos."
   },
   {
+    id: "corda",
+    nome: "Corda de linho",
+    sigla: "CL",
+    categoria: "Utilidade",
+    custo: 6,
+    precoInicial: 14,
+    demandaBase: 6,
+    estoqueInicial: 7,
+    estoqueMaximo: 70,
+    perecivel: 0,
+    descricao: "Item de trabalho que vende bem para viajantes e pequenos artesoes."
+  },
+  {
     id: "pocao",
     nome: "Poção simples",
     sigla: "PS",
@@ -82,6 +108,32 @@ const productCatalog = [
     estoqueMaximo: 30,
     perecivel: 0,
     descricao: "Poucas vendas, mas cada venda pesa no lucro."
+  },
+  {
+    id: "ervas",
+    nome: "Ervas curativas",
+    sigla: "EC",
+    categoria: "Especial",
+    custo: 9,
+    precoInicial: 20,
+    demandaBase: 7,
+    estoqueInicial: 7,
+    estoqueMaximo: 48,
+    perecivel: 0.01,
+    descricao: "Giro medio e boa margem para clientes ligados a remedios simples."
+  },
+  {
+    id: "hidromel",
+    nome: "Hidromel suave",
+    sigla: "HS",
+    categoria: "Especial",
+    custo: 14,
+    precoInicial: 30,
+    demandaBase: 5,
+    estoqueInicial: 4,
+    estoqueMaximo: 36,
+    perecivel: 0.02,
+    descricao: "Compra menos frequente, mas aumenta o valor das cestas dos clientes."
   },
   {
     id: "especiaria",

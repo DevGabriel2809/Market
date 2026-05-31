@@ -10,7 +10,7 @@ let questEmAndamento = false;
 let prepStartTimeoutId = null;
 let prepStartCountdownId = null;
 const QUEST_LOADING_BASE_MS = 10000;
-const QUEST_LOADING_STEP_MS = 5000;
+const QUEST_LOADING_STEP_MS = 2000;
 const QUEST_LOADING_MAX_MS = 35000;
 const PREP_START_MODAL_MS = 10000;
 
@@ -27,6 +27,7 @@ function inicializarInterface() {
   if (interfaceInicializada) return;
 
   ui.diaAtual = document.getElementById("dia-atual");
+  ui.diaMaximo = document.getElementById("dia-maximo");
   ui.horaAtual = document.getElementById("hora-atual");
   ui.caixaAtual = document.getElementById("caixa-atual");
   ui.tituloJogo = document.getElementById("titulo-jogo");
@@ -189,6 +190,7 @@ function atualizarInterfaceJogo(opcoes = {}) {
   renderizarCustosFixos();
   renderizarProdutosResumo();
   renderizarBotaoCheckout();
+  verificarAlertasEstoqueBaixo(opcoes);
 
   if (ui.statusModal && !ui.statusModal.classList.contains("hidden")) {
     renderizarStatus();
@@ -220,12 +222,13 @@ function atualizarInterfaceJogo(opcoes = {}) {
  */
 function renderizarHud() {
   if (ui.diaAtual) ui.diaAtual.textContent = gameState.dia;
+  if (ui.diaMaximo) ui.diaMaximo.textContent = gameState.diaMaximo;
   if (ui.caixaAtual) ui.caixaAtual.textContent = formatarMoeda(gameState.caixa);
 
   if (ui.tituloJogo) {
     ui.tituloJogo.textContent = gameState.nomeJogador
       ? `Mercado de ${gameState.nomeJogador}`
-      : "Mercado Tycoon";
+      : "Mercado do Carvalho Dourado";
   }
 
   atualizarHudTempo();
@@ -393,8 +396,9 @@ function renderizarProdutosResumo() {
     .filter((produto) => produtoEstaLiberado(produto))
     .map((produto) => {
       const estoque = obterEstoque(produto.id);
+      const estoqueBaixo = estoque.quantidade < 5;
       return `
-        <article class="product-pill">
+        <article class="product-pill ${estoqueBaixo ? "low-stock" : ""}">
           <span class="product-sigil">${produto.sigla}</span>
           <div>
             <strong>${produto.nome}</strong>
@@ -404,6 +408,30 @@ function renderizarProdutosResumo() {
       `;
     })
     .join("");
+}
+
+function verificarAlertasEstoqueBaixo(opcoes = {}) {
+  if (opcoes.silenciarEstoqueBaixo) return;
+  if (!document.getElementById("tela-jogo")?.classList.contains("active")) return;
+  if (!gameState.alertasEstoqueBaixo || typeof gameState.alertasEstoqueBaixo !== "object") {
+    gameState.alertasEstoqueBaixo = {};
+  }
+
+  const alerta = productCatalog
+    .filter((produto) => produtoEstaLiberado(produto))
+    .map((produto) => ({ produto, estoque: obterEstoque(produto.id) }))
+    .find(({ produto, estoque }) => {
+      const chave = `${gameState.dia}:${estoque.quantidade}`;
+      return estoque.quantidade < 5 && gameState.alertasEstoqueBaixo[produto.id] !== chave;
+    });
+
+  if (!alerta) return;
+
+  gameState.alertasEstoqueBaixo[alerta.produto.id] = `${gameState.dia}:${alerta.estoque.quantidade}`;
+  const textoQuantidade = alerta.estoque.quantidade === 0
+    ? "acabou"
+    : `esta com ${alerta.estoque.quantidade} un`;
+  mostrarToast(`Estoque baixo: ${alerta.produto.nome} ${textoQuantidade}.`);
 }
 
 /**
@@ -644,6 +672,7 @@ function renderizarStatus() {
 
     operacao.innerHTML = `
       ${linhaStatus("Fase do dia", descreverFaseDia())}
+      ${linhaStatus("Modo", typeof obterRotuloModoJogo === "function" ? obterRotuloModoJogo() : "Campanha")}
       ${linhaStatus("Dia", `${gameState.dia}/${gameState.diaMaximo}`)}
       ${linhaStatus("Reputação", gameState.reputacao)}
       ${linhaStatus("Experiência", gameState.experiencia)}
@@ -660,7 +689,8 @@ function renderizarStatus() {
   }
 
   if (objetivos) {
-    const progressoCaixa = Math.min(100, Math.round((gameState.caixa / 5000) * 100));
+    const metaCaixa = typeof obterMetaCaixaCampanha === "function" ? obterMetaCaixaCampanha() : 5000;
+    const progressoCaixa = Math.min(100, Math.round((gameState.caixa / metaCaixa) * 100));
     const concluidas = gameState.quests.concluidas.length;
     const totalMissoesUnicas = questDefinitions.filter((quest) => !quest.repetivel).length || 1;
     const ajudanteTexto = gameState.ajudanteContratado
@@ -670,7 +700,7 @@ function renderizarStatus() {
         : "Ajudante bloqueado pela guilda";
 
     objetivos.innerHTML = `
-      ${barraObjetivo("Meta de caixa", progressoCaixa, `${formatarMoeda(gameState.caixa)} / ${formatarMoeda(5000)}`)}
+      ${barraObjetivo("Meta de caixa", progressoCaixa, `${formatarMoeda(gameState.caixa)} / ${formatarMoeda(metaCaixa)}`)}
       ${barraObjetivo("Campanha", Math.round((gameState.dia / gameState.diaMaximo) * 100), `Dia ${gameState.dia} de ${gameState.diaMaximo}`)}
       ${barraObjetivo("Missões únicas", Math.round((concluidas / totalMissoesUnicas) * 100), `${concluidas}/${totalMissoesUnicas} concluída(s)`)}
       <div class="objective-row">
@@ -777,9 +807,10 @@ function renderizarEstoque() {
       const estoque = obterEstoque(produto.id);
       const liberado = produtoEstaLiberado(produto);
       const requisito = produto.requerQuest ? obterQuest(produto.requerQuest) : null;
+      const estoqueBaixo = liberado && estoque.quantidade < 5;
 
       return `
-        <article class="stock-card ${liberado ? "" : "locked"}">
+        <article class="stock-card ${liberado ? "" : "locked"} ${estoqueBaixo ? "low-stock" : ""}">
           <div class="stock-card-header">
             <span class="product-sigil">${produto.sigla}</span>
             <div>
@@ -1191,7 +1222,7 @@ function renderizarResultadoQuest() {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function descreverCustoQuest(quest) {
-  const custo = quest.custo || {};
+  const custo = typeof obterCustoQuestAjustado === "function" ? obterCustoQuestAjustado(quest) : (quest.custo || {});
   const partes = [];
 
   if (custo.caixa) partes.push(formatarMoeda(custo.caixa));
