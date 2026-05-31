@@ -71,6 +71,10 @@ function carregarJogo() {
     // @doc-migration Saves antigos não possuem sprintDesbloqueado; mantém a habilidade bloqueada até a missão ser concluída.
     gameState.sprintDesbloqueado = Boolean(gameState.sprintDesbloqueado);
     gameState.creditosFinaisMostrados = Boolean(gameState.creditosFinaisMostrados);
+    gameState.adminMode = {
+      ativo: demo && Boolean(gameState.adminMode && gameState.adminMode.ativo),
+      npcsPausados: demo && Boolean(gameState.adminMode && gameState.adminMode.npcsPausados)
+    };
 
     // @doc-migration Mantém compatibilidade com saves antigos que não tinham dicas sequenciais dos NPCs fixos.
     gameState.staticNpcTips = {

@@ -1092,6 +1092,24 @@ function obterEstadoDicaNpcEstatico(npcId) {
 }
 
 /**
+ * @doc-func obterDicaContextualNpcEstatico
+ * O que faz: substitui a ultima dica do dia por uma dica atual sobre regras novas do jogo.
+ * Parametros: npcId.
+ * Como editar: altere apenas o texto do NPC desejado para manter as 3 dicas por dia.
+ */
+function obterDicaContextualNpcEstatico(npcId) {
+  const dicasAtuais = {
+    runa: "Regra atual: o preco nunca passa de 3x o sugerido; acima de 2x, a vontade de compra dos NPCs cai bem mais rapido.",
+    cedro: "No menu de estoque, Encher tudo completa os produtos liberados e cobra o custo total; no admin da Demo, esse teste fica gratis.",
+    mira: "O modo admin aparece apenas na Demo: senha admin, saldo livre, estoque gratis, missoes instantaneas e fim de campanha para testar.",
+    borin: "Tomas atende clientes sozinho quando contratado; se o admin pausar NPCs, novas compras e atendimentos param para teste.",
+    sibil: "Use as dicas como leitura de balanco: preco alto demais reduz fluxo, estoque baixo acende alerta, e demo serve para ensaiar finais."
+  };
+
+  return dicasAtuais[npcId] || "";
+}
+
+/**
  * @doc-func obterDicasNpcEstaticoNoDia
  * O que faz: pega as três dicas do NPC para o dia atual.
  * Como editar: edite STATIC_NPC_DAILY_TIPS[npcId][dia] para trocar o conteúdo mostrado.
@@ -1101,7 +1119,14 @@ function obterDicasNpcEstaticoNoDia(npc) {
   const lista = STATIC_NPC_DAILY_TIPS[npc.id] && STATIC_NPC_DAILY_TIPS[npc.id][dia];
 
   if (Array.isArray(lista) && lista.length) {
-    return lista.slice(0, STATIC_NPC_TIPS_PER_DAY);
+    const dicas = lista.slice(0, STATIC_NPC_TIPS_PER_DAY);
+    const dicaContextual = obterDicaContextualNpcEstatico(npc.id);
+
+    if (dicaContextual) {
+      dicas[Math.min(dicas.length - 1, STATIC_NPC_TIPS_PER_DAY - 1)] = dicaContextual;
+    }
+
+    return dicas;
   }
 
   return [

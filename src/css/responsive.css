@@ -172,6 +172,12 @@
     grid-template-columns: 1fr;
   }
 
+  .admin-password-row,
+  .admin-money-row,
+  .admin-actions-grid {
+    grid-template-columns: 1fr;
+  }
+
   .intro-overlay {
     padding: 14px;
   }

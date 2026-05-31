@@ -62,6 +62,7 @@ function inicializarInterface() {
   const btnConfiguracoes = document.getElementById("btn-configuracoes");
   const btnSalvar = document.getElementById("btn-salvar");
   const btnCarregar = document.getElementById("btn-carregar");
+  const stockSummary = document.getElementById("stock-summary");
   const stockList = document.getElementById("stock-product-list");
   const questsList = document.getElementById("quests-list");
   const checkoutContent = document.getElementById("checkout-content");
@@ -138,7 +139,12 @@ function inicializarInterface() {
 
   if (stockList) {
     stockList.addEventListener("click", lidarCliqueEstoque);
+    stockList.addEventListener("input", lidarAlteracaoEstoque);
     stockList.addEventListener("change", lidarAlteracaoEstoque);
+  }
+
+  if (stockSummary) {
+    stockSummary.addEventListener("click", lidarCliqueEstoque);
   }
 
   if (questsList) {
@@ -153,6 +159,7 @@ function inicializarInterface() {
   if (settingsContent) {
     settingsContent.addEventListener("input", lidarInputConfiguracoes);
     settingsContent.addEventListener("change", lidarInputConfiguracoes);
+    settingsContent.addEventListener("click", lidarCliqueConfiguracoes);
   }
 
   if (objectives) {
@@ -607,6 +614,63 @@ function abrirConfiguracoes() {
   abrirModal("settings-modal");
 }
 
+/**
+ * @doc-func renderizarPainelAdmin
+ * O que faz: monta os controles administrativos visiveis apenas no modo Demo.
+ * Parametros: sem parametros diretos.
+ * Como editar: adicione novos botoes com data-admin-action e trate a acao em lidarCliqueConfiguracoes().
+ */
+function renderizarPainelAdmin() {
+  if (typeof modoAdminDisponivel !== "function" || !modoAdminDisponivel()) return "";
+
+  const ativo = typeof modoAdminAtivo === "function" && modoAdminAtivo();
+  const pausado = typeof modoAdminPausaNPCsAtiva === "function" && modoAdminPausaNPCsAtiva();
+
+  if (!ativo) {
+    return `
+      <section class="settings-panel admin-panel admin-locked">
+        <div class="admin-panel-heading">
+          <span>Demo</span>
+          <strong>Modo admin</strong>
+          <p>Ferramentas de teste para acelerar saldo, estoque, missoes e fechamento.</p>
+        </div>
+        <div class="admin-password-row">
+          <input id="admin-password" type="password" autocomplete="off" placeholder="Senha admin">
+          <button class="btn primary small" type="button" data-admin-action="activate">Ativar</button>
+        </div>
+      </section>
+    `;
+  }
+
+  return `
+    <section class="settings-panel admin-panel admin-active">
+      <div class="admin-panel-heading">
+        <span>Demo</span>
+        <strong>Modo admin ativo</strong>
+        <p>Use para testar balanceamento, estoque, missoes, relatorio final e creditos sem esperar a campanha inteira.</p>
+      </div>
+      <div class="admin-money-row">
+        <input id="admin-cash-amount" type="number" min="1" step="50" value="1000" aria-label="Valor para adicionar ao caixa">
+        <button class="btn primary small" type="button" data-admin-action="add-cash">Adicionar saldo</button>
+      </div>
+      <div class="admin-actions-grid">
+        <button class="btn secondary small" type="button" data-admin-action="fill-stock">Encher estoque gratis</button>
+        <button class="btn secondary small" type="button" data-admin-action="complete-quests">Completar missoes</button>
+        <button class="btn ghost small" type="button" data-admin-action="end-expedition">Finalizar expediente</button>
+        <button class="btn ghost small" type="button" data-admin-action="end-day">Encerrar dia</button>
+        <button class="btn ghost small" type="button" data-admin-action="toggle-npcs">${pausado ? "Liberar NPCs" : "Pausar NPCs"}</button>
+        <button class="btn primary small" type="button" data-admin-action="finish-campaign">Finalizar campanha</button>
+      </div>
+    </section>
+  `;
+}
+
+/**
+ * @doc-func renderizarConfiguracoes
+ * O que faz: monta as definicoes de musica e, na Demo, o painel de modo admin.
+ * Parametros: sem parametros diretos.
+ * Como editar: mantenha o painel admin separado em renderizarPainelAdmin() para nao misturar regras de teste com audio.
+ */
 function renderizarConfiguracoes() {
   const conteudo = document.getElementById("settings-content");
   if (!conteudo) return;
@@ -615,6 +679,7 @@ function renderizarConfiguracoes() {
     ? obterConfiguracoesMusica()
     : { enabled: false, volume: 0, currentTrack: "Sistema de musica indisponivel" };
   const volumePercentual = Math.round((Number(musica.volume) || 0) * 100);
+  const painelAdmin = renderizarPainelAdmin();
 
   conteudo.innerHTML = `
     <section class="settings-panel">
@@ -644,6 +709,7 @@ function renderizarConfiguracoes() {
         <strong>${musica.currentTrack}</strong>
       </div>
     </section>
+    ${painelAdmin}
   `;
 }
 
@@ -663,6 +729,70 @@ function lidarInputConfiguracoes(event) {
     const label = document.getElementById("music-volume-label");
     if (label) label.textContent = `${Math.round(volume)}%`;
   }
+}
+
+/**
+ * @doc-func lidarCliqueConfiguracoes
+ * O que faz: executa botoes das definicoes, principalmente as ferramentas do admin da Demo.
+ * Parametros: event.
+ * Como editar: cada nova acao deve usar data-admin-action e retornar objeto com ok/mensagem.
+ */
+function lidarCliqueConfiguracoes(event) {
+  const botao = event.target.closest("[data-admin-action]");
+  if (!botao) return;
+
+  event.preventDefault();
+
+  const acao = botao.dataset.adminAction;
+  let resultado = null;
+
+  if (acao === "activate" && typeof ativarModoAdmin === "function") {
+    const senha = document.getElementById("admin-password")?.value || "";
+    resultado = ativarModoAdmin(senha);
+  }
+
+  if (acao === "add-cash" && typeof adminAdicionarSaldo === "function") {
+    const valor = document.getElementById("admin-cash-amount")?.value || 0;
+    resultado = adminAdicionarSaldo(valor);
+  }
+
+  if (acao === "fill-stock" && typeof adminEncherEstoque === "function") {
+    resultado = adminEncherEstoque();
+  }
+
+  if (acao === "complete-quests" && typeof adminCompletarTodasMissoes === "function") {
+    resultado = adminCompletarTodasMissoes();
+  }
+
+  if (acao === "end-expedition" && typeof adminFinalizarExpedienteAgora === "function") {
+    resultado = adminFinalizarExpedienteAgora();
+  }
+
+  if (acao === "end-day" && typeof adminEncerrarDiaAgora === "function") {
+    resultado = adminEncerrarDiaAgora();
+  }
+
+  if (acao === "toggle-npcs" && typeof adminAlternarPausaNPCs === "function") {
+    const pausado = typeof modoAdminPausaNPCsAtiva === "function" && modoAdminPausaNPCsAtiva();
+    resultado = adminAlternarPausaNPCs(!pausado);
+  }
+
+  if (acao === "finish-campaign" && typeof adminFinalizarCampanhaAgora === "function") {
+    resultado = adminFinalizarCampanhaAgora();
+  }
+
+  if (resultado && resultado.mensagem) {
+    mostrarToast(resultado.mensagem);
+  }
+
+  atualizarInterfaceJogo({ silenciarEstoqueBaixo: true });
+
+  if (resultado && resultado.relatorio) {
+    abrirRelatorio(resultado.relatorio);
+    return;
+  }
+
+  renderizarConfiguracoes();
 }
 
 /**
@@ -860,22 +990,53 @@ function renderizarEstoque() {
   const lista = document.getElementById("stock-product-list");
   if (!resumo || !lista) return;
 
+  const adminAtivo = typeof modoAdminAtivo === "function" && modoAdminAtivo();
+  const planoEstoque = typeof calcularPlanoEncherEstoque === "function"
+    ? calcularPlanoEncherEstoque({ gratis: adminAtivo, incluirBloqueados: adminAtivo })
+    : { total: 0, unidades: 0, temEspaco: false };
+  const textoCustoEstoque = adminAtivo
+    ? "Gratis no admin"
+    : formatarMoeda(planoEstoque.total || 0);
+
   resumo.innerHTML = `
     <div><span>Caixa</span><strong>${formatarMoeda(gameState.caixa)}</strong></div>
     <div><span>Itens</span><strong>${calcularQuantidadeEstoque()}</strong></div>
     <div><span>Valor em estoque</span><strong>${formatarMoeda(calcularValorEstoque())}</strong></div>
     <div><span>Receita hoje</span><strong>${formatarMoeda(calcularResumoFinanceiro().receitaHoje)}</strong></div>
+    <div class="stock-fill-card">
+      <span>Encher estoque</span>
+      <strong>${textoCustoEstoque}</strong>
+      <small>${planoEstoque.unidades || 0} un. faltando</small>
+      <button class="btn primary small" type="button" data-fill-stock ${planoEstoque.temEspaco ? "" : "disabled"}>Encher tudo</button>
+    </div>
   `;
 
   lista.innerHTML = productCatalog
     .map((produto) => {
       const estoque = obterEstoque(produto.id);
       const liberado = produtoEstaLiberado(produto);
+      const podeEditar = liberado || adminAtivo;
       const requisito = produto.requerQuest ? obterQuest(produto.requerQuest) : null;
       const estoqueBaixo = liberado && estoque.quantidade < 5;
+      const precoMaximo = typeof calcularPrecoMaximoProduto === "function"
+        ? calcularPrecoMaximoProduto(produto)
+        : produto.precoInicial * 3;
+      const multiplicadorPreco = typeof obterMultiplicadorPrecoProduto === "function"
+        ? obterMultiplicadorPrecoProduto(produto, estoque)
+        : estoque.precoVenda / Math.max(1, produto.precoInicial);
+      const fatorDemanda = typeof calcularFatorPrecoDemanda === "function"
+        ? Math.round(calcularFatorPrecoDemanda(produto, estoque) * 100)
+        : 100;
+      const precoAlto = multiplicadorPreco > 2;
+      const precoCritico = multiplicadorPreco >= 2.75;
+      const textoPreco = precoCritico
+        ? "Muito caro: quase ninguem vai querer."
+        : precoAlto
+          ? "Acima de 2x: procura caindo."
+          : "Procura saudavel.";
 
       return `
-        <article class="stock-card ${liberado ? "" : "locked"} ${estoqueBaixo ? "low-stock" : ""}">
+        <article class="stock-card ${podeEditar ? "" : "locked"} ${estoqueBaixo ? "low-stock" : ""}">
           <div class="stock-card-header">
             <span class="product-sigil">${produto.sigla}</span>
             <div>
@@ -884,23 +1045,30 @@ function renderizarEstoque() {
             </div>
           </div>
 
-          <p>${liberado ? produto.descricao : `Libere em "${requisito ? requisito.titulo : "missão da guilda"}".`}</p>
+          <p>${liberado || adminAtivo ? produto.descricao : `Libere em "${requisito ? requisito.titulo : "missão da guilda"}".`}</p>
 
           <div class="stock-metrics">
             ${linhaStatus("Estoque", `${estoque.quantidade}/${produto.estoqueMaximo}`)}
             ${linhaStatus("Custo", formatarMoeda(calcularCustoCompraUnitario(produto)))}
             ${linhaStatus("Sugerido", formatarMoeda(produto.precoInicial))}
+            ${linhaStatus("Maximo", formatarMoeda(precoMaximo))}
           </div>
 
           <label class="price-control">
             Preço de venda
-            <input type="number" min="1" step="1" value="${estoque.precoVenda}" data-price-product="${produto.id}" ${liberado ? "" : "disabled"} />
+            <input type="number" min="1" max="${precoMaximo}" step="1" value="${estoque.precoVenda}" data-price-product="${produto.id}" ${podeEditar ? "" : "disabled"} />
           </label>
 
+          <div class="price-demand-note ${precoAlto ? "warning" : ""} ${precoCritico ? "danger" : ""}">
+            <span>Procura estimada</span>
+            <strong>${fatorDemanda}%</strong>
+            <small>${textoPreco}</small>
+          </div>
+
           <div class="stock-actions">
-            <button class="btn ghost small" title="Comprar 1 unidade" data-buy-product="${produto.id}" data-buy-amount="1" ${liberado ? "" : "disabled"}>1 un.</button>
-            <button class="btn secondary small" title="Comprar 5 unidades" data-buy-product="${produto.id}" data-buy-amount="5" ${liberado ? "" : "disabled"}>5 un.</button>
-            <button class="btn primary small" title="Comprar 10 unidades" data-buy-product="${produto.id}" data-buy-amount="10" ${liberado ? "" : "disabled"}>10 un.</button>
+            <button class="btn ghost small" title="Comprar 1 unidade" data-buy-product="${produto.id}" data-buy-amount="1" ${podeEditar ? "" : "disabled"}>1 un.</button>
+            <button class="btn secondary small" title="Comprar 5 unidades" data-buy-product="${produto.id}" data-buy-amount="5" ${podeEditar ? "" : "disabled"}>5 un.</button>
+            <button class="btn primary small" title="Comprar 10 unidades" data-buy-product="${produto.id}" data-buy-amount="10" ${podeEditar ? "" : "disabled"}>10 un.</button>
           </div>
         </article>
       `;
@@ -916,6 +1084,19 @@ function renderizarEstoque() {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function lidarCliqueEstoque(event) {
+  const botaoEncher = event.target.closest("[data-fill-stock]");
+  if (botaoEncher) {
+    const adminAtivo = typeof modoAdminAtivo === "function" && modoAdminAtivo();
+    const resultado = encherEstoque({
+      gratis: adminAtivo,
+      incluirBloqueados: adminAtivo
+    });
+
+    mostrarToast(resultado.mensagem);
+    atualizarInterfaceJogo({ silenciarEstoqueBaixo: true });
+    return;
+  }
+
   const botaoCompra = event.target.closest("[data-buy-product]");
   if (!botaoCompra) return;
 
@@ -935,8 +1116,19 @@ function lidarAlteracaoEstoque(event) {
   const inputPreco = event.target.closest("[data-price-product]");
   if (!inputPreco) return;
 
+  const valorDigitado = Number(inputPreco.value) || 0;
   const resultado = alterarPrecoProduto(inputPreco.dataset.priceProduct, inputPreco.value);
-  mostrarToast(resultado.mensagem);
+  if (resultado && typeof resultado.preco !== "undefined") {
+    inputPreco.value = resultado.preco;
+  }
+
+  const valorLimitado = resultado && typeof resultado.preco !== "undefined" && valorDigitado > resultado.preco;
+  if (event.type !== "input" || valorLimitado) {
+    mostrarToast(resultado.mensagem);
+  }
+
+  if (event.type === "input") return;
+
   atualizarInterfaceJogo();
 }
 

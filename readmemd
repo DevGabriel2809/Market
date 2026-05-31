@@ -100,3 +100,11 @@ v26:
 - O jogador ainda pode iniciar o expediente antes pelo botão “Iniciar agora”.
 - Quando o tempo acaba, uma janela avisa que o expediente vai começar e abre automaticamente após poucos segundos.
 - Para editar a duração, ajuste `duracaoPreparacaoMs` em `src/js/gameState.js`; para editar a janela, ajuste `PREP_START_MODAL_MS` em `src/js/ui.js`.
+
+## v42 - Estoque e Demo admin
+
+- O estoque ganhou botao "Encher tudo", que completa os produtos e cobra o custo total do caixa.
+- Precos agora sao limitados a 3x o valor sugerido; acima de 2x, os NPCs perdem vontade de comprar aquele item.
+- Na Demo, as Definicoes mostram um modo admin com senha `admin` para adicionar saldo, encher estoque gratis, completar missoes, finalizar expediente/dia/campanha e pausar NPCs.
+- As dicas dos NPCs fixos foram atualizadas com as novas regras de estoque, preco, Tomas e admin.
+- A interface de estoque/definicoes recebeu cartoes compactos para deixar as informacoes mais claras no jogo.

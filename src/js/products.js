@@ -151,6 +151,57 @@ const productCatalog = [
   }
 ];
 
+const PRODUCT_PRICE_MAX_MULTIPLIER = 3;
+const PRODUCT_PRICE_DEMAND_WARNING_MULTIPLIER = 2;
+
+/**
+ * @doc-func calcularPrecoMaximoProduto
+ * O que faz: define o teto de venda em 3x o preco sugerido do produto.
+ * Parametros: produto.
+ * Como editar: altere PRODUCT_PRICE_MAX_MULTIPLIER para mudar o limite global.
+ */
+function calcularPrecoMaximoProduto(produto) {
+  if (!produto) return 1;
+  return Math.max(1, Math.round(produto.precoInicial * PRODUCT_PRICE_MAX_MULTIPLIER));
+}
+
+/**
+ * @doc-func obterMultiplicadorPrecoProduto
+ * O que faz: compara o preco atual com o preco sugerido para mostrar avisos e balancear demanda.
+ * Parametros: produto, estoque = null.
+ * Como editar: mantenha o retorno numerico para NPCs e interface compartilharem a mesma regra.
+ */
+function obterMultiplicadorPrecoProduto(produto, estoque = null) {
+  if (!produto) return 1;
+
+  const estoqueProduto = estoque || obterEstoque(produto.id);
+  const preco = Math.max(1, Number(estoqueProduto && estoqueProduto.precoVenda) || produto.precoInicial);
+  const sugerido = Math.max(1, produto.precoInicial);
+  return preco / sugerido;
+}
+
+/**
+ * @doc-func calcularFatorPrecoDemanda
+ * O que faz: reduz a vontade de compra dos NPCs quando o preco sobe, principalmente acima de 2x o sugerido.
+ * Parametros: produto, estoque = null.
+ * Como editar: ajuste PRODUCT_PRICE_DEMAND_WARNING_MULTIPLIER ou a penalidade para mudar a sensibilidade dos clientes.
+ */
+function calcularFatorPrecoDemanda(produto, estoque = null) {
+  if (!produto) return 0;
+
+  const multiplicador = obterMultiplicadorPrecoProduto(produto, estoque);
+  const fatorBase = Math.max(0.12, Math.min(1.85, 1 / Math.max(0.1, multiplicador)));
+
+  if (multiplicador <= PRODUCT_PRICE_DEMAND_WARNING_MULTIPLIER) {
+    return Math.pow(fatorBase, 1.15);
+  }
+
+  const faixaAlta = PRODUCT_PRICE_MAX_MULTIPLIER - PRODUCT_PRICE_DEMAND_WARNING_MULTIPLIER;
+  const excesso = Math.min(1, (multiplicador - PRODUCT_PRICE_DEMAND_WARNING_MULTIPLIER) / faixaAlta);
+  const penalidadeAlta = 1 - (excesso * 0.72);
+  return Math.max(0.06, Math.pow(fatorBase, 1.35) * penalidadeAlta);
+}
+
 /**
  * @doc-func inicializarEstoque
  * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
@@ -195,6 +246,17 @@ function produtoEstaLiberado(produto) {
 }
 
 /**
+ * @doc-func listarProdutosParaEstoque
+ * O que faz: seleciona produtos que podem entrar em uma acao de compra ou preenchimento de estoque.
+ * Parametros: opcoes = {}.
+ * Como editar: use incluirBloqueados apenas para ferramentas administrativas, nao para a campanha normal.
+ */
+function listarProdutosParaEstoque(opcoes = {}) {
+  const incluirBloqueados = Boolean(opcoes.incluirBloqueados);
+  return productCatalog.filter((produto) => incluirBloqueados || produtoEstaLiberado(produto));
+}
+
+/**
  * @doc-func obterEstoque
  * O que faz: lê e retorna dados sem alterar o jogo; ajuste quando a origem ou o filtro desses dados mudar.
  * Parâmetros: produtoId.
@@ -228,8 +290,9 @@ function calcularCustoCompraUnitario(produto) {
 function comprarProduto(produtoId, quantidade) {
   const produto = obterProduto(produtoId);
   if (!produto) return { ok: false, mensagem: "Produto não encontrado." };
+  const compraGratis = typeof modoAdminAtivo === "function" && modoAdminAtivo();
 
-  if (!produtoEstaLiberado(produto)) {
+  if (!produtoEstaLiberado(produto) && !compraGratis) {
     return { ok: false, mensagem: "Este produto ainda está bloqueado pela guilda." };
   }
 
@@ -244,17 +307,98 @@ function comprarProduto(produtoId, quantidade) {
 
   const total = calcularCustoCompraUnitario(produto) * quantidadeFinal;
 
-  if (gameState.caixa < total) {
+  if (!compraGratis && gameState.caixa < total) {
     return { ok: false, mensagem: "Caixa insuficiente para essa compra." };
   }
 
-  gameState.caixa -= total;
+  if (!compraGratis) {
+    gameState.caixa -= total;
+  }
+
   estoque.quantidade += quantidadeFinal;
 
   return {
     ok: true,
-    mensagem: `${quantidadeFinal} unidade(s) de ${produto.nome} comprada(s).`,
+    mensagem: compraGratis
+      ? `${quantidadeFinal} unidade(s) de ${produto.nome} adicionada(s) pelo admin.`
+      : `${quantidadeFinal} unidade(s) de ${produto.nome} comprada(s).`,
     total
+  };
+}
+
+/**
+ * @doc-func calcularPlanoEncherEstoque
+ * O que faz: calcula unidades faltantes e custo total para completar o estoque.
+ * Parametros: opcoes = {}.
+ * Como editar: use gratis para mostrar o custo sem cobrar, e incluirBloqueados apenas no modo admin.
+ */
+function calcularPlanoEncherEstoque(opcoes = {}) {
+  inicializarEstoque();
+
+  const produtos = listarProdutosParaEstoque(opcoes);
+  const gratis = Boolean(opcoes.gratis);
+  const itens = [];
+  let total = 0;
+  let unidades = 0;
+
+  produtos.forEach((produto) => {
+    const estoque = obterEstoque(produto.id);
+    const faltantes = Math.max(0, produto.estoqueMaximo - estoque.quantidade);
+    if (faltantes <= 0) return;
+
+    const custoUnitario = calcularCustoCompraUnitario(produto);
+    const custo = custoUnitario * faltantes;
+    itens.push({ produto, quantidade: faltantes, custoUnitario, custo });
+    unidades += faltantes;
+    total += custo;
+  });
+
+  return {
+    itens,
+    total,
+    unidades,
+    gratis,
+    temEspaco: unidades > 0
+  };
+}
+
+/**
+ * @doc-func encherEstoque
+ * O que faz: completa todos os produtos liberados ate o limite de estoque, cobrando o saldo necessario.
+ * Parametros: opcoes = {}.
+ * Como editar: opcoes.gratis deve ficar restrita a ferramentas de teste/admin.
+ */
+function encherEstoque(opcoes = {}) {
+  const gratis = Boolean(opcoes.gratis || (typeof modoAdminAtivo === "function" && modoAdminAtivo()));
+  const plano = calcularPlanoEncherEstoque({ ...opcoes, gratis });
+
+  if (!plano.temEspaco) {
+    return { ok: false, mensagem: "Todo o estoque ja esta cheio.", plano };
+  }
+
+  if (!gratis && gameState.caixa < plano.total) {
+    return {
+      ok: false,
+      mensagem: `Caixa insuficiente para encher tudo. Faltam ${formatarMoeda(plano.total - gameState.caixa)}.`,
+      plano
+    };
+  }
+
+  if (!gratis) {
+    gameState.caixa -= plano.total;
+  }
+
+  plano.itens.forEach((item) => {
+    const estoque = obterEstoque(item.produto.id);
+    estoque.quantidade = Math.min(item.produto.estoqueMaximo, estoque.quantidade + item.quantidade);
+  });
+
+  return {
+    ok: true,
+    mensagem: gratis
+      ? `${plano.unidades} unidade(s) adicionada(s) ao estoque pelo admin.`
+      : `Estoque cheio por ${formatarMoeda(plano.total)}.`,
+    plano
   };
 }
 
@@ -269,11 +413,21 @@ function alterarPrecoProduto(produtoId, preco) {
   const produto = obterProduto(produtoId);
   if (!produto) return { ok: false, mensagem: "Produto não encontrado." };
 
-  const valor = Math.max(1, Math.round(Number(preco) || produto.precoInicial));
+  const precoMaximo = calcularPrecoMaximoProduto(produto);
+  const valorInformado = Math.max(1, Math.round(Number(preco) || produto.precoInicial));
+  const valor = Math.min(precoMaximo, valorInformado);
   const estoque = obterEstoque(produtoId);
   estoque.precoVenda = valor;
 
-  return { ok: true, mensagem: `Preço de ${produto.nome} ajustado.` };
+  if (valorInformado > precoMaximo) {
+    return {
+      ok: true,
+      mensagem: `Preco limitado a ${formatarMoeda(precoMaximo)} (3x o sugerido).`,
+      preco: valor
+    };
+  }
+
+  return { ok: true, mensagem: `Preço de ${produto.nome} ajustado.`, preco: valor };
 }
 
 /**

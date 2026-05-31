@@ -529,11 +529,11 @@ function escolherProdutoParaCliente(evento) {
     .filter((produto) => produtoEstaLiberado(produto) && obterEstoque(produto.id).quantidade > 0)
     .map((produto) => {
       const estoque = obterEstoque(produto.id);
-      const preco = Math.max(1, estoque.precoVenda);
-      const precoReferencia = Math.max(1, produto.precoInicial);
-      const fatorPreco = Math.max(0.08, Math.min(1.85, precoReferencia / preco));
+      const fatorPreco = typeof calcularFatorPrecoDemanda === "function"
+        ? calcularFatorPrecoDemanda(produto, estoque)
+        : Math.max(0.08, Math.min(1.85, produto.precoInicial / Math.max(1, estoque.precoVenda)));
       const peso = produto.demandaBase
-        * Math.pow(fatorPreco, 1.35)
+        * fatorPreco
         * calcularBonusClientela()
         * calcularMultiplicadorEvento(produto, evento);
 

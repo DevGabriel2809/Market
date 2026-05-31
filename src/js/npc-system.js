@@ -1259,6 +1259,7 @@ function calcularChanceCompraNPC(cliente) {
  */
 function criarClienteNPC() {
   if (!expedienteEstaAbertoParaNPC()) return null;
+  if (typeof modoAdminPausaNPCsAtiva === "function" && modoAdminPausaNPCsAtiva()) return null;
   if (npcSystem.clientes.length >= npcSystem.maxClientesNaLoja) return null;
 
   const world = document.getElementById("world");
@@ -2200,14 +2201,14 @@ function calcularPesoProdutoParaNPC(produto, perfil, evento) {
   const estoque = obterEstoque(produto.id);
   if (!produtoEstaLiberado(produto) || estoque.quantidade <= 0) return 0;
 
-  const preco = Math.max(1, estoque.precoVenda);
-  const precoReferencia = Math.max(1, produto.precoInicial);
-  const fatorPreco = Math.max(0.08, Math.min(1.85, precoReferencia / preco));
+  const fatorPreco = typeof calcularFatorPrecoDemanda === "function"
+    ? calcularFatorPrecoDemanda(produto, estoque)
+    : Math.max(0.08, Math.min(1.85, produto.precoInicial / Math.max(1, estoque.precoVenda)));
   const preferido = perfil.preferencias.includes(produto.id) ? 2.4 : 1;
 
   return produto.demandaBase
     * preferido
-    * Math.pow(fatorPreco, 1.35)
+    * fatorPreco
     * calcularBonusClientela()
     * calcularMultiplicadorEvento(produto, evento || {});
 }
@@ -2524,6 +2525,7 @@ function atualizarClientesIniciais(deltaTime) {
  */
 function atualizarNPCs(deltaTime) {
   if (!npcSystem.ativo) return;
+  if (typeof modoAdminPausaNPCsAtiva === "function" && modoAdminPausaNPCsAtiva()) return;
 
   const expedienteAbertoAgora = expedienteEstaAbertoParaNPC();
 

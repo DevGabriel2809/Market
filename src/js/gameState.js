@@ -22,6 +22,35 @@ function obterRotuloModoJogo() {
   return jogoEstaEmDemo() ? "Demo" : "Campanha";
 }
 
+/**
+ * @doc-func modoAdminDisponivel
+ * O que faz: confirma se a partida atual pode mostrar ferramentas administrativas.
+ * Como editar: mantenha restrito a demo para proteger a campanha normal.
+ */
+function modoAdminDisponivel() {
+  return jogoEstaEmDemo();
+}
+
+/**
+ * @doc-func modoAdminAtivo
+ * O que faz: informa se a senha admin foi validada na Demo atual.
+ * Como editar: use esta funcao em outros arquivos em vez de ler gameState.adminMode direto.
+ */
+function modoAdminAtivo() {
+  return modoAdminDisponivel()
+    && Boolean(gameState.adminMode && gameState.adminMode.ativo);
+}
+
+/**
+ * @doc-func modoAdminPausaNPCsAtiva
+ * O que faz: indica se os NPCs devem ficar parados sem fazer novas compras.
+ * Como editar: mantenha dependente de modoAdminAtivo() para impedir pausa fora da Demo.
+ */
+function modoAdminPausaNPCsAtiva() {
+  return modoAdminAtivo()
+    && Boolean(gameState.adminMode && gameState.adminMode.npcsPausados);
+}
+
 const gameState = {
   nomeJogador: "",
   personagem: "male",
@@ -66,6 +95,12 @@ const gameState = {
   ultimoRelatorio: null,
   fimDeJogo: null,
   creditosFinaisMostrados: false,
+  // @doc-state adminMode guarda ferramentas de teste liberadas apenas no modo Demo com senha.
+  // Nunca use este campo para a campanha normal; modoAdminAtivo() ja bloqueia fora da demo.
+  adminMode: {
+    ativo: false,
+    npcsPausados: false
+  },
   // @doc-state staticNpcTips guarda quais dicas dos NPCs fixos já foram lidas no dia atual.
   // Edite/limpe este campo se quiser reiniciar o ciclo de dicas sem resetar a partida inteira.
   staticNpcTips: null,
@@ -118,6 +153,10 @@ function resetarPartida(nome, personagem, modoJogo = "normal") {
   gameState.ultimoRelatorio = null;
   gameState.fimDeJogo = null;
   gameState.creditosFinaisMostrados = false;
+  gameState.adminMode = {
+    ativo: false,
+    npcsPausados: false
+  };
   gameState.staticNpcTips = null;
   gameState.alertasEstoqueBaixo = {};
 

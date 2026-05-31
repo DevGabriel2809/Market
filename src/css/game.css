@@ -1745,6 +1745,69 @@ body.intro-active {
   gap: 2px;
 }
 
+.admin-panel {
+  padding: 16px;
+  border: 1px solid rgba(128, 197, 139, 0.35);
+  border-radius: 16px;
+  background:
+    linear-gradient(145deg, rgba(128, 197, 139, 0.13), rgba(243, 201, 105, 0.06)),
+    rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 241, 208, 0.07);
+}
+
+.admin-panel-heading strong {
+  display: block;
+  margin-top: 3px;
+  color: #80c58b;
+  font-size: 1.08rem;
+}
+
+.admin-panel-heading p {
+  margin-top: 6px;
+  color: rgba(255, 241, 208, 0.74);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.admin-password-row,
+.admin-money-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.admin-panel input {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 2px solid rgba(128, 197, 139, 0.35);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--cream);
+  font: inherit;
+  font-weight: 800;
+  outline: none;
+}
+
+.admin-panel input:focus {
+  border-color: #80c58b;
+}
+
+.admin-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-actions-grid .btn,
+.admin-password-row .btn,
+.admin-money-row .btn {
+  width: 100%;
+  min-height: 42px;
+  white-space: normal;
+}
+
 /* @doc-css Estilo de modal (.game-modal-header): controla janelas sobrepostas; ajuste padding, tamanho e cores para mudar a janela. */
 .game-modal-header {
   display: flex;
@@ -1970,7 +2033,7 @@ body.intro-active {
 /* @doc-css Estilo .quest-summary: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .quest-summary {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 14px;
   margin-bottom: 18px;
 }
@@ -1990,6 +2053,20 @@ body.intro-active {
 .quest-summary strong {
   color: var(--gold);
   font-size: 1.2rem;
+}
+
+.stock-fill-card {
+  display: grid;
+  gap: 7px;
+}
+
+.stock-fill-card small {
+  color: rgba(255, 241, 208, 0.72);
+  font-weight: 800;
+}
+
+.stock-fill-card .btn {
+  width: 100%;
 }
 
 /* @doc-css Estilo .stock-grid: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
@@ -2069,6 +2146,50 @@ body.intro-active {
 /* @doc-css Estilo .price-control input:focus: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .price-control input:focus {
   border-color: var(--gold);
+}
+
+.price-demand-note {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(128, 197, 139, 0.28);
+  border-radius: 12px;
+  background: rgba(128, 197, 139, 0.09);
+}
+
+.price-demand-note span,
+.price-demand-note small {
+  color: rgba(255, 241, 208, 0.72);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.price-demand-note strong {
+  color: #80c58b;
+}
+
+.price-demand-note small {
+  grid-column: 1 / -1;
+}
+
+.price-demand-note.warning {
+  border-color: rgba(243, 201, 105, 0.42);
+  background: rgba(243, 201, 105, 0.1);
+}
+
+.price-demand-note.warning strong {
+  color: var(--gold);
+}
+
+.price-demand-note.danger {
+  border-color: rgba(217, 79, 69, 0.5);
+  background: rgba(217, 79, 69, 0.12);
+}
+
+.price-demand-note.danger strong {
+  color: #ff9a8d;
 }
 
 /* @doc-css Estilo .stock-actions: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */

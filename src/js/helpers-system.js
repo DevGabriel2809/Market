@@ -213,6 +213,7 @@ function processarAjudante(deltaTime = 16) {
     gameState.ajudanteContratado
     && gameState.faseDia === "expediente"
     && gameState.diaEmAndamento
+    && !(typeof modoAdminPausaNPCsAtiva === "function" && modoAdminPausaNPCsAtiva())
   );
 
   if (!podeTrabalhar) {

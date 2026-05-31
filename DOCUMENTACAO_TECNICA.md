@@ -18,6 +18,7 @@ Este arquivo complementa os comentários adicionados diretamente em `index.html`
 - `src/js/finance.js`: regras de expediente, eventos de mercado, fechamento do dia e relatórios.
 - `src/js/products.js`: catálogo, estoque, compra e venda de produtos.
 - `src/js/quests.js`: missões e recompensas.
+- `src/js/admin-system.js`: ferramentas de teste liberadas apenas na Demo com senha.
 - `src/js/events.js`: tecla E, interação com objetos, sons e balcão.
 - `src/js/static-npc-system.js`: NPCs fixos de dicas/missões.
 - `src/js/helpers-system.js`: ajudante contratado.
@@ -135,3 +136,14 @@ A regra de fallback para fila existe para preservar o ritmo do caixa: se uma rot
 - O jogador ainda pode iniciar o expediente antes pelo botão “Iniciar agora”.
 - Quando o tempo acaba, uma janela avisa que o expediente vai começar e abre automaticamente após poucos segundos.
 - Para editar a duração, ajuste `duracaoPreparacaoMs` em `src/js/gameState.js`; para editar a janela, ajuste `PREP_START_MODAL_MS` em `src/js/ui.js`.
+
+## v42 - Estoque, preco e admin da Demo
+
+- `src/js/products.js` agora centraliza o teto de preco em `PRODUCT_PRICE_MAX_MULTIPLIER`: nenhum produto passa de 3x o preco sugerido.
+- A procura dos NPCs usa `calcularFatorPrecoDemanda()`. Ate 2x o sugerido a queda e moderada; acima disso a vontade de compra cai mais rapido.
+- O botao "Encher tudo" no menu de estoque usa `calcularPlanoEncherEstoque()` para calcular unidades faltantes e custo total antes de cobrar o caixa.
+- No modo admin da Demo, compras e preenchimento de estoque podem ser feitos gratis e incluindo produtos ainda bloqueados.
+- `src/js/admin-system.js` adiciona senha `admin`, saldo livre, estoque gratis, missoes instantaneas, fechamento de expediente/dia, fim de campanha e pausa de NPCs.
+- `gameState.adminMode` guarda se o admin esta ativo e se NPCs estao pausados; `storage.js` desliga esse estado automaticamente fora da Demo.
+- `src/js/static-npc-system.js` injeta dicas contextuais nos NPCs fixos para refletir as regras atuais de preco, estoque, Tomas e admin.
+- O visual de estoque e definicoes ganhou cartoes compactos para custo de reposicao, procura estimada e controles administrativos.
