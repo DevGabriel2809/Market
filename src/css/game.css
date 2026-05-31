@@ -1443,6 +1443,192 @@ body.intro-active {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+.final-credits-overlay {
+  background:
+    radial-gradient(circle at 50% 72%, rgba(243, 201, 105, 0.16), transparent 26%),
+    linear-gradient(180deg, rgba(9, 6, 5, 0.94), rgba(2, 1, 1, 0.98));
+}
+
+.final-credits-stage {
+  width: min(980px, 96vw);
+  height: min(720px, 92dvh);
+  overflow: hidden;
+}
+
+.final-credits-characters {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  height: 42%;
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+.final-credit-character {
+  position: absolute;
+  bottom: 8%;
+  width: 128px;
+  height: 128px;
+  --sprite-pos-0: 0px;
+  --sprite-pos-1: -128px;
+  --sprite-pos-2: -256px;
+  --sprite-pos-3: -384px;
+  --sprite-pos-4: -512px;
+  --sprite-pos-5: -640px;
+  --sprite-y-0: 0px;
+  --sprite-y-1: 0px;
+  --sprite-y-2: 0px;
+  --sprite-y-3: 0px;
+  --sprite-y-4: 0px;
+  --sprite-y-5: 0px;
+  background-repeat: no-repeat;
+  background-size: 768px 128px;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 18px 10px rgba(0, 0, 0, 0.52));
+  animation:
+    spriteAnchored6 1.1s steps(1, end) infinite,
+    finalCreditsCharacterFloat 5.4s ease-in-out infinite;
+}
+
+.final-credit-character:nth-child(1) {
+  left: 12%;
+  transform: scale(0.92);
+}
+
+.final-credit-character:nth-child(2) {
+  left: 50%;
+  bottom: 4%;
+  transform: translateX(-50%) scale(1);
+  animation-delay: 0s, 0.4s;
+}
+
+.final-credit-character:nth-child(3) {
+  right: 12%;
+  transform: scale(0.92);
+  animation-delay: 0s, 0.8s;
+}
+
+.final-credits-scroll {
+  z-index: 2;
+  height: 100%;
+  max-height: none;
+  overflow: hidden;
+  padding: clamp(22px, 5vh, 44px) clamp(20px, 5vw, 62px);
+  border-color: rgba(243, 201, 105, 0.38);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(10, 6, 4, 0.5), rgba(10, 6, 4, 0.9)),
+    linear-gradient(90deg, rgba(243, 201, 105, 0.09), transparent 18%, transparent 82%, rgba(243, 201, 105, 0.09));
+  color: #fff1d0;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 241, 208, 0.12),
+    0 24px 90px rgba(0, 0, 0, 0.7);
+}
+
+.final-credits-scroll::before,
+.final-credits-scroll::after {
+  display: none;
+}
+
+.final-credits-scroll > :not(#final-credits-close) {
+  animation: finalCreditsRoll 38s linear both;
+}
+
+.final-credits-scroll > span,
+.final-credits-scroll h2,
+.final-credits-scroll h3,
+.final-credits-scroll p,
+.final-credits-roles,
+.final-credits-stats {
+  position: relative;
+  z-index: 2;
+}
+
+#final-credits-stats::before {
+  content: "Relatorio final da jornada";
+  display: block;
+  grid-column: 1 / -1;
+  margin-bottom: 4px;
+  color: #f3c969;
+  font-family: 'MedievalSharp', cursive;
+  font-size: 1.55rem;
+  text-align: center;
+}
+
+.final-credits-scroll h2,
+.final-credits-scroll p,
+.final-credits-roles h3,
+.final-credits-dedication {
+  color: #fff1d0;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.72);
+}
+
+.final-credits-scroll > span {
+  background: rgba(243, 201, 105, 0.12);
+  color: #f3c969;
+}
+
+.final-credits-stats div,
+.final-credits-roles {
+  border-color: rgba(243, 201, 105, 0.22);
+  background: rgba(255, 241, 208, 0.08);
+}
+
+.final-credits-stats {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.final-credits-stats span,
+.credit-line span {
+  color: rgba(255, 241, 208, 0.7);
+}
+
+.final-credits-stats strong,
+.credit-line strong {
+  color: #f3c969;
+}
+
+.final-credits-roles > p {
+  display: none;
+}
+
+.credit-line {
+  display: grid;
+  gap: 5px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(243, 201, 105, 0.18);
+}
+
+.credit-line span {
+  font-size: 0.76rem;
+  font-weight: 1000;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.credit-line strong {
+  font-size: clamp(1rem, 2vw, 1.28rem);
+}
+
+#final-credits-close {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 5;
+}
+
+@keyframes finalCreditsRoll {
+  0% { transform: translateY(62vh); opacity: 0; }
+  7% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { transform: translateY(-145vh); opacity: 0; }
+}
+
+@keyframes finalCreditsCharacterFloat {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+
 /* @doc-css Estilo de modal (.game-modal): controla janelas sobrepostas; ajuste padding, tamanho e cores para mudar a janela. */
 .game-modal {
   width: min(1120px, 96vw);
@@ -3134,8 +3320,8 @@ body.intro-active {
   position: absolute;
   left: 0;
   top: 0;
-  width: 132px;
-  height: 184px;
+  width: 112px;
+  height: 158px;
   transform: translate(-50%, -100%);
   transform-origin: center bottom;
   pointer-events: none;
@@ -3186,7 +3372,7 @@ body.intro-active {
     saturate(var(--npc-saturation, 1))
     brightness(var(--npc-brightness, 1));
   image-rendering: pixelated;
-  transform: translateX(-50%) scale(var(--npc-map-scale, 1.02)) scaleX(var(--npc-facing));
+  transform: translateX(-50%) scale(var(--npc-map-scale, 0.86)) scaleX(var(--npc-facing));
   transform-origin: center bottom;
 }
 
@@ -3194,7 +3380,7 @@ body.intro-active {
 .customer-name {
   position: absolute;
   left: 50%;
-  bottom: var(--npc-label-bottom, 136px);
+  bottom: var(--npc-label-bottom, 116px);
   z-index: 2;
   min-width: 42px;
   max-width: 86px;
@@ -3216,7 +3402,7 @@ body.intro-active {
 .customer-bubble {
   position: absolute;
   left: 50%;
-  bottom: var(--npc-bubble-bottom, 158px);
+  bottom: var(--npc-bubble-bottom, 138px);
   z-index: 3;
   width: max-content;
   min-width: 68px;
@@ -3457,8 +3643,19 @@ body.intro-active {
   position: absolute;
   width: 128px;
   height: 128px;
-
-  background-image: url("../assets/images/characters/manager/male_front.png");
+  --sprite-pos-0: 1px;
+  --sprite-pos-1: -123.5px;
+  --sprite-pos-2: -248.5px;
+  --sprite-pos-3: -377px;
+  --sprite-pos-4: -504px;
+  --sprite-pos-5: -629px;
+  --sprite-y-0: 0px;
+  --sprite-y-1: 1px;
+  --sprite-y-2: 0px;
+  --sprite-y-3: 0px;
+  --sprite-y-4: 0px;
+  --sprite-y-5: 0px;
+  background-image: url("../assets/images/characters/npc's/Tomas/tomas_idle.png");
   background-repeat: no-repeat;
   background-position: 0 0;
   background-size: 768px 128px;
@@ -3470,7 +3667,41 @@ body.intro-active {
 
   pointer-events: none;
 
-  animation: none;
+  animation: spriteAnchored6 1.1s steps(1, end) infinite;
+}
+
+.helper-npc::before {
+  content: "Tomas";
+  position: absolute;
+  left: 50%;
+  bottom: 116px;
+  min-width: 42px;
+  padding: 3px 7px;
+  border: 1px solid rgba(255, 241, 208, 0.34);
+  border-radius: 999px;
+  background: rgba(27, 14, 8, 0.82);
+  color: #fff1d0;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.helper-npc::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  z-index: -1;
+  width: 54px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.42);
+  filter: blur(2px);
+  transform: translateX(-50%);
 }
 
 /* @doc-css Animação @keyframes helperIdle: ajuste porcentagens internas para mudar movimento, entrada ou sprite frame-a-frame. */
@@ -11585,4 +11816,11 @@ body .bat-layer .bat-flight.reverse .bat {
     transform: translateY(-4px) scale(1.04);
     filter: brightness(1.18);
   }
+}
+
+.final-credit-character.customer-idle {
+  background-image: var(--npc-idle, url("../assets/images/characters/npc's/Tomas/tomas_idle.png"));
+  animation:
+    spriteAnchored6 1.1s steps(1, end) infinite,
+    finalCreditsCharacterFloat 5.4s ease-in-out infinite;
 }

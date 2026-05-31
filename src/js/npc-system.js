@@ -106,9 +106,9 @@ const NPC_CONFIG = {
 const NPC_COLLISION = {
   // A hitbox fica nos pés do sprite, não no corpo inteiro.
   // Isso deixa o personagem encostar no visual do NPC sem travar de longe.
-  largura: 38,
-  altura: 26,
-  margemPlayer: 2
+  largura: 30,
+  altura: 18,
+  margemPlayer: 1
 };
 
 function zIndexProfundidadeNPC(y, ajuste = 0) {
@@ -2358,14 +2358,16 @@ function liberarAtendimentoCheckout() {
  * Como editar: mantenha o nome se outros arquivos chamam esta função pelo escopo global;
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
-function atenderClienteDaFila(aceitar, clienteId = null, trocoInformado = 0) {
+function atenderClienteDaFila(aceitar, clienteId = null, trocoInformado = 0, opcoes = {}) {
   const cliente = obterClienteParaAtender(clienteId);
 
   if (!cliente) {
     return { ok: false, mensagem: "Esse cliente não está mais no caixa." };
   }
 
-  if (typeof jogadorEstaNoPisoBalcao === "function" && !jogadorEstaNoPisoBalcao()) {
+  const ignorarBalcao = Boolean(opcoes && opcoes.ignorarBalcao);
+
+  if (!ignorarBalcao && typeof jogadorEstaNoPisoBalcao === "function" && !jogadorEstaNoPisoBalcao()) {
     cliente.emAtendimento = true;
     cliente.tempoFila = 0;
     return {
@@ -2378,6 +2380,7 @@ function atenderClienteDaFila(aceitar, clienteId = null, trocoInformado = 0) {
   cliente.emAtendimento = false;
 
   if (!aceitar) {
+    cliente.atendidoPorAjudante = false;
     npcSystem.totalPerdidosDia += 1;
     criarPopupCliente(cliente.x, cliente.y, "Compra recusada", "muted");
     mandarClienteEmbora(cliente, "Devolvido");
@@ -2415,6 +2418,7 @@ function atenderClienteDaFila(aceitar, clienteId = null, trocoInformado = 0) {
   }
 
   cliente.comprou = true;
+  cliente.atendidoPorAjudante = false;
   npcSystem.totalVendasDia += resultado.receita;
   npcSystem.totalAtendidosDia += 1;
   criarPopupCliente(cliente.x, cliente.y, `+ ${formatarMoeda(resultado.receita)}`, "money");
@@ -2423,7 +2427,9 @@ function atenderClienteDaFila(aceitar, clienteId = null, trocoInformado = 0) {
 
   return {
     ok: true,
-    mensagem: `${cliente.perfil.nome} atendido. Troco: ${formatarMoeda(cliente.carrinho.troco)}.`
+    mensagem: opcoes && opcoes.origem === "ajudante"
+      ? `${cliente.perfil.nome} atendido por Tomas.`
+      : `${cliente.perfil.nome} atendido. Troco: ${formatarMoeda(cliente.carrinho.troco)}.`
   };
 }
 
@@ -2439,6 +2445,8 @@ function mandarClienteEmbora(cliente, texto = "") {
   const rotaSaida = rotaClienteParaSaida(cliente);
   cliente.estado = "saindo";
   cliente.tempoFila = 0;
+  cliente.emAtendimento = false;
+  cliente.atendidoPorAjudante = false;
   definirCaminho(cliente, rotaSaida);
   atualizarHumorCliente(cliente, texto);
 }

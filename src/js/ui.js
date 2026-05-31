@@ -557,7 +557,6 @@ function abrirRelatorio(relatorio) {
 function deveMostrarCreditosFinais() {
   return Boolean(
     gameState.fimDeJogo
-    && gameState.fimDeJogo.tipo === "vitoria"
     && !gameState.creditosFinaisMostrados
   );
 }
@@ -571,13 +570,17 @@ function abrirCreditosFinais() {
   const resumo = typeof calcularResumoFinanceiro === "function"
     ? calcularResumoFinanceiro()
     : { caixa: gameState.caixa, reputacao: gameState.reputacao, experiencia: gameState.experiencia };
+  const venceu = gameState.fimDeJogo && gameState.fimDeJogo.tipo === "vitoria";
 
   if (ui.finalCreditsJourney) {
-    ui.finalCreditsJourney.textContent = `Depois de ${gameState.diaMaximo} dias no modo ${modo}, ${nome} transformou uma pequena loja medieval no Mercado do Carvalho Dourado. Entre filas, missoes, trocas no caixa e estoque no limite, a meta de ${formatarMoeda(metaCaixa)} foi vencida e a jornada virou lenda de sala.`;
+    ui.finalCreditsJourney.textContent = venceu
+      ? `Depois de ${gameState.diaMaximo} dias no modo ${modo}, ${nome} transformou uma pequena loja medieval no Mercado do Carvalho Dourado. Entre filas, missoes, trocas no caixa e estoque no limite, a meta de ${formatarMoeda(metaCaixa)} foi vencida e a jornada virou memoria da turma.`
+      : `Depois de ${gameState.diaMaximo} dias no modo ${modo}, ${nome} encerrou a jornada com aprendizados de custo, estoque e atendimento. Mesmo sem bater a meta de ${formatarMoeda(metaCaixa)}, o relatorio final guarda cada escolha feita no balcao.`;
   }
 
   if (ui.finalCreditsStats) {
     const estatisticas = [
+      ["Resultado", venceu ? "Meta vencida" : "Meta pendente"],
       ["Dias", `${gameState.diaMaximo}`],
       ["Caixa final", formatarMoeda(resumo.caixa)],
       ["Reputacao", `${resumo.reputacao}`],
@@ -756,7 +759,7 @@ function renderizarStatus() {
     const concluidas = gameState.quests.concluidas.length;
     const totalMissoesUnicas = questDefinitions.filter((quest) => !quest.repetivel).length || 1;
     const ajudanteTexto = gameState.ajudanteContratado
-      ? "Ajudante contratado"
+      ? "Tomas contratado no caixa"
       : gameState.ajudanteDesbloqueado
         ? `<button class="btn primary small" data-hire-helper>Contratar ajudante por ${formatarMoeda(900)}</button>`
         : "Ajudante bloqueado pela guilda";

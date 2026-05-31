@@ -1130,6 +1130,10 @@ function gameLoop(tempoAtual) {
     atualizarNPCs(deltaTime);
   }
 
+  if (jogoAtivo && typeof processarAjudante === "function") {
+    processarAjudante(deltaTime);
+  }
+
   acumuladorNpcEstaticoMs = jogoAtivo ? acumuladorNpcEstaticoMs + deltaTime : 0;
   if (
     jogoAtivo

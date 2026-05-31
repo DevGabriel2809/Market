@@ -26,6 +26,38 @@
   background-repeat: no-repeat;
 }
 
+#tela-creditos .modal-card > p:nth-of-type(4) {
+  display: none;
+}
+
+.credits-list {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 24px;
+}
+
+.credits-list article {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid rgba(243, 201, 105, 0.28);
+  border-radius: 10px;
+  background: rgba(13, 7, 4, 0.3);
+}
+
+.credits-list span {
+  color: rgba(255, 241, 208, 0.72);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.credits-list strong {
+  color: var(--gold);
+  font-size: 0.98rem;
+}
+
 /* @doc-css Estilo #tela-como-jogar: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 #tela-como-jogar{
   background-image: url(../assets/images/backgrounds/howtoplay.png);
