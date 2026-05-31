@@ -55,7 +55,7 @@ const questDefinitions = [
     id: "passo_apressado",
     titulo: "Passo apressado",
     tipo: "Treinamento",
-    descricao: "Praticar uma rota curta pelo mercado para aprender a correr segurando Ctrl.",
+    descricao: "Praticar uma rota curta pelo mercado para aprender a correr segurando Shift.",
     chanceBase: 0.98,
     recompensa: {
       sprintDesbloqueado: true,
@@ -384,7 +384,7 @@ function aplicarEfeitoQuest(efeito) {
 
   if (efeito.sprintDesbloqueado) {
     gameState.sprintDesbloqueado = true;
-    detalhes.push("Corrida com Ctrl liberada");
+    detalhes.push("Corrida com Shift liberada");
   }
 
   if (efeito.estoque) {

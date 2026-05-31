@@ -48,6 +48,10 @@ function inicializarInterface() {
   ui.prepStartCountdown = document.getElementById("prep-start-countdown");
   ui.btnPrepStartNow = document.getElementById("btn-prep-start-now");
   ui.toast = document.getElementById("game-toast");
+  ui.finalCreditsOverlay = document.getElementById("final-credits-overlay");
+  ui.finalCreditsJourney = document.getElementById("final-credits-journey");
+  ui.finalCreditsStats = document.getElementById("final-credits-stats");
+  ui.finalCreditsClose = document.getElementById("final-credits-close");
 
   const btnPassarDia = ui.btnPassarDia;
   const btnCaixa = document.getElementById("btn-caixa");
@@ -155,6 +159,10 @@ function inicializarInterface() {
     objectives.addEventListener("click", lidarCliqueObjetivo);
   }
 
+  if (ui.finalCreditsClose) {
+    ui.finalCreditsClose.addEventListener("click", fecharCreditosFinais);
+  }
+
   document.querySelectorAll("[data-close-modal]").forEach((botao) => {
     botao.addEventListener("click", fecharModal);
   });
@@ -168,6 +176,11 @@ function inicializarInterface() {
   }
 
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && ui.finalCreditsOverlay && !ui.finalCreditsOverlay.classList.contains("hidden")) {
+      fecharCreditosFinais();
+      return;
+    }
+
     if (event.key === "Escape" && !questEmAndamento) {
       fecharModal();
     }
@@ -535,6 +548,55 @@ function abrirQuests() {
 function abrirRelatorio(relatorio) {
   renderizarRelatorio(relatorio);
   abrirModal("report-modal");
+
+  if (deveMostrarCreditosFinais()) {
+    window.setTimeout(abrirCreditosFinais, 650);
+  }
+}
+
+function deveMostrarCreditosFinais() {
+  return Boolean(
+    gameState.fimDeJogo
+    && gameState.fimDeJogo.tipo === "vitoria"
+    && !gameState.creditosFinaisMostrados
+  );
+}
+
+function abrirCreditosFinais() {
+  if (!ui.finalCreditsOverlay) return;
+
+  const nome = (gameState.nomeJogador || "").trim() || "o gerente";
+  const modo = typeof obterRotuloModoJogo === "function" ? obterRotuloModoJogo().toLowerCase() : "campanha";
+  const metaCaixa = typeof obterMetaCaixaCampanha === "function" ? obterMetaCaixaCampanha() : 5000;
+  const resumo = typeof calcularResumoFinanceiro === "function"
+    ? calcularResumoFinanceiro()
+    : { caixa: gameState.caixa, reputacao: gameState.reputacao, experiencia: gameState.experiencia };
+
+  if (ui.finalCreditsJourney) {
+    ui.finalCreditsJourney.textContent = `Depois de ${gameState.diaMaximo} dias no modo ${modo}, ${nome} transformou uma pequena loja medieval no Mercado do Carvalho Dourado. Entre filas, missoes, trocas no caixa e estoque no limite, a meta de ${formatarMoeda(metaCaixa)} foi vencida e a jornada virou lenda de sala.`;
+  }
+
+  if (ui.finalCreditsStats) {
+    const estatisticas = [
+      ["Dias", `${gameState.diaMaximo}`],
+      ["Caixa final", formatarMoeda(resumo.caixa)],
+      ["Reputacao", `${resumo.reputacao}`],
+      ["Missoes", `${gameState.quests.concluidas.length}`]
+    ];
+
+    ui.finalCreditsStats.innerHTML = estatisticas
+      .map(([rotulo, valor]) => `<div><span>${rotulo}</span><strong>${valor}</strong></div>`)
+      .join("");
+  }
+
+  gameState.creditosFinaisMostrados = true;
+  ui.finalCreditsOverlay.classList.remove("hidden");
+}
+
+function fecharCreditosFinais() {
+  if (ui.finalCreditsOverlay) {
+    ui.finalCreditsOverlay.classList.add("hidden");
+  }
 }
 
 function abrirConfiguracoes() {
@@ -684,7 +746,7 @@ function renderizarStatus() {
       ${linhaStatus("Itens em estoque", resumo.quantidadeEstoque)}
       ${linhaStatus("Custo fixo diário", formatarMoeda(calcularCustosFixos()))}
       ${linhaStatus("Desconto fornecedor", `${Math.round((gameState.descontoFornecedor || 0) * 100)}%`)}
-      ${linhaStatus("Corrida", gameState.sprintDesbloqueado ? "Ctrl liberado" : "Bloqueada por missão")}
+      ${linhaStatus("Corrida", gameState.sprintDesbloqueado ? "Shift liberado" : "Bloqueada por missão")}
     `;
   }
 
@@ -1255,7 +1317,7 @@ function descreverRecompensaQuest(quest) {
   if (recompensa.energia) partes.push("energia reduzida");
   if (recompensa.descontoFornecedor) partes.push("desconto");
   if (recompensa.ajudanteDesbloqueado) partes.push("ajudante");
-  if (recompensa.sprintDesbloqueado) partes.push("corrida com Ctrl");
+  if (recompensa.sprintDesbloqueado) partes.push("corrida com Shift");
   if (recompensa.desbloqueiaProduto) {
     const produto = obterProduto(recompensa.desbloqueiaProduto);
     partes.push(`${produto ? produto.nome : "produto"} liberado`);

@@ -9,6 +9,9 @@ const HORA_PREPARACAO = (8 * 60) - MINUTOS_PREPARACAO_RELOGIO;
 const HORA_ABERTURA = 8 * 60;
 const HORA_FECHAMENTO = 18 * 60;
 const MINUTOS_EXPEDIENTE = HORA_FECHAMENTO - HORA_ABERTURA;
+const HUD_TEMPO_UPDATE_INTERVAL_MS = 180;
+
+let ultimoHudTempoAtualizadoMs = 0;
 
 const eventosDeMercado = [
   {
@@ -342,6 +345,16 @@ function formatarTempoCurto(ms) {
   return `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
 }
 
+function atualizarHudTempoComControle(forcar = false) {
+  if (typeof atualizarHudTempo !== "function") return;
+
+  const agora = performance.now();
+  if (!forcar && agora - ultimoHudTempoAtualizadoMs < HUD_TEMPO_UPDATE_INTERVAL_MS) return;
+
+  ultimoHudTempoAtualizadoMs = agora;
+  atualizarHudTempo();
+}
+
 /**
  * @doc-func processarTempoDoDia
  * O que faz: organiza uma parte específica da lógica; leia as variáveis usadas dentro dela antes de editar.
@@ -359,9 +372,7 @@ function processarTempoDoDia(deltaTime) {
       (gameState.tempoPreparacaoDecorridoMs || 0) + deltaTime
     );
 
-    if (typeof atualizarHudTempo === "function") {
-      atualizarHudTempo();
-    }
+    atualizarHudTempoComControle();
 
     if (gameState.tempoPreparacaoDecorridoMs >= duracaoPreparacao && !gameState.preparacaoAvisoMostrado) {
       gameState.preparacaoAvisoMostrado = true;
@@ -390,6 +401,8 @@ function processarTempoDoDia(deltaTime) {
       fecharExpediente();
     }
 
+    atualizarHudTempoComControle(true);
+
     if (!gameState.diaEncerradoNotificado) {
       gameState.diaEncerradoNotificado = true;
 
@@ -399,9 +412,7 @@ function processarTempoDoDia(deltaTime) {
     }
   }
 
-  if (typeof atualizarHudTempo === "function") {
-    atualizarHudTempo();
-  }
+  atualizarHudTempoComControle();
 }
 
 /**

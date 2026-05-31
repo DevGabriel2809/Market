@@ -1912,8 +1912,7 @@ function limitarClienteAoMapa(cliente) {
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function atualizarPosicaoCliente(cliente) {
-  cliente.el.style.left = `${cliente.x}px`;
-  cliente.el.style.top = `${cliente.y}px`;
+  cliente.el.style.transform = `translate3d(${cliente.x}px, ${cliente.y}px, 0) translate(-50%, -100%)`;
   cliente.el.style.zIndex = zIndexProfundidadeNPC(cliente.y);
 }
 
@@ -1934,13 +1933,13 @@ function atualizarDirecaoCliente(cliente, dx, dy) {
 
   if (Math.abs(dx) > Math.abs(dy)) {
     cliente.sprite.classList.add("customer-walk-side");
-    cliente.sprite.style.transform = dx < 0
-      ? "translateX(-50%) scale(0.55) scaleX(-1)"
-      : "translateX(-50%) scale(0.55) scaleX(1)";
+    cliente.sprite.style.removeProperty("transform");
+    cliente.sprite.style.setProperty("--npc-facing", dx < 0 ? "-1" : "1");
     return;
   }
 
-  cliente.sprite.style.transform = "translateX(-50%) scale(0.55)";
+  cliente.sprite.style.removeProperty("transform");
+  cliente.sprite.style.setProperty("--npc-facing", "1");
   cliente.sprite.classList.add(dy < 0 ? "customer-walk-up" : "customer-walk-down");
 }
 
@@ -1957,7 +1956,8 @@ function clienteIdle(cliente) {
     "customer-walk-up",
     "customer-walk-down"
   );
-  cliente.sprite.style.transform = "translateX(-50%) scale(0.55)";
+  cliente.sprite.style.removeProperty("transform");
+  cliente.sprite.style.setProperty("--npc-facing", "1");
   cliente.sprite.classList.add("customer-idle");
 }
 

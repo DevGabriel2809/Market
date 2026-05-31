@@ -23,9 +23,9 @@
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
   <link rel="stylesheet" href="src/css/menu.css?v=34" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/game.css?v=39" />
+  <link rel="stylesheet" href="src/css/game.css?v=40" />
   <!-- @doc-html Carrega um arquivo CSS. Para forçar atualização no navegador, aumente o número em ?v=. -->
-  <link rel="stylesheet" href="src/css/responsive.css?v=39" />
+  <link rel="stylesheet" href="src/css/responsive.css?v=40" />
 </head>
 
 <body>
@@ -133,7 +133,7 @@
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
           <li>Conclua miss&otilde;es da guilda para ganhar reputa&ccedil;&atilde;o, descontos e novos recursos.</li>
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instrução sem alterar a lógica. -->
-          <li>Conclua a miss&atilde;o &ldquo;Passo apressado&rdquo; para liberar corrida com Ctrl.</li>
+          <li>Conclua a miss&atilde;o &ldquo;Passo apressado&rdquo; para liberar corrida com Shift.</li>
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instruÃ§Ã£o sem alterar a lÃ³gica. -->
           <li>Fique atento aos alertas de fila no caixa e de estoque abaixo de 5 unidades.</li>
           <!-- @doc-html Item de lista do tutorial. Edite o texto para mudar uma instruÃ§Ã£o sem alterar a lÃ³gica. -->
@@ -291,7 +291,17 @@
     <div class="intro-scene" aria-hidden="true">
       <div class="intro-sky"></div>
       <div class="intro-moon"></div>
+      <div class="intro-castle"></div>
+      <div class="intro-torches">
+        <span></span>
+        <span></span>
+      </div>
       <div class="intro-gate">
+        <i></i>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="intro-shields">
         <span></span>
         <span></span>
       </div>
@@ -299,6 +309,7 @@
         <small>Mercado do</small>
         <strong>Carvalho Dourado</strong>
       </div>
+      <div class="intro-scroll"></div>
       <div class="intro-road"></div>
       <div class="intro-cart"></div>
       <div class="intro-runner manager-male-walk-side"></div>
@@ -322,6 +333,31 @@
     </div>
 
     <button id="intro-skip" class="intro-skip" type="button">Pular</button>
+  </div>
+
+  <div id="final-credits-overlay" class="final-credits-overlay hidden" aria-live="polite">
+    <div class="final-credits-stage">
+      <div class="final-credits-glow" aria-hidden="true"></div>
+      <article class="final-credits-scroll">
+        <span id="final-credits-kicker">Créditos finais</span>
+        <h2 id="final-credits-title">Mercado do Carvalho Dourado</h2>
+        <p id="final-credits-journey"></p>
+
+        <div id="final-credits-stats" class="final-credits-stats"></div>
+
+        <section class="final-credits-roles">
+          <h3>Produção</h3>
+          <p><strong>Marília Beatriz</strong></p>
+          <p>Criação, direção geral, desenvolvimento de ambiente, produção musical, direção de imagem, desenho, game design, curadoria visual e direção narrativa.</p>
+        </section>
+
+        <p class="final-credits-dedication">
+          Um jogo feito para a turma da ETEPLAP.
+        </p>
+
+        <button id="final-credits-close" class="btn primary" type="button">Voltar ao relatório</button>
+      </article>
+    </div>
   </div>
 
   <!-- @doc-html Container com id usado pelo JS/CSS. Mantenha o id ou atualize todos os seletores relacionados. -->
@@ -489,30 +525,30 @@
   </div>
 
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/gameState.js?v=33"></script>
+  <script src="src/js/gameState.js?v=34"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/products.js?v=33"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/finance.js?v=33"></script>
+  <script src="src/js/finance.js?v=34"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/quests.js?v=33"></script>
+  <script src="src/js/quests.js?v=34"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/audio-system.js?v=2"></script>
+  <script src="src/js/audio-system.js?v=3"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por Ãºltimo. -->
-  <script src="src/js/ui.js?v=35"></script>
+  <script src="src/js/ui.js?v=36"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/events.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/storage.js?v=33"></script>
+  <script src="src/js/storage.js?v=34"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/helpers-system.js?v=33"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/npc-system.js?v=35"></script>
+  <script src="src/js/npc-system.js?v=36"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/static-npc-system.js?v=34"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
   <script src="src/js/bat-system.js?v=32"></script>
   <!-- @doc-html Carrega um arquivo JavaScript. A ordem importa: dados primeiro, sistemas depois e main.js por último. -->
-  <script src="src/js/main.js?v=39"></script>
+  <script src="src/js/main.js?v=40"></script>
 </body>
 </html>

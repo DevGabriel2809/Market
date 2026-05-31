@@ -37,7 +37,7 @@ const gameState = {
   clientela: 1,
   ajudanteContratado: false,
   ajudanteDesbloqueado: false,
-  // @doc-state sprintDesbloqueado libera a corrida do gerente segurando Ctrl.
+  // @doc-state sprintDesbloqueado libera a corrida do gerente segurando Shift.
   // O valor começa falso e vira true quando a missão inicial de mobilidade é concluída.
   sprintDesbloqueado: false,
   descontoFornecedor: 0,
@@ -65,6 +65,7 @@ const gameState = {
   },
   ultimoRelatorio: null,
   fimDeJogo: null,
+  creditosFinaisMostrados: false,
   // @doc-state staticNpcTips guarda quais dicas dos NPCs fixos já foram lidas no dia atual.
   // Edite/limpe este campo se quiser reiniciar o ciclo de dicas sem resetar a partida inteira.
   staticNpcTips: null,
@@ -116,6 +117,7 @@ function resetarPartida(nome, personagem, modoJogo = "normal") {
   };
   gameState.ultimoRelatorio = null;
   gameState.fimDeJogo = null;
+  gameState.creditosFinaisMostrados = false;
   gameState.staticNpcTips = null;
   gameState.alertasEstoqueBaixo = {};
 

@@ -124,7 +124,7 @@ A regra de fallback para fila existe para preservar o ritmo do caixa: se uma rot
 ## v32 - Corrida por missão
 
 - A missão única "Passo apressado" libera a corrida do gerente.
-- Depois de concluir a missão, segure Ctrl enquanto usa WASD/setas para correr.
+- Depois de concluir a missão, segure Shift enquanto usa WASD/setas para correr.
 - Ajuste a força do sprint em `PLAYER_SPRINT_MULTIPLIER` dentro de `src/js/main.js`.
 - O desbloqueio fica salvo em `gameState.sprintDesbloqueado`.
 

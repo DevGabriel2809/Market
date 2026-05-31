@@ -5,7 +5,7 @@
 // Ajustes comuns:
 // - PLAYER_SCALE_* muda o tamanho visual do gerente por tipo de tela.
 // - speed muda a velocidade base do player.
-// - PLAYER_SPRINT_MULTIPLIER controla o bônus quando a corrida com Ctrl é desbloqueada.
+// - PLAYER_SPRINT_MULTIPLIER controla o bônus quando a corrida com Shift é desbloqueada.
 // - temColisao(...) decide o que bloqueia passagem; agora inclui mapa + NPCs + ajudante.
 // - gameLoop(...) chama os sistemas que precisam atualizar a cada frame.
 // ======================================================
@@ -58,17 +58,21 @@ let playerX = 600;
 let playerY = 400;
 let speed = 4.5;
 
-// Multiplicador aplicado quando o jogador segura Ctrl após concluir a missão "Passo apressado".
+// Multiplicador aplicado quando o jogador segura Shift após concluir a missão "Passo apressado".
 // Aumente para sprint mais forte ou reduza para uma corrida mais sutil.
 const PLAYER_SPRINT_MULTIPLIER = 1.65;
 const PLAYER_FRAME_PADRAO_MS = 1000 / 60;
 const PLAYER_FRAME_MAX_MULTIPLIER = 1.35;
+const GAME_DELTA_MAX_MS = 50;
+const INTERACTION_UPDATE_INTERVAL_MS = 90;
+const STATIC_NPC_UPDATE_INTERVAL_MS = 140;
 
 let ultimaDirecao = "down";
 let personagemSelecionado = gameState.personagem || "male";
 
 let animacaoAtual = "";
 let transformAtual = "";
+let cameraTransformAtual = "";
 
 // Escala visual do personagem por tipo de tela.
 // Como o sprite tem 128px de altura, 128 * 0.56 ≈ 72px.
@@ -393,7 +397,7 @@ const keysPressed = {
   a: false,
   s: false,
   d: false,
-  Control: false
+  Shift: false
 };
 
 /**
@@ -409,8 +413,8 @@ function obterTeclaMovimento(event) {
   // Normaliza WASD para funcionar mesmo se o navegador enviar W/A/S/D maiúsculo.
   if (event.key.length === 1) return event.key.toLowerCase();
 
-  // Ctrl vira a tecla da corrida depois que a missão certa é concluída.
-  if (event.key === "Control") return "Control";
+  // Shift vira a tecla da corrida depois que a missão certa é concluída.
+  if (event.key === "Shift") return "Shift";
 
   return event.key;
 }
@@ -479,7 +483,7 @@ function setarMovimentoVirtual(tecla, ativo) {
   keysPressed[tecla] = Boolean(ativo);
 
   if (ativo && viewportUsaLayoutMovel()) {
-    keysPressed.Control = false;
+    keysPressed.Shift = false;
   }
 }
 
@@ -867,8 +871,8 @@ function moverPersonagem(deltaTime = 16) {
   const direita = keysPressed.ArrowRight || keysPressed.d;
 
   // A corrida só existe depois da missão de treinamento.
-  // Antes disso, segurar Ctrl não muda a velocidade e não quebra o progresso inicial.
-  const corridaAtiva = Boolean(gameState.sprintDesbloqueado && keysPressed.Control && (cima || baixo || esquerda || direita));
+  // Antes disso, segurar Shift não muda a velocidade e não quebra o progresso inicial.
+  const corridaAtiva = Boolean(gameState.sprintDesbloqueado && keysPressed.Shift && (cima || baixo || esquerda || direita));
   const deltaSeguro = Number.isFinite(deltaTime) && deltaTime > 0 ? deltaTime : PLAYER_FRAME_PADRAO_MS;
   const fatorTempo = Math.min(PLAYER_FRAME_MAX_MULTIPLIER, deltaSeguro / PLAYER_FRAME_PADRAO_MS);
   const velocidadeBase = corridaAtiva ? speed * PLAYER_SPRINT_MULTIPLIER : speed;
@@ -980,12 +984,16 @@ function atualizarCamera() {
     zoomCamera
   );
 
-  const cameraTransform = `translate(${offsetX}px, ${offsetY}px) scale(${zoomCamera})`;
+  const cameraTransform = `translate3d(${offsetX}px, ${offsetY}px, 0) scale(${zoomCamera})`;
 
-  world.style.transform = cameraTransform;
+  if (cameraTransformAtual !== cameraTransform) {
+    world.style.transform = cameraTransform;
 
-  if (foregroundWorld) {
-    foregroundWorld.style.transform = cameraTransform;
+    if (foregroundWorld) {
+      foregroundWorld.style.transform = cameraTransform;
+    }
+
+    cameraTransformAtual = cameraTransform;
   }
 
   playerElement.style.left = `${playerX}px`;
@@ -1085,6 +1093,8 @@ function carregarMapa() {
 // ======================================================
 
 let ultimoTempo = performance.now();
+let acumuladorInteracaoMs = 0;
+let acumuladorNpcEstaticoMs = 0;
 
 /**
  * @doc-func gameLoop
@@ -1094,25 +1104,40 @@ let ultimoTempo = performance.now();
  * altere primeiro os valores/configurações próximos dela antes de mudar a estrutura inteira.
  */
 function gameLoop(tempoAtual) {
-  const deltaTime = tempoAtual - ultimoTempo;
+  const deltaBruto = tempoAtual - ultimoTempo;
+  const deltaTime = Math.min(GAME_DELTA_MAX_MS, Math.max(0, deltaBruto));
   ultimoTempo = tempoAtual;
 
   moverPersonagem(deltaTime);
 
-  if (telaJogo.classList.contains("active") && typeof processarTempoDoDia === "function") {
+  const jogoAtivo = telaJogo.classList.contains("active");
+
+  if (jogoAtivo && typeof processarTempoDoDia === "function") {
     processarTempoDoDia(deltaTime);
   }
 
-  if (telaJogo.classList.contains("active") && typeof processarInteracaoAutomatica === "function") {
+  acumuladorInteracaoMs = jogoAtivo ? acumuladorInteracaoMs + deltaTime : 0;
+  if (
+    jogoAtivo
+    && acumuladorInteracaoMs >= INTERACTION_UPDATE_INTERVAL_MS
+    && typeof processarInteracaoAutomatica === "function"
+  ) {
     processarInteracaoAutomatica();
+    acumuladorInteracaoMs = 0;
   }
 
-  if (telaJogo.classList.contains("active") && typeof atualizarNPCs === "function") {
+  if (jogoAtivo && typeof atualizarNPCs === "function") {
     atualizarNPCs(deltaTime);
   }
 
-  if (telaJogo.classList.contains("active") && typeof atualizarNPCsEstaticos === "function") {
-    atualizarNPCsEstaticos(deltaTime);
+  acumuladorNpcEstaticoMs = jogoAtivo ? acumuladorNpcEstaticoMs + deltaTime : 0;
+  if (
+    jogoAtivo
+    && acumuladorNpcEstaticoMs >= STATIC_NPC_UPDATE_INTERVAL_MS
+    && typeof atualizarNPCsEstaticos === "function"
+  ) {
+    atualizarNPCsEstaticos(acumuladorNpcEstaticoMs);
+    acumuladorNpcEstaticoMs = 0;
   }
 
   requestAnimationFrame(gameLoop);

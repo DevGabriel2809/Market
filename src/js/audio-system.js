@@ -15,7 +15,7 @@ const MUSIC_NOTICE_MS = 4200;
 const MUSIC_MENU_TRACK = {
   id: "three_coins_oak",
   title: "Three Coins on the Oak",
-  src: `${MUSIC_BASE_PATH}Three_Coins_on_the_Oak.mp3`,
+  src: `${MUSIC_BASE_PATH}Three_Coins_on_the_Oak.ogg`,
   context: "menu"
 };
 
@@ -23,26 +23,26 @@ const MUSIC_GAME_TRACKS = [
   {
     id: "hearth_last_ember",
     title: "The Hearth's Last Ember",
-    src: `${MUSIC_BASE_PATH}The_Hearth_s_Last_Ember.mp3`,
+    src: `${MUSIC_BASE_PATH}The_Hearth_s_Last_Ember.ogg`,
     context: "game"
   },
   {
     id: "anvil_grain",
     title: "Anvil and Grain",
-    src: `${MUSIC_BASE_PATH}Anvil_and_Grain.mp3`,
+    src: `${MUSIC_BASE_PATH}Anvil_and_Grain.ogg`,
     context: "game"
   },
   {
     id: "boots_floorboards",
     title: "Boots on the Floorboards",
-    src: `${MUSIC_BASE_PATH}Boots_on_the_Floorboards.mp3`,
+    src: `${MUSIC_BASE_PATH}Boots_on_the_Floorboards.ogg`,
     context: "game"
   }
 ];
 
 const MUSIC_FALLBACK_MISSION_FILES = [
-  "Pack_Your_Rations.mp3",
-  "Three_Coins_on_the_Table.mp3"
+  "Pack_Your_Rations.ogg",
+  "Three_Coins_on_the_Table.ogg"
 ];
 
 const musicState = {
@@ -295,7 +295,7 @@ async function descobrirMusicasDeMissao() {
     }
 
     const html = await resposta.text();
-    const encontrados = Array.from(html.matchAll(/href=["']([^"']+\.mp3)["']/gi))
+    const encontrados = Array.from(html.matchAll(/href=["']([^"']+\.ogg)["']/gi))
       .map((match) => decodeURIComponent(match[1].split("/").pop()))
       .filter(Boolean);
 
