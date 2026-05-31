@@ -2981,8 +2981,8 @@ body.intro-active {
   display: grid;
   grid-template-columns: 40px 1fr;
   align-items: center;
-  gap: 10px;
-  padding: 9px 10px;
+  gap: 5px;
+  padding: 0px 10px;
   border: 1px solid rgba(243, 201, 105, 0.34);
   border-radius: 10px;
   background:
@@ -3036,7 +3036,7 @@ body.intro-active {
 
 /* @doc-css Estilo .checkout-coin-ledger: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
 .checkout-coin-ledger {
-  min-height: 44px;
+  max-height:50px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -3045,6 +3045,7 @@ body.intro-active {
   border: 1px solid rgba(255, 241, 208, 0.14);
   border-radius: 10px;
   background: rgba(15, 8, 4, 0.36);
+  overflow-y: scroll;
 }
 
 /* @doc-css Estilo .checkout-coin-ledger strong: regra visual deste componente; edite propriedades internas para mudar aparência sem mexer na lógica JS. */
@@ -3164,7 +3165,7 @@ body.intro-active {
   }
 
   .checkout-coin-tray button {
-    min-height: 56px;
+    max-height: 36px;
   }
 
   .checkout-actions {
